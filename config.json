@@ -27,5 +27,9 @@
       "liga": "kl1",
       "liga_name": "Kreisliga 1"
     }
-  ]
+  ],
+  "spielorte": {
+    "DC Nightlife Hornets 3": "",
+    "DC Nightlife Hornets 4": ""
+  }
 }

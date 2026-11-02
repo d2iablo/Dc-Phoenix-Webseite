@@ -79,6 +79,11 @@ footer{border-top:1px solid var(--line);padding-block:16px calc(24px + env(safe-
 .fix li.two{grid-template-columns:auto 1fr}
 .dd2{color:var(--flame);font-weight:700}
 .teamhead h2::before{display:none}
+.pill{display:inline-block;font-family:Arial,system-ui,sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:1px 8px;border-radius:999px;margin-right:8px;vertical-align:middle;line-height:1.5}
+.pill.h{background:var(--green);color:#fff}
+.pill.g{background:transparent;color:var(--flame);border:1.5px solid var(--flame)}
+.ven{font-size:.9rem;margin-top:4px;color:var(--mute)}
+.next .ven{color:var(--board-fg);opacity:.85}
 #links{display:flex;gap:16px;flex-wrap:wrap}
 </style>
 </head>
@@ -132,6 +137,14 @@ function daysTo(f){var now=new Date(),p=f.datum.split("-");
   return Math.round((new Date(+p[0],+p[1]-1,+p[2])-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5)}
 function dayTxt(d){return d<=0?"Heute!":d===1?"Morgen":"In "+d+" Tagen"}
 function rank(t){var r=(t.table||[]).filter(function(x){return norm(x.team)===norm(t.name)})[0];return r?r:null}
+function pill(f,t){var h=norm(f.heim)===norm(t.name),a=!h&&norm(f.gast)===norm(t.name);
+  if(!f.heim||!(h||a))return null;return el("span",h?"Heim":"Gast","pill "+(h?"h":"g"))}
+function venue(f){if(!f.heim)return "";var k=norm(f.heim),sp=CFG.spielorte||{},a="";
+  for(var n in sp)if(norm(n)===k)a=sp[n];
+  if(!a&&CFG.teams.some(function(c){return norm(c.name)===k}))a=CFG.verein.spiellokal||"";return a}
+function venueEl(f){if(!f.heim)return null;var a=venue(f),d=el("div",null,"ven");d.appendChild(document.createTextNode("Spielort: "));
+  if(a){var l=el("a",a);l.href="https://www.openstreetmap.org/search?query="+encodeURIComponent(a);l.target="_blank";l.rel="noopener";d.appendChild(l)}
+  else d.appendChild(el("span","Adresse folgt","todo"));return d}
 function vsText(f){return f.heim?f.heim+" – "+f.gast:"Gegner folgt"}
 function fillRow(dl,k,val,link){
   dl.appendChild(el("dt",k));var dd=el("dd");
@@ -146,8 +159,9 @@ function renderTeam(t){
   var next=nextOf(t),n=$("next");n.textContent="";n.className="card";
   if(next){
     n.appendChild(el("div",(next.spieltag?next.spieltag+". Spieltag":"Spieltag"),"lbl"));
-    n.appendChild(el("div",vsText(next),"vs"));
+    var vsd=el("div",vsText(next),"vs"),pp=pill(next,t);if(pp)vsd.insertBefore(pp,vsd.firstChild);n.appendChild(vsd);
     n.appendChild(el("div",fmtDate(next.datum)+(next.heim?" · "+(next.zeit||"20:00")+" Uhr":"")));
+    var ve=venueEl(next);if(ve)n.appendChild(ve);
     n.appendChild(el("div",dayTxt(daysTo(next)),"cd"));
   }else n.textContent="Aktuell ist kein Spiel angesetzt.";
   var ul=$("fix");ul.textContent="";
@@ -161,7 +175,8 @@ function renderTeam(t){
       var home=norm(f.heim)===own,mine=home?f.ergebnis[0]:f.ergebnis[1],opp=home?f.ergebnis[1]:f.ergebnis[0];
       r.className="r "+(mine>opp?"w":mine<opp?"l":"n");li.className="past"}
     else r.textContent="–";
-    li.appendChild(d);li.appendChild(el("div",vsText(f),"m"));li.appendChild(r);ul.appendChild(li)});
+    var mm=el("div",null,"m"),vl=el("div",vsText(f)),p2=pill(f,t);if(p2)vl.insertBefore(p2,vl.firstChild);mm.appendChild(vl);var v2=venueEl(f);if(v2)mm.appendChild(v2);
+    li.appendChild(d);li.appendChild(mm);li.appendChild(r);ul.appendChild(li)});
   var tb=$("tbl");tb.textContent="";
   if(!(t.table||[]).length){tb.appendChild(el("caption","Die Tabelle folgt."));return}
   var th=document.createElement("thead"),hr=document.createElement("tr");
@@ -191,7 +206,7 @@ function renderStart(){
   DATA.teams.forEach(function(t){var n=nextOf(t);if(!n)return;any=true;
     var li=document.createElement("li");
     var d=el("div",null,"d");d.appendChild(document.createTextNode(fmtDate(n.datum)));d.appendChild(el("small",n.heim?(n.zeit||"20:00")+" Uhr":""));
-    var m=el("div",null,"m");m.appendChild(el("b",t.name));m.appendChild(el("div",vsText(n)));
+    var m=el("div",null,"m");m.appendChild(el("b",t.name));var vl=el("div",vsText(n)),p3=pill(n,t);if(p3)vl.insertBefore(p3,vl.firstChild);m.appendChild(vl);var v3=venueEl(n);if(v3)m.appendChild(v3);
     m.appendChild(el("div",dayTxt(daysTo(n)),"dd2"));li.appendChild(d);li.appendChild(m);li.className="two";na.appendChild(li)});
   if(!any)na.appendChild(el("li","Aktuell sind keine Spiele angesetzt."));
   var vs=$("vorstand");vs.textContent="";
