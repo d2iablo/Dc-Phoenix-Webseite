@@ -1,0 +1,18 @@
+{
+  "verein": {
+    "name": "DC Phönix Durmersheim",
+    "ort": "Durmersheim",
+    "training": "dienstags ab 17 Uhr",
+    "spiellokal": "",
+    "kontakt": "",
+    "instagram": "",
+    "facebook": "",
+    "logo": "logo.png",
+    "impressum": "",
+    "datenschutz": "",
+    "entwurf": true
+  },
+  "teams": [
+    { "name": "DC Phönix Highrider", "liga": "kl1", "liga_name": "Kreisliga 1" }
+  ]
+}

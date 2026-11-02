@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DC Phönix Durmersheim</title>
+<style>
+:root{--bg:#F4F1EC;--card:#fff;--fg:#0E1A2B;--mute:#5B6676;--line:#DDD8CF;--navy:#0E1A2B;--flame:#E8591A;--flame-fg:#fff;--own:#FDE9DD;--win:#1E7B4B;--loss:#B3321F;--warn:#FFF3C4;--warn-fg:#5A4500}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0A121D;--card:#121E2E;--fg:#EDEAE4;--mute:#9AA6B6;--line:#243247;--navy:#060C14;--own:#3A2418;--win:#4CC083;--loss:#F0745F;--warn:#3B3210;--warn-fg:#F3DE8A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0A121D;--card:#121E2E;--fg:#EDEAE4;--mute:#9AA6B6;--line:#243247;--navy:#060C14;--own:#3A2418;--win:#4CC083;--loss:#F0745F;--warn:#3B3210;--warn-fg:#F3DE8A;color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+h1,h2,h3{font-family:"Arial Narrow","Helvetica Neue Condensed",Impact,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.04em;margin:0;text-wrap:balance}
+a{color:inherit}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{background:var(--navy);color:#fff;padding-block:18px 22px;border-bottom:4px solid var(--flame)}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.brand img{height:64px;width:auto;max-width:96px;object-fit:contain}
+.brand h1{font-size:clamp(1.5rem,6vw,2.3rem);line-height:1.05}
+.brand small{display:block;color:#C9D2DF;letter-spacing:.08em;text-transform:uppercase;font-size:.75rem;margin-top:4px}
+.banner{background:var(--warn);color:var(--warn-fg);padding-block:10px;font-size:.9rem}
+main{padding-block:22px 40px;display:grid;gap:26px}
+section{min-width:0}
+h2{font-size:1.4rem;margin-bottom:10px;border-left:5px solid var(--flame);padding-left:10px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs button{font:inherit;font-weight:600;padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--flame);border-color:var(--flame);color:var(--flame-fg)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.next .lbl{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.next .vs{font-size:1.3rem;font-weight:700;margin:4px 0;overflow-wrap:anywhere}
+.next .cd{color:var(--flame);font-weight:700;font-size:1.1rem}
+.fix{display:grid;gap:8px;padding:0;margin:0;list-style:none}
+.fix li{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.fix .d{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.fix .d small{display:block;font-weight:400;color:var(--mute)}
+.fix .m{min-width:0;overflow-wrap:anywhere}
+.fix .r{font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.fix .r.w{color:var(--win)}.fix .r.l{color:var(--loss)}.fix .r.n{color:var(--mute);font-weight:400}
+.fix li.past{opacity:.85}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+th:nth-child(2),td:nth-child(2){text-align:left;white-space:normal;min-width:0}
+tr:last-child td{border-bottom:0}
+tr.own td{background:var(--own);font-weight:700}
+td:last-child{font-weight:700}
+@media (max-width:640px){.hide-s{display:none}}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:0}
+dt{color:var(--mute)}dd{margin:0;overflow-wrap:anywhere}
+.todo{color:var(--mute);font-style:italic}
+footer{border-top:1px solid var(--line);padding-block:16px calc(24px + env(safe-area-inset-bottom,0px));color:var(--mute);font-size:.85rem;display:flex;flex-wrap:wrap;gap:6px 18px}
+.err{color:var(--loss)}
+#links{display:flex;gap:16px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="brand">
+<img id="logo" alt="" hidden>
+<div><h1 id="vname">DC Phönix Durmersheim</h1><small id="vsub">Dart</small></div>
+</div></div></header>
+<div class="banner" id="entwurf" hidden><div class="wrap">Entwurf eines Vereinsmitglieds, noch nicht vom Verein freigegeben.</div></div>
+
+<main class="wrap">
+<div class="tabs" id="tabs" role="group" aria-label="Team wählen" hidden></div>
+<section class="next" aria-live="polite"><h2>Nächstes Spiel</h2><div class="card" id="next">Lade …</div></section>
+<section><h2>Spielplan</h2><ul class="fix" id="fix"></ul></section>
+<section><h2>Tabelle</h2><div class="scroll"><table id="tbl"></table></div><p class="todo" id="liga"></p></section>
+<section><h2>Mitmachen</h2><div class="card"><dl id="info"></dl></div></section>
+</main>
+
+<footer class="wrap"><span id="upd"></span><span id="links"></span></footer>
+
+<script>
+(function(){
+"use strict";
+var CFG=null,DATA=null,cur=0;
+var $=function(id){return document.getElementById(id)};
+function el(tag,txt,cls){var e=document.createElement(tag);if(txt!=null)e.textContent=txt;if(cls)e.className=cls;return e}
+function norm(s){return String(s||"").trim().toLowerCase()}
+function fmtDate(iso){var p=iso.split("-");var d=new Date(+p[0],+p[1]-1,+p[2]);
+  return d.toLocaleDateString("de-DE",{weekday:"short",day:"2-digit",month:"2-digit",year:"numeric"})}
+function when(f){var p=f.datum.split("-"),t=(f.zeit||"20:00").split(":");
+  return new Date(+p[0],+p[1]-1,+p[2],+t[0]||20,+t[1]||0)}
+function safeUrl(u){return /^https?:\/\//i.test(u||"")?u:null}
+function getJSON(u){return fetch(u,{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error(u+" "+r.status);return r.json()})}
+
+function team(){return DATA.teams[cur]}
+function render(){
+  var t=team(),own=norm(t.name);
+  var fx=(t.fixtures||[]).slice().sort(function(a,b){return a.datum<b.datum?-1:1});
+  var now=new Date(),next=null;
+  fx.forEach(function(f){if(!next&&!f.ergebnis&&when(f).getTime()+4*3600e3>now.getTime())next=f});
+  var n=$("next");n.textContent="";
+  if(next){
+    n.appendChild(el("div",t.name+" · "+(next.spieltag?next.spieltag+". Spieltag":"Spieltag"),"lbl"));
+    var vs=next.heim?(next.heim+"  –  "+next.gast):"Gegner folgt";
+    n.appendChild(el("div",vs,"vs"));
+    n.appendChild(el("div",fmtDate(next.datum)+(next.heim?" · "+(next.zeit||"20:00")+" Uhr":"")));
+    var days=Math.round((new Date(+next.datum.slice(0,4),+next.datum.slice(5,7)-1,+next.datum.slice(8,10))-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5);
+    n.appendChild(el("div",days<=0?"Heute!":days===1?"Morgen":"In "+days+" Tagen","cd"));
+  }else n.textContent="Aktuell ist kein Spiel angesetzt.";
+
+  var ul=$("fix");ul.textContent="";
+  if(!fx.length)ul.appendChild(el("li","Der Spielplan folgt."));
+  fx.forEach(function(f){
+    var li=document.createElement("li");
+    var d=el("div",null,"d");d.appendChild(document.createTextNode(fmtDate(f.datum)));
+    d.appendChild(el("small",f.heim?(f.zeit||"20:00")+" Uhr":""));
+    var m=el("div",f.heim?f.heim+" – "+f.gast:"Gegner folgt","m");
+    var r=el("div","","r n");
+    if(f.ergebnis){
+      r.textContent=f.ergebnis[0]+" : "+f.ergebnis[1];
+      var home=norm(f.heim)===own,mine=home?f.ergebnis[0]:f.ergebnis[1],opp=home?f.ergebnis[1]:f.ergebnis[0];
+      r.className="r "+(mine>opp?"w":mine<opp?"l":"n");li.className="past";
+    }else r.textContent="–";
+    li.appendChild(d);li.appendChild(m);li.appendChild(r);ul.appendChild(li);
+  });
+
+  var tb=$("tbl");tb.textContent="";
+  var th=document.createElement("thead"),hr=document.createElement("tr");
+  [["#",""],["Team",""],["Sp",""],["G","hide-s"],["U","hide-s"],["V","hide-s"],["Sets","hide-s"],["Legs","hide-s"],["Pkt",""]].forEach(function(c){var h=el("th",c[0],c[1]);hr.appendChild(h)});
+  th.appendChild(hr);tb.appendChild(th);
+  var tbd=document.createElement("tbody");
+  (t.table||[]).forEach(function(r){
+    var tr=document.createElement("tr");if(norm(r.team)===own)tr.className="own";
+    [[r.platz,""],[r.team,""],[r.spiele,""],[r.g,"hide-s"],[r.u,"hide-s"],[r.v,"hide-s"],[r.sets,"hide-s"],[r.legs,"hide-s"],[r.punkte,""]].forEach(function(c){tr.appendChild(el("td",c[0],c[1]))});
+    tbd.appendChild(tr);
+  });
+  tb.appendChild(tbd);
+  $("liga").textContent=(t.table&&t.table.length)?t.liga_name+" · Badische Dart Liga":"Tabelle folgt.";
+}
+
+function init(){
+  var v=CFG.verein;
+  $("vname").textContent=v.name;document.title=v.name;
+  $("vsub").textContent="Dart"+(v.ort?" · "+v.ort:"");
+  $("entwurf").hidden=!v.entwurf;
+  var lg=$("logo");
+  if(v.logo){lg.onload=function(){lg.hidden=false};lg.onerror=function(){lg.hidden=true};lg.src=v.logo}
+  var dl=$("info");
+  function row(k,val,link){
+    dl.appendChild(el("dt",k));
+    var dd=el("dd");
+    if(val){var u=link&&safeUrl(val);if(u){var a=el("a",val);a.href=u;a.target="_blank";a.rel="noopener";dd.appendChild(a)}else dd.textContent=val}
+    else dd.appendChild(el("span","folgt","todo"));
+    dl.appendChild(dd);
+  }
+  row("Training",v.training);row("Spieltag","freitags, regulär 20 Uhr");row("Spiellokal",v.spiellokal);
+  row("Kontakt",v.kontakt);row("Instagram",v.instagram,true);row("Facebook",v.facebook,true);
+  var lk=$("links");
+  [["Impressum",v.impressum],["Datenschutz",v.datenschutz]].forEach(function(p){
+    var u=safeUrl(p[1])||(p[1]&&/^[\w.\-\/]+$/.test(p[1])?p[1]:null);
+    if(u){var a=el("a",p[0]);a.href=u;lk.appendChild(a);lk.appendChild(document.createTextNode(" "))}
+    else lk.appendChild(el("span",p[0]+" folgt"," "));
+  });
+  var u=DATA.updated?new Date(DATA.updated):null;
+  $("upd").textContent=u&&!isNaN(u)?"Stand: "+u.toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"}):"";
+  var tabs=$("tabs");
+  if(DATA.teams.length>1){
+    tabs.hidden=false;
+    DATA.teams.forEach(function(t,i){
+      var b=el("button",t.name);b.type="button";b.setAttribute("aria-pressed",i===cur);
+      b.onclick=function(){cur=i;Array.prototype.forEach.call(tabs.children,function(x,j){x.setAttribute("aria-pressed",j===i)});render()};
+      tabs.appendChild(b);
+    });
+  }
+  render();
+}
+
+Promise.all([getJSON("config.json"),getJSON("data.json")]).then(function(r){CFG=r[0];DATA=r[1];
+  if(!DATA.teams||!DATA.teams.length)throw new Error("keine Teams");init()})
+.catch(function(e){var n=$("next");n.textContent="Daten konnten nicht geladen werden.";n.className="card err";console.error(e)});
+})();
+</script>
+</body>
+</html>

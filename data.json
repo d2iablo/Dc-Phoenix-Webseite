@@ -1,0 +1,28 @@
+{
+  "updated": "2026-11-01T16:54:00Z",
+  "teams": [
+    {
+      "name": "DC Phönix Highrider",
+      "liga": "kl1",
+      "liga_name": "Kreisliga 1",
+      "table": [
+        {"platz": 1, "team": "DC Moskitos 3", "spiele": 4, "g": 4, "u": 0, "v": 0, "sets": "36 : 12", "legs": "118 : 66", "punkte": 8},
+        {"platz": 2, "team": "Dart Club Rheinau 2024 e.V. 2", "spiele": 4, "g": 4, "u": 0, "v": 0, "sets": "36 : 12", "legs": "121 : 65", "punkte": 8},
+        {"platz": 3, "team": "DC Lucky Hands 3", "spiele": 4, "g": 4, "u": 0, "v": 0, "sets": "36 : 12", "legs": "119 : 64", "punkte": 8},
+        {"platz": 4, "team": "DC Nightlife Hornets 4", "spiele": 4, "g": 3, "u": 0, "v": 1, "sets": "34 : 14", "legs": "111 : 84", "punkte": 6},
+        {"platz": 5, "team": "Teamplayers 2", "spiele": 4, "g": 2, "u": 0, "v": 2, "sets": "25 : 23", "legs": "102 : 89", "punkte": 4},
+        {"platz": 6, "team": "SV Bad Herrenalb 1920", "spiele": 4, "g": 1, "u": 0, "v": 3, "sets": "20 : 28", "legs": "90 : 102", "punkte": 2},
+        {"platz": 7, "team": "SC Eisental Darts 2", "spiele": 4, "g": 1, "u": 0, "v": 3, "sets": "16 : 32", "legs": "78 : 118", "punkte": 2},
+        {"platz": 8, "team": "DC Phönix Highrider", "spiele": 4, "g": 1, "u": 0, "v": 3, "sets": "15 : 33", "legs": "64 : 114", "punkte": 2},
+        {"platz": 9, "team": "TSV Loffenau", "spiele": 4, "g": 0, "u": 0, "v": 4, "sets": "13 : 35", "legs": "82 : 117", "punkte": 0},
+        {"platz": 10, "team": "FV Ottersweier Darts", "spiele": 4, "g": 0, "u": 0, "v": 4, "sets": "9 : 39", "legs": "59 : 125", "punkte": 0}
+      ],
+      "fixtures": [
+        {"spieltag": 5, "runde": "Hinrunde", "datum": "2026-11-06", "zeit": "20:00", "heim": "DC Phönix Highrider", "gast": "DC Nightlife Hornets 4", "ergebnis": null},
+        {"spieltag": null, "runde": null, "datum": "2026-11-20", "zeit": null, "heim": null, "gast": null, "ergebnis": null},
+        {"spieltag": null, "runde": null, "datum": "2026-12-04", "zeit": null, "heim": null, "gast": null, "ergebnis": null},
+        {"spieltag": null, "runde": null, "datum": "2026-12-18", "zeit": null, "heim": null, "gast": null, "ergebnis": null}
+      ]
+    }
+  ]
+}
