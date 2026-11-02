@@ -3,7 +3,7 @@
     "name": "DC Phönix Durmersheim",
     "ort": "Durmersheim",
     "training": "dienstags ab 17 Uhr",
-    "spiellokal": "",
+    "spiellokal": "Phönix Stube, Grenzstr. 78, 76448 Durmersheim",
     "kontakt": "",
     "instagram": "",
     "facebook": "",
@@ -29,7 +29,24 @@
     }
   ],
   "spielorte": {
-    "DC Nightlife Hornets 3": "",
-    "DC Nightlife Hornets 4": ""
+    "DC Lucky Hands 3": "Linde, Großweierer Str. 92, 77855 Achern",
+    "DC Moskitos 3": "Schützenhaus Haueneberstein, Waldstr. 30, 76532 Baden-Baden",
+    "DC Nightlife Hornets 4": "Eventhaus Nightlife, Daimlerstr. 1, 76316 Malsch",
+    "DC Phönix Highrider": "Phönix Stube, Grenzstr. 78, 76448 Durmersheim",
+    "Dart Club Rheinau 2024 e.V. 2": "Sporthaus Freistett, Am Friedrich Stephan Stadion 1, 77866 Rheinau Freistett",
+    "FV Ottersweier Darts": "Fußballverein Ottersweier e.V., Industriestraße 20, 77833 Ottersweier",
+    "SC Eisental Darts 2": "Clubhaus SC Eisental, Engertweg 12, 77815 Bühl",
+    "SV Bad Herrenalb 1920": "Sportheim SV Bad Herrenalb, Schwimmbadstraße 31, 76332 Bad Herrenalb",
+    "TSV Loffenau": "Gemeinde Halle Loffenau, Untere Dorfstrasse 27, 76597 Loffenau",
+    "Teamplayers 2": "Meeting Point Rheinstetten, Rheinaustr. 26, 76287 Rheinstetten",
+    "ATSV Mutschelbach 4": "ATSV Mutschelbach 1904 e.V., Waldenserstraße 1, 76307 Karlsbad",
+    "DC Blau-Weiß KA 1": "Clubhaus SV Schwarz-Weiß 1952 Mühlburg e. V., Am Mühlburger Bahnhof 16, 76189 Karlsruhe",
+    "DC Flatliners Checktnix": "Vereinsheim DC Flatliners (Bau 2), Hardtstr. 37a, 76185 Karlsruhe",
+    "DC Moskitos 2": "Schützenhaus Haueneberstein, Waldstr. 30, 76532 Baden-Baden",
+    "DC Nightlife Hornets 3": "Eventhaus Nightlife, Daimlerstr. 1, 76316 Malsch",
+    "DC Phönix Madhouse": "Phönix Stube, Grenzstr. 78, 76448 Durmersheim",
+    "Dart Club Rheinau 2024 e.V. 1": "Sporthaus Freistett, Am Friedrich Stephan Stadion 1, 77866 Rheinau Freistett",
+    "Rastatter SC/DJK Surrounders 3": "Hotel Brückenhof, Richard-Wagner-Ring 61, 76437 Rastatt",
+    "SC Eisental Darts 1": "Clubhaus SC Eisental, Engertweg 12, 77815 Bühl"
   }
 }
