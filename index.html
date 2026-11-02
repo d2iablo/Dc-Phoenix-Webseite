@@ -9,6 +9,7 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#100E0C;--card:#1B1814;--fg:#F2E6C9;--mute:#A89E88;--line:#2E2921;--navy:#0A0908;--own:#40211A;--win:#4CC083;--loss:#F0745F;--warn:#3B3210;--warn-fg:#F3DE8A;--board:#0F1B14;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#100E0C;--card:#1B1814;--fg:#F2E6C9;--mute:#A89E88;--line:#2E2921;--navy:#0A0908;--own:#40211A;--win:#4CC083;--loss:#F0745F;--warn:#3B3210;--warn-fg:#F3DE8A;--board:#0F1B14;color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
 h1,h2,h3{font-family:Impact,"Arial Narrow","Helvetica Neue Condensed",system-ui,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.05em;margin:0;text-wrap:balance}
@@ -58,6 +59,26 @@ dt{color:var(--mute);text-transform:uppercase;letter-spacing:.08em;font-size:.78
 .todo{color:var(--mute);font-style:italic}
 footer{border-top:1px solid var(--line);padding-block:16px calc(24px + env(safe-area-inset-bottom,0px));color:var(--mute);font-size:.85rem;display:flex;flex-wrap:wrap;gap:6px 18px}
 .err{color:var(--loss)}
+
+.lead p{margin:0;font-size:1.1rem}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.fact{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--flame);border-radius:10px;padding:12px}
+.fact small{display:block;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;font-size:.72rem}
+.fact b{display:block;font-size:1.05rem;margin-top:2px;overflow-wrap:anywhere}
+.teams{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.tc{display:block;text-decoration:none;background:var(--card);border:2px solid var(--fg);border-radius:12px;padding:14px;color:var(--fg)}
+.tc:hover,.tc:focus-visible{border-color:var(--flame)}
+.tc h3{font-size:1.3rem;margin-bottom:4px}
+.tc span{color:var(--mute);font-size:.9rem;display:block}
+.tc .go{color:var(--flame);font-weight:700;margin-top:8px}
+.teamhead h2{font-size:1.9rem}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;margin-top:-10px}
+.tabs a{font:inherit;font-weight:700;padding:9px 16px;border-radius:999px;border:2px solid var(--fg);background:var(--card);color:var(--fg);text-decoration:none}
+.tabs a[aria-current="page"]{background:var(--flame);border-color:var(--flame);color:#fff}
+#vStart,#vTeam{display:grid;gap:30px}
+.fix li.two{grid-template-columns:auto 1fr}
+.dd2{color:var(--flame);font-weight:700}
+.teamhead h2::before{display:none}
 #links{display:flex;gap:16px;flex-wrap:wrap}
 </style>
 </head>
@@ -69,11 +90,23 @@ footer{border-top:1px solid var(--line);padding-block:16px calc(24px + env(safe-
 <div class="banner" id="entwurf" hidden><div class="wrap">Entwurf eines Vereinsmitglieds, noch nicht vom Verein freigegeben.</div></div>
 
 <main class="wrap">
-<div class="tabs" id="tabs" role="group" aria-label="Team wählen" hidden></div>
+<nav class="tabs" id="tabs" aria-label="Bereiche"></nav>
+
+<div id="vStart" hidden>
+<section><div class="card lead"><p id="beschr"></p></div></section>
+<section><h2>Auf einen Blick</h2><div class="facts" id="facts"></div></section>
+<section><h2>Unsere Teams</h2><div class="teams" id="teamCards"></div></section>
+<section><h2>Nächste Spiele</h2><ul class="fix" id="nextAll"></ul></section>
+<section><h2>Vorstand</h2><div class="card"><dl id="vorstand"></dl></div></section>
+<section><h2>Mitmachen</h2><div class="card"><p id="willkommen"></p><dl id="info"></dl></div></section>
+</div>
+
+<div id="vTeam" hidden>
+<section><div class="teamhead"><h2 id="tName"></h2><p class="todo" id="tLiga"></p></div></section>
 <section class="next" aria-live="polite"><h2>Nächstes Spiel</h2><div class="card" id="next">Lade …</div></section>
 <section><h2>Spielplan</h2><ul class="fix" id="fix"></ul></section>
-<section><h2>Tabelle</h2><div class="scroll"><table id="tbl"></table></div><p class="todo" id="liga"></p></section>
-<section><h2>Mitmachen</h2><div class="card"><dl id="info"></dl></div></section>
+<section><h2>Tabelle</h2><div class="scroll"><table id="tbl"></table></div></section>
+</div>
 </main>
 
 <footer class="wrap"><span id="upd"></span><span id="links"></span></footer>
@@ -81,103 +114,124 @@ footer{border-top:1px solid var(--line);padding-block:16px calc(24px + env(safe-
 <script>
 (function(){
 "use strict";
-var CFG=null,DATA=null,cur=0;
+var CFG=null,DATA=null,views=[];
 var $=function(id){return document.getElementById(id)};
 function el(tag,txt,cls){var e=document.createElement(tag);if(txt!=null)e.textContent=txt;if(cls)e.className=cls;return e}
 function norm(s){return String(s||"").trim().toLowerCase()}
+function slug(s){return norm(s).replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}
 function fmtDate(iso){var p=iso.split("-");var d=new Date(+p[0],+p[1]-1,+p[2]);
   return d.toLocaleDateString("de-DE",{weekday:"short",day:"2-digit",month:"2-digit",year:"numeric"})}
 function when(f){var p=f.datum.split("-"),t=(f.zeit||"20:00").split(":");
   return new Date(+p[0],+p[1]-1,+p[2],+t[0]||20,+t[1]||0)}
 function safeUrl(u){return /^https?:\/\//i.test(u||"")?u:null}
 function getJSON(u){return fetch(u,{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error(u+" "+r.status);return r.json()})}
+function nextOf(t){
+  var now=Date.now(),fx=(t.fixtures||[]).slice().sort(function(a,b){return a.datum<b.datum?-1:1}),n=null;
+  fx.forEach(function(f){if(!n&&!f.ergebnis&&when(f).getTime()+4*3600e3>now)n=f});return n}
+function daysTo(f){var now=new Date(),p=f.datum.split("-");
+  return Math.round((new Date(+p[0],+p[1]-1,+p[2])-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5)}
+function dayTxt(d){return d<=0?"Heute!":d===1?"Morgen":"In "+d+" Tagen"}
+function rank(t){var r=(t.table||[]).filter(function(x){return norm(x.team)===norm(t.name)})[0];return r?r:null}
+function vsText(f){return f.heim?f.heim+" – "+f.gast:"Gegner folgt"}
+function fillRow(dl,k,val,link){
+  dl.appendChild(el("dt",k));var dd=el("dd");
+  if(val){var u=link&&safeUrl(val);if(u){var a=el("a",val);a.href=u;a.target="_blank";a.rel="noopener";dd.appendChild(a)}else dd.textContent=val}
+  else dd.appendChild(el("span","folgt","todo"));dl.appendChild(dd)}
 
-function team(){return DATA.teams[cur]}
-function render(){
-  var t=team(),own=norm(t.name);
+function renderTeam(t){
+  var own=norm(t.name);
+  $("tName").textContent=t.name;
+  $("tLiga").textContent=t.liga_name+" · Badische Dart Liga";
   var fx=(t.fixtures||[]).slice().sort(function(a,b){return a.datum<b.datum?-1:1});
-  var now=new Date(),next=null;
-  fx.forEach(function(f){if(!next&&!f.ergebnis&&when(f).getTime()+4*3600e3>now.getTime())next=f});
-  var n=$("next");n.textContent="";
+  var next=nextOf(t),n=$("next");n.textContent="";n.className="card";
   if(next){
-    n.appendChild(el("div",t.name+" · "+(next.spieltag?next.spieltag+". Spieltag":"Spieltag"),"lbl"));
-    var vs=next.heim?(next.heim+"  –  "+next.gast):"Gegner folgt";
-    n.appendChild(el("div",vs,"vs"));
+    n.appendChild(el("div",(next.spieltag?next.spieltag+". Spieltag":"Spieltag"),"lbl"));
+    n.appendChild(el("div",vsText(next),"vs"));
     n.appendChild(el("div",fmtDate(next.datum)+(next.heim?" · "+(next.zeit||"20:00")+" Uhr":"")));
-    var days=Math.round((new Date(+next.datum.slice(0,4),+next.datum.slice(5,7)-1,+next.datum.slice(8,10))-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5);
-    n.appendChild(el("div",days<=0?"Heute!":days===1?"Morgen":"In "+days+" Tagen","cd"));
+    n.appendChild(el("div",dayTxt(daysTo(next)),"cd"));
   }else n.textContent="Aktuell ist kein Spiel angesetzt.";
-
   var ul=$("fix");ul.textContent="";
   if(!fx.length)ul.appendChild(el("li","Der Spielplan folgt."));
   fx.forEach(function(f){
     var li=document.createElement("li");
     var d=el("div",null,"d");d.appendChild(document.createTextNode(fmtDate(f.datum)));
     d.appendChild(el("small",f.heim?(f.zeit||"20:00")+" Uhr":""));
-    var m=el("div",f.heim?f.heim+" – "+f.gast:"Gegner folgt","m");
     var r=el("div","","r n");
-    if(f.ergebnis){
-      r.textContent=f.ergebnis[0]+" : "+f.ergebnis[1];
+    if(f.ergebnis){r.textContent=f.ergebnis[0]+" : "+f.ergebnis[1];
       var home=norm(f.heim)===own,mine=home?f.ergebnis[0]:f.ergebnis[1],opp=home?f.ergebnis[1]:f.ergebnis[0];
-      r.className="r "+(mine>opp?"w":mine<opp?"l":"n");li.className="past";
-    }else r.textContent="–";
-    li.appendChild(d);li.appendChild(m);li.appendChild(r);ul.appendChild(li);
-  });
-
+      r.className="r "+(mine>opp?"w":mine<opp?"l":"n");li.className="past"}
+    else r.textContent="–";
+    li.appendChild(d);li.appendChild(el("div",vsText(f),"m"));li.appendChild(r);ul.appendChild(li)});
   var tb=$("tbl");tb.textContent="";
+  if(!(t.table||[]).length){tb.appendChild(el("caption","Die Tabelle folgt."));return}
   var th=document.createElement("thead"),hr=document.createElement("tr");
-  [["#",""],["Team",""],["Sp",""],["G","hide-s"],["U","hide-s"],["V","hide-s"],["Sets","hide-s"],["Legs","hide-s"],["Pkt",""]].forEach(function(c){var h=el("th",c[0],c[1]);hr.appendChild(h)});
+  [["#",""],["Team",""],["Sp",""],["G","hide-s"],["U","hide-s"],["V","hide-s"],["Sets","hide-s"],["Legs","hide-s"],["Pkt",""]].forEach(function(c){hr.appendChild(el("th",c[0],c[1]))});
   th.appendChild(hr);tb.appendChild(th);
   var tbd=document.createElement("tbody");
-  (t.table||[]).forEach(function(r){
+  t.table.forEach(function(r){
     var tr=document.createElement("tr");if(norm(r.team)===own)tr.className="own";
     [[r.platz,""],[r.team,""],[r.spiele,""],[r.g,"hide-s"],[r.u,"hide-s"],[r.v,"hide-s"],[r.sets,"hide-s"],[r.legs,"hide-s"],[r.punkte,""]].forEach(function(c){tr.appendChild(el("td",c[0],c[1]))});
-    tbd.appendChild(tr);
-  });
-  tb.appendChild(tbd);
-  $("liga").textContent=(t.table&&t.table.length)?t.liga_name+" · Badische Dart Liga":"Tabelle folgt.";
-}
+    tbd.appendChild(tr)});
+  tb.appendChild(tbd)}
+
+function renderStart(){
+  var v=CFG.verein;
+  $("beschr").textContent=v.beschreibung||(v.name+" ist ein Dartverein aus "+(v.ort||"der Region")+" und spielt in der Badischen Dart Liga.");
+  var f=$("facts");f.textContent="";
+  [["Verein",v.name],["Ort",v.ort],["Gegründet",v.gegruendet],["Teams",String(DATA.teams.length)],["Training",v.training],["Spieltag","freitags, 20 Uhr"]].forEach(function(p){
+    var d=el("div",null,"fact");d.appendChild(el("small",p[0]));d.appendChild(el("b",p[1]||"folgt"));f.appendChild(d)});
+  var tc=$("teamCards");tc.textContent="";
+  DATA.teams.forEach(function(t){
+    var a=el("a",null,"tc");a.href="#"+t.slug;
+    a.appendChild(el("h3",t.name));a.appendChild(el("span",t.liga_name));
+    var r=rank(t);a.appendChild(el("span",r?"Platz "+r.platz+" · "+r.punkte+" Punkte":"Tabelle folgt"));
+    a.appendChild(el("div","Zum Team →","go"));tc.appendChild(a)});
+  var na=$("nextAll");na.textContent="";
+  var any=false;
+  DATA.teams.forEach(function(t){var n=nextOf(t);if(!n)return;any=true;
+    var li=document.createElement("li");
+    var d=el("div",null,"d");d.appendChild(document.createTextNode(fmtDate(n.datum)));d.appendChild(el("small",n.heim?(n.zeit||"20:00")+" Uhr":""));
+    var m=el("div",null,"m");m.appendChild(el("b",t.name));m.appendChild(el("div",vsText(n)));
+    m.appendChild(el("div",dayTxt(daysTo(n)),"dd2"));li.appendChild(d);li.appendChild(m);li.className="two";na.appendChild(li)});
+  if(!any)na.appendChild(el("li","Aktuell sind keine Spiele angesetzt."));
+  var vs=$("vorstand");vs.textContent="";
+  if(v.vorstand&&v.vorstand.length)v.vorstand.forEach(function(p){fillRow(vs,p.rolle,p.name)});
+  else vs.appendChild(el("span","Der Vorstand wird noch eingetragen.","todo"));
+  $("willkommen").textContent=v.willkommen||"Interesse am Dartspielen? Schau beim Training vorbei oder melde dich über die Kontaktdaten.";
+  var dl=$("info");dl.textContent="";
+  fillRow(dl,"Training",v.training);fillRow(dl,"Spiellokal",v.spiellokal);fillRow(dl,"Kontakt",v.kontakt);
+  fillRow(dl,"Instagram",v.instagram,true);fillRow(dl,"Facebook",v.facebook,true)}
+
+function route(){
+  var h=(location.hash||"#start").slice(1),t=null;
+  DATA.teams.forEach(function(x){if(x.slug===h)t=x});
+  $("vStart").hidden=!!t;$("vTeam").hidden=!t;
+  if(t)renderTeam(t);else renderStart();
+  Array.prototype.forEach.call($("tabs").children,function(a){
+    if(a.getAttribute("href")==="#"+(t?t.slug:"start"))a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  document.title=(t?t.name+" · ":"")+CFG.verein.name;
+  window.scrollTo(0,0)}
 
 function init(){
   var v=CFG.verein;
-  $("vname").textContent=v.name;document.title=v.name;
-  $("vsub").textContent="Dart"+(v.ort?" · "+v.ort:"");
+  DATA.teams.forEach(function(t,i){var c=CFG.teams[i]||{};t.slug=slug(c.slug||t.name.replace(/^dc ph(ö|oe)nix\s*/i,"")||t.name)||("team"+i)});
+  $("vname").textContent=v.name;$("vsub").textContent="Dart"+(v.ort?" · "+v.ort:"");
   $("entwurf").hidden=!v.entwurf;
-  var lg=$("logo");
-  if(v.logo){lg.onload=function(){lg.hidden=false};lg.onerror=function(){lg.hidden=true};lg.src=v.logo}
-  var dl=$("info");
-  function row(k,val,link){
-    dl.appendChild(el("dt",k));
-    var dd=el("dd");
-    if(val){var u=link&&safeUrl(val);if(u){var a=el("a",val);a.href=u;a.target="_blank";a.rel="noopener";dd.appendChild(a)}else dd.textContent=val}
-    else dd.appendChild(el("span","folgt","todo"));
-    dl.appendChild(dd);
-  }
-  row("Training",v.training);row("Spieltag","freitags, regulär 20 Uhr");row("Spiellokal",v.spiellokal);
-  row("Kontakt",v.kontakt);row("Instagram",v.instagram,true);row("Facebook",v.facebook,true);
+  var lg=$("logo");if(v.logo){lg.onload=function(){lg.hidden=false};lg.onerror=function(){lg.hidden=true};lg.src=v.logo}
+  var tabs=$("tabs");
+  [["Start","start"]].concat(DATA.teams.map(function(t){return [t.name.replace(/^DC Phönix\s*/i,"")||t.name,t.slug]})).forEach(function(p){
+    var a=el("a",p[0]);a.href="#"+p[1];tabs.appendChild(a)});
   var lk=$("links");
   [["Impressum",v.impressum],["Datenschutz",v.datenschutz]].forEach(function(p){
     var u=safeUrl(p[1])||(p[1]&&/^[\w.\-\/]+$/.test(p[1])?p[1]:null);
-    if(u){var a=el("a",p[0]);a.href=u;lk.appendChild(a);lk.appendChild(document.createTextNode(" "))}
-    else lk.appendChild(el("span",p[0]+" folgt"," "));
-  });
+    if(u){var a=el("a",p[0]);a.href=u;lk.appendChild(a)}else lk.appendChild(el("span",p[0]+" folgt"))});
   var u=DATA.updated?new Date(DATA.updated):null;
   $("upd").textContent=u&&!isNaN(u)?"Stand: "+u.toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"}):"";
-  var tabs=$("tabs");
-  if(DATA.teams.length>1){
-    tabs.hidden=false;
-    DATA.teams.forEach(function(t,i){
-      var b=el("button",t.name);b.type="button";b.setAttribute("aria-pressed",i===cur);
-      b.onclick=function(){cur=i;Array.prototype.forEach.call(tabs.children,function(x,j){x.setAttribute("aria-pressed",j===i)});render()};
-      tabs.appendChild(b);
-    });
-  }
-  render();
-}
+  window.addEventListener("hashchange",route);route()}
 
 Promise.all([getJSON("config.json"),getJSON("data.json")]).then(function(r){CFG=r[0];DATA=r[1];
   if(!DATA.teams||!DATA.teams.length)throw new Error("keine Teams");init()})
-.catch(function(e){var n=$("next");n.textContent="Daten konnten nicht geladen werden.";n.className="card err";console.error(e)});
+.catch(function(e){var m=document.querySelector("main");m.textContent="Daten konnten nicht geladen werden.";m.className="wrap err";console.error(e)});
 })();
 </script>
 </body>

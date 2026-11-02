@@ -10,9 +10,22 @@
     "logo": "logo.png",
     "impressum": "",
     "datenschutz": "",
-    "entwurf": true
+    "entwurf": true,
+    "gegruendet": "",
+    "beschreibung": "",
+    "willkommen": "",
+    "vorstand": []
   },
   "teams": [
-    { "name": "DC Phönix Highrider", "liga": "kl1", "liga_name": "Kreisliga 1" }
+    {
+      "name": "DC Phönix Madhouse",
+      "liga": "kbz4",
+      "liga_name": "Kreisbezirksliga 4"
+    },
+    {
+      "name": "DC Phönix Highrider",
+      "liga": "kl1",
+      "liga_name": "Kreisliga 1"
+    }
   ]
 }
