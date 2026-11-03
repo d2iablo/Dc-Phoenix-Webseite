@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>DC Phönix Durmersheim</title>
 <style>
-:root{--bg:#F2E6C9;--card:#FFFBF0;--fg:#14110F;--mute:#6A6150;--line:#D9CCAA;--navy:#14110F;--flame:#D8342A;--flame-fg:#fff;--green:#1F7A4D;--own:#F9D9C9;--win:#1F7A4D;--loss:#C0301F;--warn:#FFE9A8;--warn-fg:#5A4500;--board:#16251C;--board-fg:#F2E6C9}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#100E0C;--card:#1B1814;--fg:#F2E6C9;--mute:#A89E88;--line:#2E2921;--navy:#0A0908;--own:#40211A;--win:#4CC083;--loss:#F0745F;--warn:#3B3210;--warn-fg:#F3DE8A;--board:#0F1B14;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#100E0C;--card:#1B1814;--fg:#F2E6C9;--mute:#A89E88;--line:#2E2921;--navy:#0A0908;--own:#40211A;--win:#4CC083;--loss:#F0745F;--warn:#3B3210;--warn-fg:#F3DE8A;--board:#0F1B14;color-scheme:dark}
+:root{--bg:#F4EBD6;--card:#FBF6E9;--fg:#17120E;--mute:#6B5F4C;--line:#D8CBAE;--navy:#15110D;--flame:#8F5F26;--flame-fg:#fff;--green:#3C3731;--own:#EBD9B4;--win:#2F6B3F;--loss:#A33B2A;--warn:#FFE9A8;--warn-fg:#5A4500;--board:#1B1611;--board-fg:#F4EBD6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#100D0A;--card:#1C1814;--fg:#F4EBD6;--mute:#B0A48C;--line:#2F2820;--navy:#0A0806;--flame:#C9954F;--flame-fg:#15110D;--green:#CFC3A8;--own:#3A2D1B;--win:#6CC184;--loss:#F0745F;--warn:#3B3210;--warn-fg:#F3DE8A;--board:#0E0B08;--board-fg:#F4EBD6;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#100D0A;--card:#1C1814;--fg:#F4EBD6;--mute:#B0A48C;--line:#2F2820;--navy:#0A0806;--flame:#C9954F;--flame-fg:#15110D;--green:#CFC3A8;--own:#3A2D1B;--win:#6CC184;--loss:#F0745F;--warn:#3B3210;--warn-fg:#F3DE8A;--board:#0E0B08;--board-fg:#F4EBD6;color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
@@ -15,7 +15,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-appl
 h1,h2,h3{font-family:Impact,"Arial Narrow","Helvetica Neue Condensed",system-ui,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.05em;margin:0;text-wrap:balance}
 a{color:inherit}
 .wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-header{position:relative;overflow:hidden;background:var(--navy);color:#F2E6C9;padding-block:calc(26px + env(safe-area-inset-top,0px)) 34px;border-bottom:6px solid var(--flame);box-shadow:0 6px 0 var(--green)}
+header{position:relative;overflow:hidden;background:var(--navy) radial-gradient(circle at 12% 30%,rgba(201,149,79,.18),transparent 55%);color:#F2E6C9;padding-block:calc(26px + env(safe-area-inset-top,0px)) 34px;border-bottom:6px solid var(--flame);box-shadow:0 6px 0 var(--green)}
 .board{position:absolute;right:-70px;top:50%;width:300px;height:300px;transform:translateY(-50%) rotate(12deg);opacity:.95}
 .hero{position:relative}
 .brand{display:flex;align-items:center;gap:16px;min-width:0;max-width:calc(100% - 90px)}
@@ -31,10 +31,10 @@ h2::before{content:"";width:22px;height:22px;flex:none;border-radius:50%;backgro
 .tabs button{font:inherit;font-weight:700;padding:9px 16px;border-radius:999px;border:2px solid var(--fg);background:var(--card);color:var(--fg);cursor:pointer}
 .tabs button[aria-pressed="true"]{background:var(--flame);border-color:var(--flame);color:var(--flame-fg)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
-.next .card{background:var(--board);color:var(--board-fg);border:3px solid #5A4630;border-radius:14px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.06);padding:20px}
+.next .card{background:var(--board);color:var(--board-fg);border:3px solid #7A6240;border-radius:14px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.06);padding:20px}
 .next .lbl{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
 .next .vs{font-family:Impact,"Arial Narrow",system-ui,sans-serif;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(1.4rem,6vw,2rem);line-height:1.15;margin:8px 0;overflow-wrap:anywhere}
-.next .cd{display:inline-block;margin-top:10px;background:var(--flame);color:#fff;font-family:Impact,"Arial Narrow",system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;font-size:1.2rem;padding:4px 14px;border-radius:6px}
+.next .cd{display:inline-block;margin-top:10px;background:var(--flame);color:var(--flame-fg);font-family:Impact,"Arial Narrow",system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;font-size:1.2rem;padding:4px 14px;border-radius:6px}
 .next .card.err{color:var(--loss)}
 .fix{display:grid;gap:8px;padding:0;margin:0;list-style:none}
 .fix li{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:center;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--green);border-radius:10px;padding:10px 12px}
@@ -74,13 +74,13 @@ footer{border-top:1px solid var(--line);padding-block:16px calc(24px + env(safe-
 .teamhead h2{font-size:1.9rem}
 .tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;margin-top:-10px}
 .tabs a{font:inherit;font-weight:700;padding:9px 16px;border-radius:999px;border:2px solid var(--fg);background:var(--card);color:var(--fg);text-decoration:none}
-.tabs a[aria-current="page"]{background:var(--flame);border-color:var(--flame);color:#fff}
+.tabs a[aria-current="page"]{background:var(--flame);border-color:var(--flame);color:var(--flame-fg)}
 #vStart,#vTeam{display:grid;gap:30px}
 .fix li.two{grid-template-columns:auto 1fr}
 .dd2{color:var(--flame);font-weight:700}
 .teamhead h2::before{display:none}
 .pill{display:inline-block;font-family:Arial,system-ui,sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:1px 8px;border-radius:999px;margin-right:8px;vertical-align:middle;line-height:1.5}
-.pill.h{background:var(--green);color:#fff}
+.pill.h{background:var(--green);color:var(--card)}
 .pill.g{background:transparent;color:var(--flame);border:1.5px solid var(--flame)}
 .ven{font-size:.9rem;margin-top:4px;color:var(--mute)}
 .next .ven{color:var(--board-fg);opacity:.85}
@@ -88,7 +88,7 @@ footer{border-top:1px solid var(--line);padding-block:16px calc(24px + env(safe-
 </style>
 </head>
 <body>
-<header><svg class="board" viewBox="-100 -100 200 200" aria-hidden="true"><circle r="100" fill="#14110F"/><circle r="86" fill="none" stroke="#D8342A" stroke-width="10"/><circle r="86" fill="none" stroke="#1F7A4D" stroke-width="10" stroke-dasharray="27.02 27.02" transform="rotate(-9)"/><circle r="70" fill="none" stroke="#F2E6C9" stroke-width="22"/><circle r="70" fill="none" stroke="#14110F" stroke-width="22" stroke-dasharray="21.99 21.99" transform="rotate(-9)"/><circle r="54" fill="none" stroke="#D8342A" stroke-width="9"/><circle r="54" fill="none" stroke="#1F7A4D" stroke-width="9" stroke-dasharray="16.96 16.96" transform="rotate(-9)"/><circle r="40" fill="none" stroke="#14110F" stroke-width="20"/><circle r="40" fill="none" stroke="#F2E6C9" stroke-width="20" stroke-dasharray="12.57 12.57" transform="rotate(-9)"/><circle r="14" fill="#1F7A4D"/><circle r="6" fill="#D8342A"/></svg><div class="wrap hero"><div class="brand">
+<header><svg class="board" viewBox="-100 -100 200 200" aria-hidden="true"><circle r="100" fill="#15110D"/><circle r="86" fill="none" stroke="#B08A55" stroke-width="10"/><circle r="86" fill="none" stroke="#5E5445" stroke-width="10" stroke-dasharray="27.02 27.02" transform="rotate(-9)"/><circle r="70" fill="none" stroke="#E9DDBF" stroke-width="22"/><circle r="70" fill="none" stroke="#15110D" stroke-width="22" stroke-dasharray="21.99 21.99" transform="rotate(-9)"/><circle r="54" fill="none" stroke="#B08A55" stroke-width="9"/><circle r="54" fill="none" stroke="#5E5445" stroke-width="9" stroke-dasharray="16.96 16.96" transform="rotate(-9)"/><circle r="40" fill="none" stroke="#15110D" stroke-width="20"/><circle r="40" fill="none" stroke="#E9DDBF" stroke-width="20" stroke-dasharray="12.57 12.57" transform="rotate(-9)"/><circle r="14" fill="#5E5445"/><circle r="6" fill="#B08A55"/></svg><div class="wrap hero"><div class="brand">
 <img id="logo" alt="Vereinslogo" hidden>
 <div><h1 id="vname">DC Phönix Durmersheim</h1><small id="vsub">Dart</small></div>
 </div></div></header>
