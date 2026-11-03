@@ -187,7 +187,7 @@ td.pn small{display:block;color:var(--mute);font-weight:400;font-size:.75rem}
 <section><div class="teamhead"><h1>Spieler</h1><p>Ranking aus der BDL-Statistik und den Spielberichten</p></div></section>
 <section><h2>Highlights</h2><div class="hl" id="pHigh"></div></section>
 <section><h2>Ranking</h2><div class="ctl"><div class="chips" id="pTeam"></div><div class="chips" id="pSort"></div></div>
-<div class="scroll" style="margin-top:12px"><table id="pTbl"></table></div><p class="pnote" id="pNote"></p></section>
+<div class="scroll" style="margin-top:12px"><table id="pTbl"></table></div><p class="pnote" id="pNote"></p><p class="pnote" id="pDiag"></p></section>
 </div>
 
 <div id="vTeam" hidden>
@@ -311,6 +311,11 @@ function renderPlayers(){
   list.sort(function(a,b){var k=PS.sort;
     if(k==="q"){var x=a.q==null?-1:a.q,y=b.q==null?-1:b.q;return y-x||b.g-a.g||b.pts-a.pts}
     return (b[k]||0)-(a[k]||0)||b.pts-a.pts||a.name.localeCompare(b.name)});
+  var dg=[];DATA.teams.forEach(function(t){var pl=(t.fixtures||[]).filter(function(f){return f.ergebnis}),wr=pl.filter(function(f){return f.id&&DATA.reports&&DATA.reports[f.id]});
+    dg.push(t.name.replace(/^DC Phönix\s*/i,"")+": "+wr.length+" von "+pl.length+" gespielten Spielen mit eingelesenem Spielbericht")});
+  var dgt="Spielberichte – "+dg.join(" · ")+".";
+  if(/[?&]debug/.test(location.search)&&DATA.notes&&DATA.notes.length)dgt+=" Hinweise: "+DATA.notes.join(" | ");
+  $("pDiag").textContent=dgt;
   var tb=$("pTbl");tb.textContent="";
   if(!list.length){tb.appendChild(el("caption","Noch keine Spielerdaten. Sie erscheinen nach dem nächsten automatischen Update."));$("pNote").textContent="";return}
   var th=document.createElement("thead"),hr=document.createElement("tr");

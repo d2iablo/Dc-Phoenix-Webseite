@@ -394,6 +394,8 @@ def main():
         cutoff = (datetime.now(timezone.utc) - timedelta(days=7)).strftime("%Y-%m-%d")
         for f in entry["fixtures"]:
             url = f.get("bericht")
+            if f.get("ergebnis") and not url:
+                notes.append("Kein Bericht-Link: %s" % f.get("id"))
             if not url or not f.get("id"):
                 continue
             recent = f["datum"] >= cutoff
@@ -410,7 +412,7 @@ def main():
             except Exception as e:  # noqa: BLE001
                 notes.append("Spielbericht %s: %s" % (f["id"], e))
 
-    data = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "teams": teams, "reports": reports}
+    data = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "teams": teams, "reports": reports, "notes": notes[:30]}
     with open(args.data, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
         f.write("\n")
