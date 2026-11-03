@@ -62,7 +62,7 @@ class Collector(HTMLParser):
                 self._row.links.append(href)
         elif tag in ("td", "th") and self._row is not None:
             self._cell = []
-        elif tag == "br" and self._cell is not None:
+        elif tag in ("br", "div", "p", "li") and self._cell is not None:
             self._cell.append("\n" if self.keepbr else " ")
 
     def handle_endtag(self, tag):
@@ -219,6 +219,15 @@ def slugify(s):
     return re.sub(r"[^a-z0-9]+", "-", norm(s).replace("ö", "oe").replace("ä", "ae").replace("ü", "ue").replace("ß", "ss")).strip("-")
 
 
+def split_names(cell):
+    out = []
+    for part in cell.split("\n"):
+        for n in re.split(r"\s*(?:/|&|\s\+\s)\s*", part):
+            if n.strip():
+                out.append(n.strip())
+    return out
+
+
 def vals(s):
     """'125' -> [125]; '14\n16' -> [14, 16]; '' -> []"""
     return [to_int(x) for x in (s or "").split("\n")] if (s or "").strip() else []
@@ -269,7 +278,7 @@ def parse_report(html):
             left = [""] * (3 - len(left)) + left
             right = list(r[ri + 1:ri + 4])
             right = right + [""] * (3 - len(right))
-            hn, gn = r[li].split("\n"), r[ri].split("\n")
+            hn, gn = split_names(r[li]), split_names(r[ri])
             m = SCORE_RE.match(r[idx])
             games.append({
                 "typ": "Doppel" if len(hn) > 1 or len(gn) > 1 else "Einzel",
@@ -396,7 +405,7 @@ def main():
             url = f.get("bericht")
             if f.get("ergebnis") and not url:
                 notes.append("Kein Bericht-Link: %s" % f.get("id"))
-            if not url or not f.get("id"):
+            if not url or not f.get("id") or not f.get("ergebnis"):
                 continue
             recent = f["datum"] >= cutoff
             if f["id"] in reports and not recent:

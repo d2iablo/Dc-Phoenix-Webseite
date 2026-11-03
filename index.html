@@ -270,16 +270,20 @@ function buildStats(){
   DATA.teams.forEach(function(t){(t.players||[]).forEach(function(x){
     var tn=own[norm(x.team)];if(!tn)return;var p=get(x.name,tn);if(!p)return;
     p.official=true;p.ew=x.einzel||0;p.dw=x.doppel||0;p.hfc=x.hf||0;p.slc=x.sl||0;p.maxc=x.max||0})});
+  var known=[];
+  DATA.teams.forEach(function(t){(t.players||[]).forEach(function(x){if(own[norm(x.team)]&&hide.indexOf(norm(x.name))<0){var k=norm(x.name).replace(/\s+/g," "),w=k.split(" "),alt=w.length>1?w[w.length-1]+", "+w.slice(0,-1).join(" "):k;known.push({ks:[k,alt],name:x.name,team:own[norm(x.team)]})}})});
   Object.keys(DATA.reports||{}).forEach(function(id){
     var r=DATA.reports[id];
     [["heim","h"],["gast","g"]].forEach(function(s){
       var tn=own[norm(r[s[0]])];if(!tn)return;
       (r.spiele||[]).forEach(function(g){
         var mine=s[0]==="heim"?g.ergebnis[0]:g.ergebnis[1],opp=s[0]==="heim"?g.ergebnis[1]:g.ergebnis[0],names=g[s[0]];
-        names.forEach(function(n,i){
+        var text=norm(names.join(" ")).replace(/\s+/g," "),found=known.filter(function(x){return x.team===tn&&x.ks.some(function(k){return text.indexOf(k)>=0})}),
+            dbl=g.typ==="Doppel"||found.length>=2,list=found.length?found.map(function(x){return x.name}):names;
+        list.forEach(function(n,i){
           var p=get(n,tn);if(!p)return;
-          if(g.typ==="Doppel"){p.gd++;if(mine>opp)p.rdw++}else{p.ge++;if(mine>opp)p.rew++;
-            var v=pv(g[s[1]],i,names.length);if(v.hf!=null)p.rhf++;if(v.sl!=null)p.rsl++;if(v.max!=null)p.rmx+=(v.max<=20?v.max:1)}})})})});
+          if(dbl){p.gd++;if(mine>opp)p.rdw++}else{p.ge++;if(mine>opp)p.rew++;
+            var v=list.length===names.length?pv(g[s[1]],i,names.length):{};if(v.hf!=null)p.rhf++;if(v.sl!=null)p.rsl++;if(v.max!=null)p.rmx+=(v.max<=20?v.max:1)}})})})});
   var comp={};
   DATA.teams.forEach(function(t){var played=(t.fixtures||[]).filter(function(f){return f.ergebnis});
     comp[t.name]=played.length>0&&played.every(function(f){return f.id&&DATA.reports&&DATA.reports[f.id]})});
@@ -313,7 +317,9 @@ function renderPlayers(){
     return (b[k]||0)-(a[k]||0)||b.pts-a.pts||a.name.localeCompare(b.name)});
   var dg=[];DATA.teams.forEach(function(t){var pl=(t.fixtures||[]).filter(function(f){return f.ergebnis}),wr=pl.filter(function(f){return f.id&&DATA.reports&&DATA.reports[f.id]});
     dg.push(t.name.replace(/^DC Phönix\s*/i,"")+": "+wr.length+" von "+pl.length+" gespielten Spielen mit eingelesenem Spielbericht")});
+  var bad=all.filter(function(p){return (p.ge+p.gd)<p.w}).map(function(p){return p.name+" ("+p.w+" Siege, "+(p.ge+p.gd)+" Spiele in Berichten)"});
   var dgt="Spielberichte – "+dg.join(" · ")+".";
+  if(bad.length&&/[?&]debug/.test(location.search))dgt+=" Unstimmig: "+bad.join("; ")+".";
   if(/[?&]debug/.test(location.search)&&DATA.notes&&DATA.notes.length)dgt+=" Hinweise: "+DATA.notes.join(" | ");
   $("pDiag").textContent=dgt;
   var tb=$("pTbl");tb.textContent="";
