@@ -2,7 +2,7 @@
   "verein": {
     "name": "DC Phönix Durmersheim",
     "ort": "Durmersheim",
-    "training": "dienstags ab 17 Uhr",
+    "training": "Dienstags & Donnerstags ab 17 Uhr",
     "spiellokal": "Phönix Stube, Grenzstr. 78, 76448 Durmersheim",
     "kontakt": "",
     "instagram": "",
@@ -11,10 +11,10 @@
     "impressum": "",
     "datenschutz": "",
     "entwurf": true,
-    "gegruendet": "",
+    "gegruendet": "2021",
     "beschreibung": "",
     "willkommen": "",
-    "vorstand": [],
+    "vorstand": [Pierre Vandamme],
     "spieler_ausblenden": []
   },
   "teams": [
