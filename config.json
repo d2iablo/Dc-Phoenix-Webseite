@@ -14,7 +14,7 @@
     "gegruendet": "2021",
     "beschreibung": "",
     "willkommen": "",
-    "vorstand": [],
+    "vorstand": [test],
     "spieler_ausblenden": []
   },
   "teams": [
