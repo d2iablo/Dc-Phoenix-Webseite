@@ -14,7 +14,16 @@
     "gegruendet": "2021",
     "beschreibung": "",
     "willkommen": "",
-    "vorstand": [],
+    "vorstand": [
+      {
+        "name": "Max Mustermann",
+        "rolle": "1. Vorsitzender"
+      },
+      {
+        "name": "Erika Musterfrau",
+        "rolle": "Kassenwart"
+      }
+    ],
     "spieler_ausblenden": []
   },
   "teams": [
