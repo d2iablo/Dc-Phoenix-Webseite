@@ -16,12 +16,12 @@
     "willkommen": "",
     "vorstand": [
       {
-        "name": "Max Mustermann",
+        "name": "Pierre Vandamme",
         "rolle": "1. Vorsitzender"
       },
       {
-        "name": "Erika Musterfrau",
-        "rolle": "Kassenwart"
+        "name": "Dominik Piro",
+        "rolle": "2. Vorsitzender"
       }
     ],
     "spieler_ausblenden": []
