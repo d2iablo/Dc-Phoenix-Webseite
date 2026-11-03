@@ -186,7 +186,7 @@ td.pn small{display:block;color:var(--mute);font-weight:400;font-size:.75rem}
 <div id="vPlayers" hidden>
 <section><div class="teamhead"><h1>Spieler</h1><p>Ranking aus der BDL-Statistik und den Spielberichten</p></div></section>
 <section><h2>Highlights</h2><div class="hl" id="pHigh"></div></section>
-<section><h2>Ranking</h2><div class="ctl"><div class="chips" id="pTeam"></div><div class="chips" id="pSort"></div></div>
+<section><h2>Ranking</h2><div class="ctl"><div class="chips" id="pView"></div><div class="chips" id="pTeam"></div><div class="chips" id="pSort"></div></div>
 <div class="scroll" style="margin-top:12px"><table id="pTbl"></table></div><p class="pnote" id="pNote"></p><p class="pnote" id="pDiag"></p></section>
 </div>
 
@@ -298,52 +298,67 @@ function buildStats(){
   return Object.keys(P).map(function(k){var p=P[k];
     if(!p.official){p.ew=p.rew;p.dw=p.rdw;p.hfc=p.rhf;p.slc=p.rsl;p.maxc=p.rmx}
     p.w=p.ew+p.dw;p.pts=2*p.ew+p.dw;
-    p.known=Object.keys(p.teams).every(function(t){return comp[t]})&&(p.ge+p.gd)>=p.w;
+    var cp=Object.keys(p.teams).every(function(t){return comp[t]});
+    p.ke=cp&&p.ge>=p.ew;p.kd=cp&&p.gd>=p.dw;p.known=p.ke&&p.kd;
     p.g=p.known?p.ge+p.gd:0;p.q=p.known&&p.g?p.w/p.g:null;return p})}
-var PS={sort:null,team:"all"};
+var PS={sort:null,team:"all",view:"all"};
 function renderPlayers(){
-  var all=buildStats(),teams=CFG.teams.map(function(t){return t.name});
-  var hasG=all.some(function(p){return p.q!=null});
-  if(!PS.sort)PS.sort=hasG?"q":"pts";
+  var all=buildStats(),teams=CFG.teams.map(function(t){return t.name}),V=PS.view;
+  all.forEach(function(p){
+    if(V==="e"){p.vw=p.ew;p.vk=p.ke;p.vg=p.ke?p.ge:0}
+    else if(V==="d"){p.vw=p.dw;p.vk=p.kd;p.vg=p.kd?p.gd:0}
+    else{p.vw=p.w;p.vk=p.known;p.vg=p.known?p.ge+p.gd:0}
+    p.vq=p.vk&&p.vg?p.vw/p.vg:null});
+  var sk=PS.sort||(all.some(function(p){return p.vq!=null})?"q":"w");
+  if(V==="d"&&["maxc","hfc","slc"].indexOf(sk)>=0)sk="q";
+  if(V!=="all"&&sk==="pts")sk="w";
   var hl=$("pHigh");hl.textContent="";
   function best(label,fn,fmt,list){var b=null;list.forEach(function(p){var v=fn(p);if(v==null)return;if(!b||v>b.k)b={k:v,p:p}});
     var d=el("div",null,"fact");d.appendChild(el("small",label));d.appendChild(el("b",b?fmt(b.p):"–"));d.appendChild(el("span",b?b.p.name:"noch keine Daten"));hl.appendChild(d)}
-  var minG=all.filter(function(p){return p.g>=3});
-  best("Beste Quote",function(p){return p.q==null?null:p.q*1000+p.g},function(p){return Math.round(p.q*100)+" %"},minG.length?minG:all);
-  best("Meiste Siege",function(p){return p.w>0?p.pts:null},function(p){return p.ew+" E · "+p.dw+" D"},all);
+  var minG=all.filter(function(p){return p.vg>=3});
+  var VN=V==="e"?"Einzel":V==="d"?"Doppel":"";
+  best("Beste Quote"+(VN?" "+VN:""),function(p){return p.vq==null?null:p.vq*1000+p.vg},function(p){return Math.round(p.vq*100)+" %"},minG.length?minG:all);
+  best("Meiste Siege"+(VN?" "+VN:""),function(p){return p.vw>0?p.vw*1000+p.pts:null},function(p){return V==="all"?p.ew+" E · "+p.dw+" D":String(p.vw)},all);
   best("Meiste Maximums",function(p){return p.maxc>0?p.maxc:null},function(p){return String(p.maxc)},all);
   best("Meiste High Finishes",function(p){return p.hfc>0?p.hfc:null},function(p){return String(p.hfc)},all);
-  var tc=$("pTeam");tc.textContent="";tc.appendChild(el("small","Team"));
-  [["all","Alle"]].concat(teams.map(function(t){return [t,t.replace(/^DC Phönix\s*/i,"")]})).forEach(function(x){
-    var b=el("button",x[1]);b.type="button";b.setAttribute("aria-pressed",PS.team===x[0]);b.onclick=function(){PS.team=x[0];renderPlayers()};tc.appendChild(b)});
-  var sc=$("pSort");sc.textContent="";sc.appendChild(el("small","Sortieren"));
-  [["q","Quote"],["pts","Punkte"],["w","Siege"],["g","Spiele"],["maxc","Maximums"],["hfc","High Finish"],["slc","Short Leg"]].forEach(function(x){
-    var b=el("button",x[1]);b.type="button";b.setAttribute("aria-pressed",PS.sort===x[0]);b.onclick=function(){PS.sort=x[0];renderPlayers()};sc.appendChild(b)});
+  function chips(id,label,items,key){var c=$(id);c.textContent="";c.appendChild(el("small",label));
+    items.forEach(function(x){var b=el("button",x[1]);b.type="button";b.setAttribute("aria-pressed",PS[key]===x[0]||(key==="sort"&&sk===x[0]));b.onclick=function(){PS[key]=x[0];renderPlayers()};c.appendChild(b)})}
+  chips("pView","Ansicht",[["all","Gesamt"],["e","Einzel"],["d","Doppel"]],"view");
+  chips("pTeam","Team",[["all","Alle"]].concat(teams.map(function(t){return [t,t.replace(/^DC Phönix\s*/i,"")]})),"team");
+  var sorts=[["q","Quote"],["w","Siege"],["g","Spiele"]];
+  if(V==="all")sorts.push(["pts","Punkte"]);
+  if(V!=="d")sorts=sorts.concat([["maxc","Maximums"],["hfc","High Finish"],["slc","Short Leg"]]);
+  chips("pSort","Sortieren",sorts,"sort");
   var list=all.filter(function(p){return PS.team==="all"||p.teams[PS.team]});
-  list.sort(function(a,b){var k=PS.sort;
-    if(k==="q"){var x=a.q==null?-1:a.q,y=b.q==null?-1:b.q;return y-x||b.g-a.g||b.pts-a.pts}
-    return (b[k]||0)-(a[k]||0)||b.pts-a.pts||a.name.localeCompare(b.name)});
+  list.sort(function(a,b){
+    if(sk==="q"){var x=a.vq==null?-1:a.vq,y=b.vq==null?-1:b.vq;return y-x||b.vg-a.vg||b.vw-a.vw}
+    if(sk==="w")return b.vw-a.vw||b.pts-a.pts||a.name.localeCompare(b.name);
+    if(sk==="g")return b.vg-a.vg||b.vw-a.vw;
+    return (b[sk]||0)-(a[sk]||0)||b.pts-a.pts||a.name.localeCompare(b.name)});
   var dg=[];DATA.teams.forEach(function(t){var pl=(t.fixtures||[]).filter(function(f){return f.ergebnis}),wr=pl.filter(function(f){return f.id&&DATA.reports&&DATA.reports[f.id]});
     dg.push(t.name.replace(/^DC Phönix\s*/i,"")+": "+wr.length+" von "+pl.length+" gespielten Spielen mit eingelesenem Spielbericht")});
-  var bad=all.filter(function(p){return (p.ge+p.gd)<p.w}).map(function(p){return p.name+" ("+p.w+" Siege, "+(p.ge+p.gd)+" Spiele in Berichten)"});
+  var bad=all.filter(function(p){return p.ge<p.ew||p.gd<p.dw}).map(function(p){return p.name+" (Einzel "+p.ew+" Siege/"+p.ge+" Spiele, Doppel "+p.dw+" Siege/"+p.gd+" Spiele in Berichten)"});
   var dgt="Spielberichte – "+dg.join(" · ")+".";
-  if(bad.length&&/[?&]debug/.test(location.search))dgt+=" Unstimmig: "+bad.join("; ")+".";
-  if(/[?&]debug/.test(location.search)&&DATA.notes&&DATA.notes.length)dgt+=" Hinweise: "+DATA.notes.join(" | ");
+  if(/[?&]debug/.test(location.search)){if(bad.length)dgt+=" Unstimmig: "+bad.join("; ")+".";if(DATA.notes&&DATA.notes.length)dgt+=" Hinweise: "+DATA.notes.join(" | ")}
   $("pDiag").textContent=dgt;
   var tb=$("pTbl");tb.textContent="";
   if(!list.length){tb.appendChild(el("caption","Noch keine Spielerdaten. Sie erscheinen nach dem nächsten automatischen Update."));$("pNote").textContent="";return}
+  var cols=[["#",""],["Spieler",""],["Sp",""],["S",""],["Quote",""]];
+  if(V==="all")cols.push(["Pkt","hide-s"]);
+  if(V!=="d")cols=cols.concat([["Max",""],["HF",""],["SL",""]]);
   var th=document.createElement("thead"),hr=document.createElement("tr");
-  [["#",""],["Spieler",""],["Sp",""],["S",""],["Quote",""],["Pkt","hide-s"],["Max",""],["HF",""],["SL",""]].forEach(function(c){hr.appendChild(el("th",c[0],c[1]))});
-  th.appendChild(hr);tb.appendChild(th);var tbd=document.createElement("tbody");
+  cols.forEach(function(c){hr.appendChild(el("th",c[0],c[1]))});th.appendChild(hr);tb.appendChild(th);
+  var tbd=document.createElement("tbody");
   list.forEach(function(p,i){
-    var tr=document.createElement("tr");
-    var nm=el("td",p.name,"pn");
-    nm.appendChild(el("small",Object.keys(p.teams).map(function(t){return t.replace(/^DC Phönix\s*/i,"")}).join(" · ")+" · Einzel "+p.ew+(p.known?"/"+p.ge:"")+" · Doppel "+p.dw+(p.known?"/"+p.gd:"")));
-    [[i+1,""],null,[p.g||"–",""],[p.w,""],[p.q==null?"–":Math.round(p.q*100)+" %",""],[p.pts,"hide-s"],[p.maxc||"–",""],[p.hfc||"–",""],[p.slc||"–",""]].forEach(function(c){
-      tr.appendChild(c?el("td",c[0],c[1]):nm)});
-    tbd.appendChild(tr)});
+    var tr=document.createElement("tr"),nm=el("td",p.name,"pn");
+    var tn=Object.keys(p.teams).map(function(t){return t.replace(/^DC Phönix\s*/i,"")}).join(" · ");
+    nm.appendChild(el("small",V==="all"?tn+" · Einzel "+p.ew+(p.ke?"/"+p.ge:"")+" · Doppel "+p.dw+(p.kd?"/"+p.gd:""):tn));
+    var cells=[[i+1,""],null,[p.vk&&p.vg?p.vg:"–",""],[p.vw,""],[p.vq==null?"–":Math.round(p.vq*100)+" %",""]];
+    if(V==="all")cells.push([p.pts,"hide-s"]);
+    if(V!=="d")cells=cells.concat([[p.maxc||"–",""],[p.hfc||"–",""],[p.slc||"–",""]]);
+    cells.forEach(function(c){tr.appendChild(c?el("td",c[0],c[1]):nm)});tbd.appendChild(tr)});
   tb.appendChild(tbd);
-  $("pNote").textContent="Nur Spieler der eigenen Teams. Siege, High Finishes (HF), Short Legs (SL) und Maximums kommen aus der offiziellen BDL-Statistik, die gespielten Spiele aus den Spielberichten. Punkte wie in der BDL: Einzelsieg 2, Doppelsieg 1. Quote = Siege geteilt durch gespielte Spiele (Einzel und Doppel). Die Quote erscheint erst, wenn zu allen gespielten Spielen des Teams ein Spielbericht eingelesen ist."}
+  $("pNote").textContent="Nur Spieler der eigenen Teams. Die Ansicht trennt Einzel und Doppel: S = Siege, Sp = gespielte Spiele, Quote = Siege geteilt durch Spiele. Siege, High Finishes (HF), Short Legs (SL) und Maximums kommen aus der offiziellen BDL-Statistik (HF, SL und Max zählen BDL-seitig nicht getrennt nach Einzel und Doppel), die gespielten Spiele aus den Spielberichten. Punkte wie in der BDL: Einzelsieg 2, Doppelsieg 1. Die Quote erscheint erst, wenn zu allen gespielten Spielen des Teams ein Spielbericht eingelesen ist."}
 
 function renderTeam(t){
   var own=norm(t.name);
