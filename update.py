@@ -283,6 +283,38 @@ def parse_report(html):
     return None
 
 
+def parse_statistics(html, team_names):
+    """Spielerstatistik der BDL. Übernimmt NUR Zeilen, deren Verein-Spalte genau einem unserer Teams entspricht.
+    Die Spalten werden relativ zur Team-Zelle gelesen, damit verschobene Zeilen keine Rolle spielen:
+    [Spieler] [Team] [Einzel-Siege] [Doppel-Siege] [HF] [SL] [Max]"""
+    wanted = {norm(n): n for n in team_names}
+    out = []
+    for ev in collect(html):
+        if ev[0] != "table":
+            continue
+        for r in ev[1]:
+            for j, c in enumerate(r):
+                if norm(c) not in wanted or j < 1:
+                    continue
+                name = r[j - 1]
+                if not LET_RE.search(name):
+                    break
+                rest = list(r[j + 1:j + 6]) + [""] * 5
+                out.append({
+                    "name": name, "team": wanted[norm(c)],
+                    "einzel": to_int(rest[0]) or 0, "doppel": to_int(rest[1]) or 0,
+                    "hf": to_int(rest[2]) or 0, "sl": to_int(rest[3]) or 0, "max": to_int(rest[4]) or 0,
+                })
+                break
+    seen, uniq = set(), []
+    for p in out:
+        k = (norm(p["name"]), norm(p["team"]))
+        if k not in seen:
+            seen.add(k)
+            uniq.append(p)
+    return sorted(uniq, key=lambda p: (-(2 * p["einzel"] + p["doppel"]), p["name"]))
+
+
 def fetch(url):
     last = None
     for attempt in range(2):
@@ -331,7 +363,8 @@ def main():
         liga, name = t["liga"], t["name"]
         prev = old_teams.get(norm(name), {})
         entry = {"name": name, "liga": liga, "liga_name": t.get("liga_name", liga),
-                 "table": prev.get("table", []), "fixtures": prev.get("fixtures", [])}
+                 "table": prev.get("table", []), "fixtures": prev.get("fixtures", []),
+                 "players": prev.get("players", [])}
         try:
             table = parse_table(load("leagueTable_%s.html" % liga, args.offline))
             if len(table) < 2:
@@ -350,6 +383,13 @@ def main():
             entry["fixtures"] = mine
         except Exception as e:  # noqa: BLE001
             problems.append("%s: Spielplan: %s" % (name, e))
+        try:
+            players = parse_statistics(load("statistics_%s.html" % liga, args.offline), [name])
+            if not players:
+                raise RuntimeError("keine Spieler von %s gefunden" % name)
+            entry["players"] = players
+        except Exception as e:  # noqa: BLE001
+            problems.append("%s: Spielerstatistik: %s" % (name, e))
         teams.append(entry)
         cutoff = (datetime.now(timezone.utc) - timedelta(days=7)).strftime("%Y-%m-%d")
         for f in entry["fixtures"]:
