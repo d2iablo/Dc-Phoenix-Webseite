@@ -287,6 +287,10 @@ def parse_report(html):
                 "h": {"sl": vals(left[0]), "hf": vals(left[1]), "max": vals(left[2])},
                 "g": {"max": vals(right[0]), "hf": vals(right[1]), "sl": vals(right[2])},
             })
+        if len(games) == 12:
+            # Aufbau einer Begegnung: 4 Einzel, 2 Doppel, 4 Einzel, 2 Doppel
+            for i, g in enumerate(games):
+                g["typ"] = "Doppel" if i in (4, 5, 10, 11) else "Einzel"
         if games:
             return {"heim": after("heim"), "gast": after("gast"), "legs": legs, "sets": sets, "spiele": games}
     return None
@@ -414,6 +418,8 @@ def main():
                 rep_ = parse_report(load_url(url, args.offline))
                 if not rep_:
                     raise RuntimeError("Bericht nicht erkannt")
+                if len(rep_["spiele"]) != 12:
+                    notes.append("Bericht %s hat %d statt 12 Spielen" % (f["id"], len(rep_["spiele"])))
                 rep_["url"] = url
                 rep_["datum"] = f["datum"]
                 reports[f["id"]] = rep_
