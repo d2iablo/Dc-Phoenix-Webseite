@@ -125,6 +125,34 @@ dd{margin:0;overflow-wrap:anywhere}
 a:focus-visible,button:focus-visible{outline:2px solid var(--a2);outline-offset:2px}
 
 footer{border-top:1px solid var(--line);padding-block:18px calc(28px + env(safe-area-inset-bottom,0px));color:var(--mute);font-size:.82rem;display:flex;flex-wrap:wrap;gap:6px 18px}
+
+/* Spielbericht + Spieler */
+.rb{margin-top:8px;font:inherit;font-size:.82rem;font-weight:700;color:var(--a2);background:transparent;border:1px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer}
+.rb:hover{border-color:var(--a2)}
+.report{grid-column:1/-1;border-top:1px solid var(--line);padding-top:12px;margin-top:2px}
+.report .rh{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline;margin-bottom:8px}
+.report .rh span{color:var(--mute)}
+table.rt{width:100%;font-size:.9rem}
+table.rt td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;white-space:normal;vertical-align:middle;width:auto}
+table.rt td.sc{text-align:center;font-weight:900;white-space:nowrap;width:70px;font-size:1.05rem}
+table.rt td.r2{text-align:right}
+table.rt tr.dbl td{background:color-mix(in srgb,var(--a2) 8%,transparent)}
+table.rt tr.ex td{font-size:.78rem;color:var(--a2);padding-top:0;border-bottom:1px solid var(--line);text-align:center}
+.report .rf{display:flex;gap:6px 16px;flex-wrap:wrap;margin-top:10px;font-size:.85rem;color:var(--mute)}
+.report .rf b{color:var(--fg)}
+.report .rf a{color:var(--a2)}
+.hl{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media (min-width:640px){.hl{grid-template-columns:repeat(4,1fr)}}
+.hl .fact b{font-size:1.5rem;letter-spacing:-.02em}
+.hl .fact span{display:block;color:var(--mute);font-size:.82rem;margin-top:2px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{font:inherit;font-size:.85rem;font-weight:700;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--mute);cursor:pointer}
+.chips button[aria-pressed="true"]{background:linear-gradient(95deg,var(--a1),var(--a2));color:var(--a-fg);border-color:transparent}
+.ctl{display:grid;gap:10px}
+.ctl small{color:var(--mute);text-transform:uppercase;letter-spacing:.14em;font-size:.66rem;font-weight:700;margin-right:6px}
+.pnote{color:var(--mute);font-size:.85rem;margin:10px 2px 0}
+#pTbl{font-size:.9rem}#pTbl th,#pTbl td{padding:10px 5px}#pTbl th:first-child,#pTbl td:first-child{padding-left:12px;width:34px}#pTbl th:last-child,#pTbl td:last-child{padding-right:12px;font-size:inherit}
+td.pn small{display:block;color:var(--mute);font-weight:400;font-size:.75rem}
 #links{display:flex;gap:16px;flex-wrap:wrap}
 .err{color:var(--loss)}
 @media (prefers-reduced-motion:no-preference){.tc,.chip{transition:transform .2s,border-color .2s}.tc:hover,.chip:hover{transform:translateY(-3px);border-color:var(--a2)}}
@@ -153,6 +181,13 @@ footer{border-top:1px solid var(--line);padding-block:18px calc(28px + env(safe-
 <section><h2>Nächste Spiele</h2><ul class="fix" id="nextAll"></ul></section>
 <section><h2>Vorstand</h2><div class="card"><dl id="vorstand"></dl></div></section>
 <section><h2>Mitmachen</h2><div class="card"><p id="willkommen"></p><dl id="info"></dl></div></section>
+</div>
+
+<div id="vPlayers" hidden>
+<section><div class="teamhead"><h1>Spieler</h1><p>Ranking aus den Online-Spielberichten der BDL</p></div></section>
+<section><h2>Highlights</h2><div class="hl" id="pHigh"></div></section>
+<section><h2>Ranking</h2><div class="ctl"><div class="chips" id="pTeam"></div><div class="chips" id="pSort"></div></div>
+<div class="scroll" style="margin-top:12px"><table id="pTbl"></table></div><p class="pnote" id="pNote"></p></section>
 </div>
 
 <div id="vTeam" hidden>
@@ -199,6 +234,91 @@ function fillRow(dl,k,val,link){dl.appendChild(el("dt",k));var dd=el("dd");
   else dd.appendChild(el("span","folgt","todo"));dl.appendChild(dd)}
 function vsLine(f,t){var vl=el("div",vsText(f)),p=pill(f,t);if(p)vl.insertBefore(p,vl.firstChild);return vl}
 
+
+function pv(o,i,n){if(!o)return {};function g(a){a=a||[];return a.length===n?a[i]:(a.length===1&&n===1?a[0]:null)}
+  return {sl:g(o.sl),hf:g(o.hf),max:g(o.max)}}
+function extras(g){var out=[];
+  [["heim","h"],["gast","g"]].forEach(function(s){g[s[0]].forEach(function(n,i){var v=pv(g[s[1]],i,g[s[0]].length),b=[];
+    if(v.sl)b.push("SL "+v.sl);if(v.hf)b.push("HF "+v.hf);if(v.max)b.push("Max "+v.max);
+    if(b.length)out.push(n+": "+b.join(" · "))})});
+  return out.join("   ")}
+function reportOf(f){return f.id&&DATA.reports?DATA.reports[f.id]:null}
+function renderReport(r){
+  var box=el("div",null,"report");
+  var hd=el("div",null,"rh");hd.appendChild(el("b",r.heim));hd.appendChild(el("span","gegen"));hd.appendChild(el("b",r.gast));box.appendChild(hd);
+  var tb=document.createElement("table");tb.className="rt";var tbd=document.createElement("tbody");
+  (r.spiele||[]).forEach(function(g){
+    var tr=document.createElement("tr");tr.className=g.typ==="Doppel"?"dbl":"sgl";
+    var a=el("td",null,"l");g.heim.forEach(function(n){a.appendChild(el("div",n))});
+    var b=el("td",null,"r2");g.gast.forEach(function(n){b.appendChild(el("div",n))});
+    tr.appendChild(a);tr.appendChild(el("td",g.ergebnis[0]+" : "+g.ergebnis[1],"sc"));tr.appendChild(b);tbd.appendChild(tr);
+    var ex=extras(g);if(ex){var t2=document.createElement("tr");t2.className="ex";var c=el("td",ex);c.colSpan=3;t2.appendChild(c);tbd.appendChild(t2)}});
+  tb.appendChild(tbd);box.appendChild(tb);
+  var ft=el("div",null,"rf");
+  if(r.legs){var x=el("span","Legs ");x.appendChild(el("b",r.legs[0]+" : "+r.legs[1]));ft.appendChild(x)}
+  if(r.sets){var y=el("span","Sets ");y.appendChild(el("b",r.sets[0]+" : "+r.sets[1]));ft.appendChild(y)}
+  var u=safeUrl(r.url);if(u){var a2=el("a","Originalbogen bei der BDL");a2.href=u;a2.target="_blank";a2.rel="noopener";ft.appendChild(a2)}
+  box.appendChild(ft);return box}
+
+/* Spielerstatistik aus allen Berichten */
+function buildStats(){
+  var own={},P={},hide=(CFG.verein.spieler_ausblenden||[]).map(norm);
+  CFG.teams.forEach(function(t){own[norm(t.name)]=t.name});
+  Object.keys(DATA.reports||{}).forEach(function(id){
+    var r=DATA.reports[id];
+    [["heim","h"],["gast","g"]].forEach(function(s){
+      var tn=own[norm(r[s[0]])];if(!tn)return;
+      (r.spiele||[]).forEach(function(g){
+        var mine=s[0]==="heim"?g.ergebnis[0]:g.ergebnis[1],opp=s[0]==="heim"?g.ergebnis[1]:g.ergebnis[0],win=mine>opp,names=g[s[0]];
+        names.forEach(function(n,i){
+          var k=norm(n);if(hide.indexOf(k)>=0)return;
+          var p=P[k]||(P[k]={name:n,teams:{},eg:0,ew:0,dg:0,dw:0,lf:0,la:0,max:0,hf:null,sl:null});
+          p.teams[tn]=1;
+          if(g.typ==="Doppel"){p.dg++;if(win)p.dw++}else{p.eg++;if(win)p.ew++}
+          p.lf+=mine;p.la+=opp;
+          var v=pv(g[s[1]],i,names.length);
+          if(v.max!=null)p.max+=(v.max<=20?v.max:1);
+          if(v.hf!=null&&(p.hf==null||v.hf>p.hf))p.hf=v.hf;
+          if(v.sl!=null&&(p.sl==null||v.sl<p.sl))p.sl=v.sl})})})});
+  return Object.keys(P).map(function(k){var p=P[k];p.g=p.eg+p.dg;p.w=p.ew+p.dw;p.q=p.g?p.w/p.g:0;return p})}
+var PS={sort:"q",team:"all"};
+function renderPlayers(){
+  var all=buildStats(),teams=CFG.teams.map(function(t){return t.name});
+  var hl=$("pHigh");hl.textContent="";
+  function best(label,fn,fmt,list){var b=null;list.forEach(function(p){var v=fn(p);if(v==null)return;if(!b||v.k>b.k)b={k:v.k,p:p,t:fmt(p)}});
+    var d=el("div",null,"fact");d.appendChild(el("small",label));d.appendChild(el("b",b?b.t:"–"));d.appendChild(el("span",b?b.p.name:"noch keine Daten"));hl.appendChild(d)}
+  var minG=all.filter(function(p){return p.g>=3});
+  best("Beste Quote",function(p){return {k:p.q*1000+p.g}},function(p){return Math.round(p.q*100)+" %"},minG.length?minG:all);
+  best("Meiste Maximums",function(p){return p.max>0?{k:p.max}:null},function(p){return String(p.max)},all);
+  best("Höchstes Finish",function(p){return p.hf!=null?{k:p.hf}:null},function(p){return String(p.hf)},all);
+  best("Kürzestes Leg",function(p){return p.sl!=null?{k:-p.sl}:null},function(p){return String(p.sl)+" Darts"},all);
+  var tc=$("pTeam");tc.textContent="";tc.appendChild(el("small","Team"));
+  [["all","Alle"]].concat(teams.map(function(t){return [t,t.replace(/^DC Phönix\s*/i,"")]})).forEach(function(x){
+    var b=el("button",x[1]);b.type="button";b.setAttribute("aria-pressed",PS.team===x[0]);b.onclick=function(){PS.team=x[0];renderPlayers()};tc.appendChild(b)});
+  var sc=$("pSort");sc.textContent="";sc.appendChild(el("small","Sortieren"));
+  [["q","Quote"],["w","Siege"],["g","Spiele"],["max","Maximums"],["hf","High Finish"],["sl","Short Leg"]].forEach(function(x){
+    var b=el("button",x[1]);b.type="button";b.setAttribute("aria-pressed",PS.sort===x[0]);b.onclick=function(){PS.sort=x[0];renderPlayers()};sc.appendChild(b)});
+  var list=all.filter(function(p){return PS.team==="all"||p.teams[PS.team]});
+  list.sort(function(a,b){
+    var k=PS.sort;
+    if(k==="sl"){var x=a.sl==null?999:a.sl,y=b.sl==null?999:b.sl;return x-y||b.q-a.q}
+    if(k==="hf"){return (b.hf||0)-(a.hf||0)||b.q-a.q}
+    if(k==="q")return b.q-a.q||b.g-a.g;
+    return (b[k]||0)-(a[k]||0)||b.q-a.q||a.name.localeCompare(b.name)});
+  var tb=$("pTbl");tb.textContent="";
+  if(!list.length){tb.appendChild(el("caption","Noch keine Spielberichte eingelesen. Sobald die BDL-Berichte erreichbar sind, erscheint hier das Ranking."));$("pNote").textContent="";return}
+  var th=document.createElement("thead"),hr=document.createElement("tr");
+  [["#",""],["Spieler",""],["Sp",""],["S",""],["Quote",""],["Einzel","hide-s"],["Doppel","hide-s"],["Max",""],["HF",""],["SL",""]].forEach(function(c){hr.appendChild(el("th",c[0],c[1]))});
+  th.appendChild(hr);tb.appendChild(th);var tbd=document.createElement("tbody");
+  list.forEach(function(p,i){
+    var tr=document.createElement("tr");
+    var nm=el("td",p.name,"pn");nm.appendChild(el("small",Object.keys(p.teams).map(function(t){return t.replace(/^DC Phönix\s*/i,"")}).join(" · ")));
+    [[i+1,""],null,[p.g,""],[p.w,""],[Math.round(p.q*100)+" %",""],[p.ew+"/"+p.eg,"hide-s"],[p.dw+"/"+p.dg,"hide-s"],[p.max||"–",""],[p.hf==null?"–":p.hf,""],[p.sl==null?"–":p.sl,""]].forEach(function(c){
+      tr.appendChild(c?el("td",c[0],c[1]):nm)});
+    tbd.appendChild(tr)});
+  tb.appendChild(tbd);
+  $("pNote").textContent="Nur Spieler der eigenen Teams, berechnet aus den öffentlichen BDL-Spielberichten. Quote = gewonnene Spiele (Einzel und Doppel). SL = kürzestes Leg in Darts, HF = höchstes Finish, Max = Maximums."}
+
 function renderTeam(t){
   var own=norm(t.name);
   $("tName").textContent=t.name;
@@ -225,6 +345,11 @@ function renderTeam(t){
       rr.className="r "+(mine>opp?"w":mine<opp?"l":"n");li.className="past"}
     else rr.textContent=f.heim?(f.zeit||"20:00"):"";
     var mm=el("div",null,"m");mm.appendChild(vsLine(f,t));var v2=venueEl(f);if(v2)mm.appendChild(v2);
+    var rep=reportOf(f);
+    if(rep){var btn=el("button","Spielbericht ▾","rb"),panel=null;btn.type="button";btn.setAttribute("aria-expanded","false");
+      btn.onclick=function(){if(panel){panel.remove();panel=null;btn.setAttribute("aria-expanded","false");btn.textContent="Spielbericht ▾"}
+        else{panel=renderReport(rep);li.appendChild(panel);btn.setAttribute("aria-expanded","true");btn.textContent="Spielbericht ▴"}};
+      mm.appendChild(btn)}
     li.appendChild(dateBox(f));li.appendChild(mm);li.appendChild(rr);ul.appendChild(li)});
   var tb=$("tbl");tb.textContent="";
   if(!(t.table||[]).length){tb.appendChild(el("caption","Die Tabelle folgt."));return}
@@ -276,11 +401,14 @@ function renderStart(){
 function route(){
   var h=(location.hash||"#start").slice(1),t=null;
   DATA.teams.forEach(function(x){if(x.slug===h)t=x});
-  $("vStart").hidden=!!t;$("vTeam").hidden=!t;$("heroNext").hidden=!!t||$("heroNext").hidden;
-  if(t)renderTeam(t);else renderStart();
+  var pl=!t&&h==="spieler",st=!t&&!pl;
+  $("vStart").hidden=!st;$("vTeam").hidden=!t;$("vPlayers").hidden=!pl;
+  if(t)renderTeam(t);else if(pl)renderPlayers();else renderStart();
+  if(!st)$("heroNext").hidden=true;
+  var cur=t?t.slug:pl?"spieler":"start";
   Array.prototype.forEach.call($("tabs").children,function(a){
-    if(a.getAttribute("href")==="#"+(t?t.slug:"start"))a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
-  document.title=(t?t.name+" · ":"")+CFG.verein.name;
+    if(a.getAttribute("href")==="#"+cur)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  document.title=(t?t.name+" · ":pl?"Spieler · ":"")+CFG.verein.name;
   var nv=document.querySelector(".nav");if(window.scrollY>nv.offsetTop)window.scrollTo(0,nv.offsetTop)}
 
 function init(){
@@ -293,7 +421,7 @@ function init(){
   $("entwurf").hidden=!v.entwurf;
   var lg=$("logo");if(v.logo){lg.onload=function(){lg.hidden=false};lg.onerror=function(){lg.hidden=true};lg.src=v.logo}
   var tabs=$("tabs");
-  [["Start","start"]].concat(DATA.teams.map(function(t){return [t.name.replace(/^DC Phönix\s*/i,"")||t.name,t.slug]})).forEach(function(p){
+  [["Start","start"]].concat(DATA.teams.map(function(t){return [t.name.replace(/^DC Phönix\s*/i,"")||t.name,t.slug]})).concat([["Spieler","spieler"]]).forEach(function(p){
     var a=el("a",p[0]);a.href="#"+p[1];tabs.appendChild(a)});
   var lk=$("links");
   [["Impressum",v.impressum],["Datenschutz",v.datenschutz]].forEach(function(p){

@@ -11,10 +11,11 @@
     "impressum": "",
     "datenschutz": "",
     "entwurf": true,
-    "gegruendet": "2021",
+    "gegruendet": "",
     "beschreibung": "",
     "willkommen": "",
-    "vorstand": []
+    "vorstand": [],
+    "spieler_ausblenden": []
   },
   "teams": [
     {
