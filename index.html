@@ -6,131 +6,132 @@
 <title>DC Phönix Durmersheim</title>
 <link rel="icon" href="logo.png">
 <style>
-:root{--bg:#080808;--bg2:#111111;--card:rgba(255,255,255,.05);--card-solid:#121212;--line:rgba(255,255,255,.13);--fg:#F5F5F3;--mute:#9D9D99;--a1:#FFFFFF;--a2:#B4B4AF;--a-fg:#0A0A0A;--own:rgba(255,255,255,.11);--win:#6CD08A;--loss:#FF7B63;--warn-bg:#262626;--warn-fg:#E8E8E4;--logo-filter:grayscale(1) contrast(1.12);--logo-blend:normal;--logo-op:1;color-scheme:dark}
-@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#F3F3F0;--bg2:#E8E8E4;--card:rgba(255,255,255,.82);--card-solid:#FFFFFF;--line:rgba(0,0,0,.13);--fg:#0A0A0A;--mute:#62625E;--a1:#0A0A0A;--a2:#4B4B48;--a-fg:#FFFFFF;--own:rgba(0,0,0,.07);--win:#2A7A45;--loss:#B63A27;--warn-bg:#E4E4E0;--warn-fg:#222;--logo-filter:grayscale(1) contrast(1.1) brightness(1.05);--logo-blend:multiply;--logo-op:.5;color-scheme:light}}
-:root[data-theme="light"]{--bg:#F3F3F0;--bg2:#E8E8E4;--card:rgba(255,255,255,.82);--card-solid:#FFFFFF;--line:rgba(0,0,0,.13);--fg:#0A0A0A;--mute:#62625E;--a1:#0A0A0A;--a2:#4B4B48;--a-fg:#FFFFFF;--own:rgba(0,0,0,.07);--win:#2A7A45;--loss:#B63A27;--warn-bg:#E4E4E0;--warn-fg:#222;--logo-filter:grayscale(1) contrast(1.1) brightness(1.05);--logo-blend:multiply;--logo-op:.5;color-scheme:light}
+:root{--bg:#070707;--bg2:#101010;--card:#121212;--card2:#191919;--line:rgba(255,255,255,.12);--fg:#F4F4F2;--mute:#9A9A96;--a1:#FFFFFF;--a2:#B4B4AF;--a-fg:#0A0A0A;--own:rgba(255,255,255,.09);--win:#6CD08A;--loss:#FF7B63;--warn-bg:#262626;--warn-fg:#E8E8E4;--logo-filter:grayscale(1) contrast(1.12);--logo-blend:normal;--logo-op:1;--shadow:0 10px 30px rgba(0,0,0,.35);color-scheme:dark}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#F2F2EF;--bg2:#E8E8E4;--card:#FFFFFF;--card2:#F6F6F3;--line:rgba(0,0,0,.12);--fg:#0A0A0A;--mute:#62625E;--a1:#0A0A0A;--a2:#4B4B48;--a-fg:#FFFFFF;--own:rgba(0,0,0,.06);--win:#2A7A45;--loss:#B63A27;--warn-bg:#E4E4E0;--warn-fg:#222;--logo-filter:grayscale(1) contrast(1.1) brightness(1.05);--logo-blend:multiply;--logo-op:.5;--shadow:0 10px 30px rgba(0,0,0,.08);color-scheme:light}}
+:root[data-theme="light"]{--bg:#F2F2EF;--bg2:#E8E8E4;--card:#FFFFFF;--card2:#F6F6F3;--line:rgba(0,0,0,.12);--fg:#0A0A0A;--mute:#62625E;--a1:#0A0A0A;--a2:#4B4B48;--a-fg:#FFFFFF;--own:rgba(0,0,0,.06);--win:#2A7A45;--loss:#B63A27;--warn-bg:#E4E4E0;--warn-fg:#222;--logo-filter:grayscale(1) contrast(1.1) brightness(1.05);--logo-blend:multiply;--logo-op:.5;--shadow:0 10px 30px rgba(0,0,0,.08);color-scheme:light}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit}
-h1,h2,h3{margin:0;text-wrap:balance}
-.wrap{max-width:900px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
-.grad{background:linear-gradient(95deg,var(--a1),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+h1,h2,h3,p{margin:0}
+h1,h3{text-wrap:balance}
+button{font:inherit;color:inherit}
+.wrap{max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.banner{background:var(--warn-bg);color:var(--warn-fg);font-size:.82rem;padding-block:7px;padding-top:calc(7px + env(safe-area-inset-top,0px))}
 
-.banner{background:var(--warn-bg);color:var(--warn-fg);font-size:.85rem;padding-block:8px;padding-top:calc(8px + env(safe-area-inset-top,0px))}
-
-/* Hero mit Logo im Hintergrund */
-.hero{position:relative;overflow:hidden;isolation:isolate;min-height:min(80vh,600px);display:flex;align-items:flex-end;padding-block:56px 48px;background:
- radial-gradient(60% 80% at 80% 20%,color-mix(in srgb,var(--fg) 9%,transparent),transparent 70%),var(--bg)}
-.hero .wrap{width:100%}
-.hero .logo{position:absolute;z-index:-1;right:-6%;top:46%;width:min(112vw,620px);aspect-ratio:1;object-fit:cover;transform:translateY(-52%);
- filter:var(--logo-filter);mix-blend-mode:var(--logo-blend);opacity:var(--logo-op);
- -webkit-mask-image:radial-gradient(closest-side,#000 70%,transparent 100%);mask-image:radial-gradient(closest-side,#000 70%,transparent 100%)}
-.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,var(--bg) 0%,color-mix(in srgb,var(--bg) 92%,transparent) 30%,transparent 62%),linear-gradient(90deg,var(--bg) 0%,transparent 55%)}
-.eyebrow{display:inline-flex;gap:8px;align-items:center;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:600}
-.eyebrow::before{content:"";width:28px;height:2px;background:linear-gradient(90deg,var(--a1),var(--a2));border-radius:2px}
-.hero h1{font-size:clamp(2.8rem,13vw,5.8rem);line-height:.92;font-weight:900;letter-spacing:-.035em;text-transform:uppercase;margin-top:14px;max-width:11ch}
-.hero h1 span{display:block}
-.hero .sub{margin:16px 0 0;max-width:34ch;color:var(--mute);font-size:1.05rem}
-.chip{display:inline-flex;flex-wrap:wrap;gap:4px 10px;align-items:center;margin-top:24px;padding:10px 16px;border-radius:16px;background:var(--card);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:.92rem;text-decoration:none}
-.chip b{font-weight:800}
-.chip .go{color:var(--a2);font-weight:700}
-
-/* Navigation */
-.nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
-.tabs{display:flex;gap:6px;padding-block:10px;overflow-x:auto;scrollbar-width:none}
+/* Kopfleiste */
+.bar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.bar .wrap{display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:900;text-transform:uppercase;letter-spacing:-.01em;font-size:.95rem;flex:none;padding-block:8px}
+.brand img{width:34px;height:34px;border-radius:50%;object-fit:cover;filter:var(--logo-filter)}
+.brand span{display:none}
+@media (min-width:560px){.brand span{display:inline}}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-block:9px;flex:1;min-width:0}
 .tabs::-webkit-scrollbar{display:none}
-.tabs a{flex:none;text-decoration:none;font-weight:700;font-size:.92rem;padding:8px 16px;border-radius:999px;color:var(--mute);border:1px solid transparent}
+@media (min-width:760px){.tabs{justify-content:flex-end}}
+.tabs a{flex:none;text-decoration:none;font-weight:700;font-size:.9rem;padding:7px 14px;border-radius:999px;color:var(--mute)}
 .tabs a:hover{color:var(--fg)}
-.tabs a[aria-current="page"]{color:var(--a-fg);background:linear-gradient(95deg,var(--a1),var(--a2))}
+.tabs a[aria-current="page"]{color:var(--a-fg);background:var(--a1)}
 
-main{padding-block:30px 48px}
-#vStart,#vTeam{display:grid;gap:34px}
+/* Hero (nur Start) */
+.hero{position:relative;overflow:hidden;isolation:isolate;min-height:min(74vh,560px);display:flex;align-items:flex-end;padding-block:48px 40px;background:radial-gradient(60% 80% at 80% 20%,color-mix(in srgb,var(--fg) 9%,transparent),transparent 70%),var(--bg)}
+.hero .wrap{width:100%}
+.hero .logo{position:absolute;z-index:-1;right:-6%;top:44%;width:min(112vw,600px);aspect-ratio:1;object-fit:cover;transform:translateY(-52%);filter:var(--logo-filter);mix-blend-mode:var(--logo-blend);opacity:var(--logo-op);-webkit-mask-image:radial-gradient(closest-side,#000 70%,transparent 100%);mask-image:radial-gradient(closest-side,#000 70%,transparent 100%)}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,var(--bg) 0%,color-mix(in srgb,var(--bg) 90%,transparent) 28%,transparent 60%),linear-gradient(90deg,var(--bg) 0%,transparent 55%)}
+.eyebrow{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:700}
+.hero h1{font-size:clamp(2.8rem,13vw,5.6rem);line-height:.92;font-weight:900;letter-spacing:-.035em;text-transform:uppercase;margin-top:12px;max-width:11ch}
+.hero h1 span{display:block}
+.hero .sub{margin-top:14px;max-width:34ch;color:var(--mute);font-size:1.05rem}
+.hero .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;align-items:center}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:.9rem;text-decoration:none;padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;line-height:1.2}
+.btn:hover{border-color:var(--a2)}
+.btn.pri{background:var(--a1);color:var(--a-fg);border-color:transparent}
+.btn.ico{padding:10px;width:42px;height:42px;justify-content:center}
+.btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn svg.f{fill:currentColor;stroke:none}
+.btn.sm{padding:6px 12px;font-size:.8rem;font-weight:700}
+
+main{padding-block:26px 56px;display:grid;gap:34px}
 section{min-width:0}
-h2{font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+h2{font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:10px}
 h2::after{content:"";flex:1;height:1px;background:var(--line)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:0 1px 0 color-mix(in srgb,var(--fg) 8%,transparent) inset;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.lead p{margin:0;font-size:1.15rem;line-height:1.5}
-
-.facts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}@media (min-width:640px){.facts{grid-template-columns:repeat(3,1fr)}}
-.fact{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px}
-.fact small{display:block;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;font-size:.68rem;font-weight:600}
-.fact b{display:block;font-size:1.1rem;margin-top:4px;overflow-wrap:anywhere;font-weight:800}
-
-.teams{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
-.tc{position:relative;display:block;text-decoration:none;border-radius:22px;padding:20px;border:1px solid var(--line);background:linear-gradient(160deg,var(--card),transparent);overflow:hidden}
-.tc::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--a1),var(--a2))}
-.tc h3{font-size:1.4rem;font-weight:900;letter-spacing:-.02em;text-transform:uppercase}
-.tc span{display:block;color:var(--mute);font-size:.92rem}
-.tc .rk{margin-top:12px;font-size:.95rem;font-weight:700}
-.tc .go{margin-top:12px;color:var(--a2);font-weight:800}
-
-/* Spielkarten */
-.fix{display:grid;gap:10px;padding:0;margin:0;list-style:none}
-.fix li{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 16px 12px 12px}
-.fix li.two{grid-template-columns:auto 1fr}
-.fix li.past{opacity:.8}
-.dt{width:58px;text-align:center;border-radius:14px;padding:8px 0;background:var(--bg2);border:1px solid var(--line);line-height:1}
-.dt i{display:block;font-style:normal;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:700}
-.dt b{display:block;font-size:1.65rem;font-weight:900;margin:4px 0 2px;letter-spacing:-.03em}
-.dt small{display:block;font-size:.66rem;color:var(--a2);font-weight:800;letter-spacing:.1em;text-transform:uppercase}
-.fix .m{min-width:0;overflow-wrap:anywhere}
-.fix .m>b{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--a2);margin-bottom:2px}
-.fix .r{font-size:1.35rem;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums;text-align:right}
-.fix .r.w{color:var(--win)}.fix .r.l{color:var(--loss)}.fix .r.n{color:var(--mute);font-weight:500}
-.dd2{color:var(--a2);font-weight:800;margin-top:2px}
-.pill{display:inline-block;font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:2px 9px;border-radius:999px;margin-right:8px;vertical-align:1px;line-height:1.5}
-.pill.h{background:linear-gradient(95deg,var(--a1),var(--a2));color:var(--a-fg)}
-.pill.g{border:1.5px solid var(--a2);color:var(--a2)}
-.ven{font-size:.88rem;margin-top:4px;color:var(--mute)}
-.ven a{text-decoration-color:color-mix(in srgb,var(--fg) 35%,transparent);text-underline-offset:3px}
-
-/* Team-Seite */
-.teamhead h1{font-size:clamp(2rem,9vw,3.6rem);font-weight:900;letter-spacing:-.03em;text-transform:uppercase;line-height:1}
-.teamhead p{margin:10px 0 0;color:var(--mute)}
-.teamhead .stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-.stat{padding:10px 16px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
-.stat b{display:block;font-size:1.5rem;font-weight:900;letter-spacing:-.02em;line-height:1.1}
-.stat small{color:var(--mute);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
-
-.next .card{position:relative;padding:22px;border:0;background:linear-gradient(var(--card-solid),var(--card-solid)) padding-box,linear-gradient(135deg,var(--a1),var(--a2)) border-box;border:2px solid transparent;display:grid;grid-template-columns:1fr auto;gap:8px 18px;align-items:center}
-.next .lbl{grid-column:1/-1;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:700}
-.next .vs{font-size:clamp(1.35rem,6vw,1.9rem);font-weight:900;line-height:1.1;letter-spacing:-.02em;text-transform:uppercase;overflow-wrap:anywhere}
-.next .info{grid-column:1/-1;color:var(--mute)}
-.next .big{grid-row:2;grid-column:2;text-align:center;padding:10px 16px;border-radius:18px;background:linear-gradient(135deg,var(--a1),var(--a2));color:var(--a-fg);line-height:1}
-.next .big b{display:block;font-size:2.4rem;font-weight:900;letter-spacing:-.04em}
-.next .big small{display:block;font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-top:2px}
-.next .card.plain{display:block}
-
-.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:20px;background:var(--card)}
-table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
-th,td{padding:11px 10px;text-align:right;white-space:nowrap}
-th{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:700;border-bottom:1px solid var(--line)}
-td{border-bottom:1px solid var(--line)}
-tr:last-child td{border-bottom:0}
-th:first-child,td:first-child{padding-left:16px;text-align:center;width:44px;color:var(--mute);font-weight:700}
-th:nth-child(2),td:nth-child(2){text-align:left;white-space:normal;min-width:0}
-th:last-child,td:last-child{padding-right:16px}
-td:last-child{font-weight:900;font-size:1.05rem}
-tr.own td{background:var(--own);font-weight:800}
-tr.own td:first-child{box-shadow:inset 4px 0 0 var(--a1);color:var(--a2)}
-caption{padding:16px;color:var(--mute);text-align:left}
-@media (max-width:640px){.hide-s{display:none}}
-
-dl{display:grid;grid-template-columns:max-content 1fr;gap:12px 18px;margin:0}
-dt{color:var(--mute);text-transform:uppercase;letter-spacing:.12em;font-size:.7rem;font-weight:700;padding-top:4px}
-dd{margin:0;overflow-wrap:anywhere}
-.card p{margin:0 0 14px}
+h2 a{order:3;font-size:.72rem;letter-spacing:.1em;color:var(--a2);text-decoration:none;white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+.card:has(details[open]),.fix li:has(details[open]){position:relative;z-index:40}
+.page-h{display:grid;gap:6px}
+.page-h h1{font-size:clamp(2rem,9vw,3.4rem);font-weight:900;letter-spacing:-.03em;text-transform:uppercase;line-height:1}
+.page-h p{color:var(--mute)}
+.back{display:inline-block;margin-bottom:10px;color:var(--mute);text-decoration:none;font-weight:700;font-size:.88rem}
+.back:hover{color:var(--fg)}
+.lead{font-size:1.1rem;line-height:1.55}
 .todo{color:var(--mute);font-style:italic}
-a:focus-visible,button:focus-visible{outline:2px solid var(--a2);outline-offset:2px}
+.pad{padding-top:10px}
 
-footer{border-top:1px solid var(--line);padding-block:18px calc(28px + env(safe-area-inset-bottom,0px));color:var(--mute);font-size:.82rem;display:flex;flex-wrap:wrap;gap:6px 18px}
+/* Kennzahlen */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.tile small{display:block;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;font-size:.64rem;font-weight:700}
+.tile b{display:block;font-size:1.45rem;margin-top:3px;font-weight:900;letter-spacing:-.02em;overflow-wrap:anywhere;line-height:1.15}
+.tile span{display:block;color:var(--mute);font-size:.8rem;margin-top:2px;overflow-wrap:anywhere}
+.tiles.big b{font-size:1.9rem}
 
-/* Spielbericht + Spieler */
-.rb{margin-top:8px;font:inherit;font-size:.82rem;font-weight:700;color:var(--a2);background:transparent;border:1px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer}
-.rb:hover{border-color:var(--a2)}
-.report{grid-column:1/-1;border-top:1px solid var(--line);padding-top:12px;margin-top:2px}
+/* Teamkarten */
+.teams{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.tc{display:flex;flex-direction:column;text-decoration:none;border-radius:22px;border:1px solid var(--line);background:var(--card);overflow:hidden;box-shadow:var(--shadow)}
+.tc .ph{aspect-ratio:16/7;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.tc .ph img{width:100%;height:100%;object-fit:cover}
+.tc .ph.none{background:linear-gradient(135deg,var(--card2),var(--bg2))}
+.tc .ph.none b{font-size:2.4rem;font-weight:900;letter-spacing:-.04em;color:var(--a2);opacity:.6}
+.tc .bd{padding:16px 18px 18px;display:grid;gap:6px}
+.tc h3{font-size:1.3rem;font-weight:900;letter-spacing:-.02em;text-transform:uppercase;line-height:1.1}
+.tc .lg{color:var(--mute);font-size:.88rem}
+.tc .rk{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px;font-weight:800}
+.form{display:inline-flex;gap:4px;vertical-align:middle}
+.form i{display:block;width:10px;height:10px;border-radius:50%;background:var(--mute);opacity:.5}
+.form i.w{background:var(--win);opacity:1}.form i.l{background:var(--loss);opacity:1}
+.form i.u{background:var(--a2);opacity:1}
+
+/* Spielzeilen */
+.fix{display:grid;gap:10px;padding:0;margin:0;list-style:none}
+.fix li{display:grid;grid-template-columns:auto 1fr auto;gap:4px 14px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 14px 12px 12px}
+.fix li.past .dt{opacity:.8}
+.dt{width:56px;text-align:center;border-radius:14px;padding:8px 0;background:var(--bg2);border:1px solid var(--line);line-height:1}
+.dt i{display:block;font-style:normal;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:700}
+.dt b{display:block;font-size:1.6rem;font-weight:900;margin:4px 0 2px;letter-spacing:-.03em}
+.dt small{display:block;font-size:.64rem;color:var(--a2);font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.fix .m{min-width:0;overflow-wrap:anywhere;display:grid;gap:3px}
+.fix .tl{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--a2);font-weight:800}
+.fix .vs{font-weight:800;line-height:1.25}
+.fix .tm{color:var(--mute);font-size:.88rem}
+.fix .tm b{color:var(--fg)}
+.fix .r{font-size:1.3rem;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.fix .r.w{color:var(--win)}.fix .r.l{color:var(--loss)}.fix .r.n{color:var(--mute);font-weight:600;font-size:1rem}
+.fix .acts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.fix .count{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:2px 9px;border-radius:999px;background:var(--a1);color:var(--a-fg);justify-self:start}
+.pill{display:inline-block;font-size:.64rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:2px 9px;border-radius:999px;margin-right:8px;vertical-align:1px;line-height:1.5}
+.pill.h{background:var(--a1);color:var(--a-fg)}
+.pill.g{border:1.5px solid var(--a2);color:var(--a2)}
+.seg{display:inline-flex;padding:3px;border-radius:999px;background:var(--card);border:1px solid var(--line);margin-bottom:12px}
+.seg button{border:0;background:transparent;color:var(--mute);font-weight:800;font-size:.85rem;padding:7px 16px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--a1);color:var(--a-fg)}
+.hero-next{border:2px solid var(--a1)}
+
+/* Menüs (Kalender / Route) */
+details.menu{position:relative}
+details.menu>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.8rem;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card2);user-select:none}
+details.menu>summary::-webkit-details-marker{display:none}
+details.menu>summary::after{content:"▾";font-size:.75em;color:var(--mute)}
+details.menu[open]>summary{border-color:var(--a2)}
+details.menu .mp{position:absolute;left:0;top:calc(100% + 6px);z-index:60;min-width:220px;max-width:min(300px,calc(100vw - 32px));background:var(--card);border:1px solid var(--line);border-radius:16px;padding:6px;box-shadow:0 14px 40px rgba(0,0,0,.45);display:grid;gap:2px}
+details.menu .mp a,details.menu .mp button{display:block;text-align:left;text-decoration:none;background:transparent;border:0;border-radius:10px;padding:10px 12px;font-weight:700;font-size:.9rem;cursor:pointer;color:var(--fg)}
+details.menu .mp a:hover,details.menu .mp button:hover{background:var(--own)}
+details.menu .mp small{display:block;color:var(--mute);font-weight:500;font-size:.76rem}
+
+/* Spielbericht */
+.report{grid-column:1/-1;border-top:1px solid var(--line);padding-top:12px;margin-top:6px}
 .report .rh{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline;margin-bottom:8px}
 .report .rh span{color:var(--mute)}
 table.rt{width:100%;font-size:.9rem}
@@ -138,104 +139,208 @@ table.rt td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;
 table.rt td.sc{text-align:center;font-weight:900;white-space:nowrap;width:70px;font-size:1.05rem}
 table.rt td.r2{text-align:right}
 table.rt tr.dbl td{background:color-mix(in srgb,var(--a2) 8%,transparent)}
-table.rt tr.ex td{font-size:.78rem;color:var(--a2);padding-top:0;border-bottom:1px solid var(--line);text-align:center}
+table.rt tr.ex td{font-size:.78rem;color:var(--a2);padding-top:0;text-align:center}
 .report .rf{display:flex;gap:6px 16px;flex-wrap:wrap;margin-top:10px;font-size:.85rem;color:var(--mute)}
 .report .rf b{color:var(--fg)}
 .report .rf a{color:var(--a2)}
-.hl{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-@media (min-width:640px){.hl{grid-template-columns:repeat(4,1fr)}}
-.hl .fact b{font-size:1.5rem;letter-spacing:-.02em}
-.hl .fact span{display:block;color:var(--mute);font-size:.82rem;margin-top:2px}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.chips button{font:inherit;font-size:.85rem;font-weight:700;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--mute);cursor:pointer}
-.chips button[aria-pressed="true"]{background:linear-gradient(95deg,var(--a1),var(--a2));color:var(--a-fg);border-color:transparent}
+
+/* Tabellen */
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:18px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:11px 10px;text-align:right;white-space:nowrap}
+th{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:700;border-bottom:1px solid var(--line)}
+td{border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th:first-child,td:first-child{padding-left:14px;text-align:center;width:42px;color:var(--mute);font-weight:700}
+th:nth-child(2),td:nth-child(2){text-align:left;white-space:normal;min-width:0}
+th:last-child,td:last-child{padding-right:14px}
+tr.own td{background:var(--own);font-weight:800}
+tr.own td:first-child{box-shadow:inset 4px 0 0 var(--a1);color:var(--a2)}
+caption{padding:16px;color:var(--mute);text-align:left}
+#tbl td:last-child{font-weight:900}
+@media (max-width:640px){.hide-s{display:none}}
+
+/* Avatare und Spieler */
+.av{position:relative;flex:none;border-radius:50%;background:linear-gradient(135deg,var(--card2),var(--bg2));border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden;font-weight:900;color:var(--a2);letter-spacing:-.02em;width:40px;height:40px;font-size:.9rem}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.av.m{width:64px;height:64px;font-size:1.3rem}
+.av.l{width:112px;height:112px;font-size:2.2rem}
+.av.sq{border-radius:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.pc{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 10px}
+.pc:hover{border-color:var(--a2)}
+.pc b{font-weight:800;line-height:1.2;overflow-wrap:anywhere}
+.pc small{color:var(--mute);font-size:.8rem}
+.pc .rl{color:var(--a2);font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.top{display:grid;gap:10px;padding:0;margin:0;list-style:none}
+.top li a{display:flex;align-items:center;gap:14px;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 16px}
+.top li a:hover{border-color:var(--a2)}
+.top .nr{font-size:1.3rem;font-weight:900;color:var(--mute);width:22px;text-align:center}
+.top .nm{flex:1;min-width:0}
+.top .nm b{display:block;font-weight:800;overflow-wrap:anywhere}
+.top .nm small{color:var(--mute)}
+.top .pt{font-weight:900;font-size:1.2rem;text-align:right;line-height:1.1}
+.top .pt small{display:block;font-size:.66rem;color:var(--mute);letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chips button{font-size:.85rem;font-weight:700;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--mute);cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--a1);color:var(--a-fg);border-color:transparent}
 .ctl{display:grid;gap:10px}
-.ctl small{color:var(--mute);text-transform:uppercase;letter-spacing:.14em;font-size:.66rem;font-weight:700;margin-right:6px}
-.pnote{color:var(--mute);font-size:.85rem;margin:10px 2px 0}
-#pTbl{font-size:.9rem}#pTbl th,#pTbl td{padding:10px 5px}#pTbl th:first-child,#pTbl td:first-child{padding-left:12px;width:34px}#pTbl th:last-child,#pTbl td:last-child{padding-right:12px;font-size:inherit}
-td.pn small{display:block;color:var(--mute);font-weight:400;font-size:.75rem}
-#links{display:flex;gap:16px;flex-wrap:wrap}
+.ctl small{color:var(--mute);text-transform:uppercase;letter-spacing:.14em;font-size:.64rem;font-weight:700;margin-right:4px}
+.pnote{color:var(--mute);font-size:.84rem;margin:10px 2px 0}
+#pTbl{font-size:.9rem}#pTbl th,#pTbl td{padding:9px 5px}#pTbl th:first-child,#pTbl td:first-child{padding-left:12px;width:32px}#pTbl th:last-child,#pTbl td:last-child{padding-right:12px}
+#pTbl td.pn{padding-left:6px}
+#pTbl td.pn a{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:0}
+#pTbl td.pn .tx{min-width:0}
+#pTbl td.pn b{display:block;font-weight:800}
+#pTbl td.pn small{display:block;color:var(--mute);font-weight:400;font-size:.74rem}
+@media (max-width:480px){#pTbl .av{display:none}}
+
+/* Profil */
+.prof{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.prof h1{font-size:clamp(1.8rem,8vw,3rem);font-weight:900;letter-spacing:-.03em;text-transform:uppercase;line-height:1}
+.prof .nick{color:var(--a2);font-weight:800;margin-top:4px}
+.prof .sub{color:var(--mute);margin-top:6px;display:flex;gap:6px 10px;flex-wrap:wrap;align-items:center}
+.bars{display:grid;gap:14px}
+.bar2 small{display:flex;justify-content:space-between;color:var(--mute);font-weight:700;margin-bottom:6px;font-size:.84rem}
+.bar2 small b{color:var(--fg)}
+.bar2 .tr{height:10px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);overflow:hidden}
+.bar2 .tr i{display:block;height:100%;background:var(--a1);border-radius:999px}
+.log{display:grid;gap:8px;padding:0;margin:0;list-style:none}
+.log li{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.log .d{color:var(--mute);font-size:.82rem;font-weight:700;width:48px}
+.log .t{min-width:0;overflow-wrap:anywhere}
+.log .t small{display:block;color:var(--mute)}
+.log .s{font-weight:900;font-variant-numeric:tabular-nums}
+.log .s.w{color:var(--win)}.log .s.l{color:var(--loss)}
+.two{display:grid;gap:34px}
+@media (min-width:760px){.two{grid-template-columns:1fr 1fr;align-items:start}}
+
+/* Verein */
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.bc{text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 14px;box-shadow:var(--shadow)}
+.bc b{font-size:1.1rem;font-weight:800;overflow-wrap:anywhere}
+.bc .rl{color:var(--a2);font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.minib{display:flex;gap:16px;flex-wrap:wrap}
+.minib a{display:flex;align-items:center;gap:10px;text-decoration:none}
+.minib small{display:block;color:var(--mute);font-size:.78rem;line-height:1.2}
+.minib b{display:block;line-height:1.2;font-weight:800}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:12px 18px;margin:0}
+dt{color:var(--mute);text-transform:uppercase;letter-spacing:.12em;font-size:.68rem;font-weight:700;padding-top:4px}
+dd{margin:0;overflow-wrap:anywhere}
+dd .menu{margin-top:8px}
+.social{display:flex;gap:10px;flex-wrap:wrap}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.gal button{padding:0;border:0;border-radius:14px;overflow:hidden;aspect-ratio:1;background:var(--card2);cursor:zoom-in}
+.gal img{width:100%;height:100%;object-fit:cover;display:block}
+.lb{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
+.lb img{max-width:100%;max-height:100%;border-radius:12px}
+.teamimg{width:100%;aspect-ratio:16/7;object-fit:cover;border-radius:22px;border:1px solid var(--line);display:block}
+.kad{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+
+footer{border-top:1px solid var(--line);padding-block:18px calc(28px + env(safe-area-inset-bottom,0px));color:var(--mute);font-size:.82rem;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+footer .sp{flex:1}
+#links{display:flex;gap:14px}
 .err{color:var(--loss)}
-@media (prefers-reduced-motion:no-preference){.tc,.chip{transition:transform .2s,border-color .2s}.tc:hover,.chip:hover{transform:translateY(-3px);border-color:var(--a2)}}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--a2);outline-offset:2px}
+@media (prefers-reduced-motion:no-preference){.tc,.pc,.btn,.top a{transition:transform .2s,border-color .2s}.tc:hover,.pc:hover{transform:translateY(-3px)}}
 </style>
 </head>
 <body>
 <div class="banner" id="entwurf" hidden><div class="wrap">Entwurf eines Vereinsmitglieds, noch nicht vom Verein freigegeben.</div></div>
-
-<header class="hero">
-<img class="logo" id="logo" alt="" hidden>
-<div class="wrap">
-<div class="eyebrow" id="vsub">Dart</div>
-<h1 id="vname">DC Phönix Durmersheim</h1>
-<p class="sub" id="vtag">Dartverein in der Badischen Dart Liga</p>
-<a class="chip" id="heroNext" href="#start" hidden></a>
-</div>
-</header>
-
-<nav class="nav" aria-label="Bereiche"><div class="wrap tabs" id="tabs"></div></nav>
-
-<main class="wrap">
-<div id="vStart" hidden>
-<section><div class="card lead"><p id="beschr"></p></div></section>
-<section><h2>Auf einen Blick</h2><div class="facts" id="facts"></div></section>
-<section><h2>Unsere Teams</h2><div class="teams" id="teamCards"></div></section>
-<section><h2>Nächste Spiele</h2><ul class="fix" id="nextAll"></ul></section>
-<section><h2>Vorstand</h2><div class="card"><dl id="vorstand"></dl></div></section>
-<section><h2>Mitmachen</h2><div class="card"><p id="willkommen"></p><dl id="info"></dl></div></section>
-</div>
-
-<div id="vPlayers" hidden>
-<section><div class="teamhead"><h1>Spieler</h1><p>Ranking aus der BDL-Statistik und den Spielberichten</p></div></section>
-<section><h2>Highlights</h2><div class="hl" id="pHigh"></div></section>
-<section><h2>Ranking</h2><div class="ctl"><div class="chips" id="pView"></div><div class="chips" id="pTeam"></div><div class="chips" id="pSort"></div></div>
-<div class="scroll" style="margin-top:12px"><table id="pTbl"></table></div><p class="pnote" id="pNote"></p><p class="pnote" id="pDiag"></p></section>
-</div>
-
-<div id="vTeam" hidden>
-<section class="teamhead"><h1 id="tName"></h1><p id="tLiga"></p><div class="stats" id="tStats"></div></section>
-<section class="next" aria-live="polite"><h2>Nächstes Spiel</h2><div class="card" id="next">Lade …</div></section>
-<section><h2>Spielplan</h2><ul class="fix" id="fix"></ul></section>
-<section><h2>Tabelle</h2><div class="scroll"><table id="tbl"></table></div></section>
-</div>
-</main>
-
-<footer class="wrap"><span id="upd"></span><span id="links"></span></footer>
-
+<header class="bar"><div class="wrap">
+<a class="brand" href="#start"><img id="blogo" alt="" hidden><span id="bname"></span></a>
+<nav class="tabs" id="tabs" aria-label="Bereiche"></nav>
+</div></header>
+<div id="heroBox"></div>
+<main class="wrap" id="main">Lade …</main>
+<footer class="wrap"><span id="upd"></span><span class="sp"></span><span id="soc" class="social"></span><span id="links"></span></footer>
 <script>
 (function(){
 "use strict";
-var CFG=null,DATA=null;
+var CFG=null,DATA=null,PH={},ALL=null,FXI={};
 var $=function(id){return document.getElementById(id)};
 function el(tag,txt,cls){var e=document.createElement(tag);if(txt!=null)e.textContent=txt;if(cls)e.className=cls;return e}
 function norm(s){return String(s||"").trim().toLowerCase()}
 function slug(s){return norm(s).replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}
+function short(n){return String(n||"").replace(/^DC Phönix\s*/i,"")||n}
 function parts(iso){var p=iso.split("-"),d=new Date(+p[0],+p[1]-1,+p[2]);
-  return {w:d.toLocaleDateString("de-DE",{weekday:"short"}).replace(".",""),day:String(+p[2]),mon:d.toLocaleDateString("de-DE",{month:"short"}).replace(".",""),full:d.toLocaleDateString("de-DE",{weekday:"long",day:"2-digit",month:"long",year:"numeric"})}}
+  return {w:d.toLocaleDateString("de-DE",{weekday:"short"}).replace(".",""),day:String(+p[2]),mon:d.toLocaleDateString("de-DE",{month:"short"}).replace(".",""),full:d.toLocaleDateString("de-DE",{weekday:"long",day:"2-digit",month:"long",year:"numeric"}),kurz:d.toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit"})}}
 function when(f){var p=f.datum.split("-"),t=(f.zeit||"20:00").split(":");return new Date(+p[0],+p[1]-1,+p[2],+t[0]||20,+t[1]||0)}
 function safeUrl(u){return /^https?:\/\//i.test(u||"")?u:null}
 function getJSON(u){return fetch(u,{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error(u+" "+r.status);return r.json()})}
 function nextOf(t){var now=Date.now(),fx=(t.fixtures||[]).slice().sort(function(a,b){return a.datum<b.datum?-1:1}),n=null;
   fx.forEach(function(f){if(!n&&!f.ergebnis&&when(f).getTime()+4*3600e3>now)n=f});return n}
+function isUpcoming(f){return !f.ergebnis&&when(f).getTime()+4*3600e3>Date.now()}
 function daysTo(f){var now=new Date(),p=f.datum.split("-");
   return Math.round((new Date(+p[0],+p[1]-1,+p[2])-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5)}
-function dayTxt(d){return d<=0?"Heute!":d===1?"Morgen":"In "+d+" Tagen"}
+function dayTxt(d){return d<=0?"Heute":d===1?"Morgen":"In "+d+" Tagen"}
 function rank(t){return (t.table||[]).filter(function(x){return norm(x.team)===norm(t.name)})[0]||null}
 function pill(f,t){var h=norm(f.heim)===norm(t.name),a=!h&&norm(f.gast)===norm(t.name);
   if(!f.heim||!(h||a))return null;return el("span",h?"Heim":"Gast","pill "+(h?"h":"g"))}
 function venue(f){if(!f.heim)return "";var k=norm(f.heim),sp=CFG.spielorte||{},a="";
   for(var n in sp)if(norm(n)===k)a=sp[n];
   if(!a&&CFG.teams.some(function(c){return norm(c.name)===k}))a=CFG.verein.spiellokal||"";return a}
-function venueEl(f){if(!f.heim)return null;var a=venue(f),d=el("div",null,"ven");d.appendChild(document.createTextNode("Spielort: "));
-  if(a){var l=el("a",a);l.href="https://www.openstreetmap.org/search?query="+encodeURIComponent(a);l.target="_blank";l.rel="noopener";d.appendChild(l)}
-  else d.appendChild(el("span","Adresse folgt","todo"));return d}
 function vsText(f){return f.heim?f.heim+" – "+f.gast:"Gegner folgt"}
 function dateBox(f){var p=parts(f.datum),d=el("div",null,"dt");d.appendChild(el("i",p.w));d.appendChild(el("b",p.day));d.appendChild(el("small",p.mon));return d}
-function fillRow(dl,k,val,link){dl.appendChild(el("dt",k));var dd=el("dd");
-  if(val){var u=link&&safeUrl(val);if(u){var a=el("a",val);a.href=u;a.target="_blank";a.rel="noopener";dd.appendChild(a)}else dd.textContent=val}
-  else dd.appendChild(el("span","folgt","todo"));dl.appendChild(dd)}
-function vsLine(f,t){var vl=el("div",vsText(f)),p=pill(f,t);if(p)vl.insertBefore(p,vl.firstChild);return vl}
+function sec(title,node,more){var s=el("section");if(title){var h=el("h2",title);if(more){var a=el("a",more[0]);a.href=more[1];h.appendChild(a)}s.appendChild(h)}if(node)s.appendChild(node);return s}
+function tile(label,val,sub){var d=el("div",null,"tile");d.appendChild(el("small",label));d.appendChild(el("b",val));if(sub)d.appendChild(el("span",sub));return d}
+function extLink(u,txt){var a=el("a",txt);a.href=u;a.target="_blank";a.rel="noopener";return a}
 
+/* ---------- Fotos ---------- */
+function photoUrl(folder,key,explicit){
+  if(explicit&&(safeUrl(explicit)||/^[\w.\-\/ ]+$/.test(explicit)))return explicit;
+  var l=PH[folder]||[],s=slug(key);
+  for(var i=0;i<l.length;i++){if(slug(l[i].replace(/\.[^.]+$/,""))===s)return "fotos/"+folder+"/"+encodeURIComponent(l[i])}
+  return null}
+function initials(n){var w=String(n||"").trim().split(/\s+/).filter(Boolean);if(!w.length)return "?";
+  return (w[0][0]+(w.length>1?w[w.length-1][0]:"")).toUpperCase()}
+function avatar(name,url,cls){var a=el("div",null,"av "+(cls||""));a.appendChild(document.createTextNode(initials(name)));
+  if(url){var i=document.createElement("img");i.alt=name;i.loading="lazy";i.onerror=function(){i.remove()};i.src=url;a.appendChild(i)}return a}
+function playerInfo(name){var o=CFG.spieler||{};for(var k in o)if(norm(k)===norm(name))return o[k]||{};return {}}
+function playerPhoto(name){return photoUrl("spieler",name,playerInfo(name).foto)}
 
+/* ---------- Karten, Kalender ---------- */
+function mapLinks(addr){var q=encodeURIComponent(addr);return [
+  {t:"In Google Maps öffnen",href:"https://www.google.com/maps/dir/?api=1&destination="+q},
+  {t:"In Apple Karten öffnen",href:"https://maps.apple.com/?daddr="+q+"&dirflg=d"}]}
+function menu(label,items){
+  var d=el("details",null,"menu");d.appendChild(el("summary",label));var p=el("div",null,"mp");
+  items.forEach(function(it){var a;
+    if(it.href){a=el("a");a.href=it.href;a.target="_blank";a.rel="noopener"}
+    else{a=el("button");a.type="button";a.onclick=function(){it.fn();d.open=false}}
+    a.appendChild(document.createTextNode(it.t));if(it.sub)a.appendChild(el("small",it.sub));p.appendChild(a)});
+  d.appendChild(p);return d}
+function two(n){return (n<10?"0":"")+n}
+function stamp(d){return d.getUTCFullYear()+two(d.getUTCMonth()+1)+two(d.getUTCDate())+"T"+two(d.getUTCHours())+two(d.getUTCMinutes())+"00"}
+function startEnd(f){var p=f.datum.split("-"),t=(f.zeit||"20:00").split(":");
+  var s=new Date(Date.UTC(+p[0],+p[1]-1,+p[2],+t[0]||20,+t[1]||0)),e=new Date(s.getTime()+3*3600e3);return [stamp(s),stamp(e)]}
+function esc(s){return String(s||"").replace(/\\/g,"\\\\").replace(/;/g,"\;").replace(/,/g,"\\,").replace(/\r?\n/g,"\\n")}
+function fold(l){var o=[];while(l.length>60){o.push(l.slice(0,60));l=" "+l.slice(60)}o.push(l);return o.join("\r\n")}
+function icsText(f,t){var se=startEnd(f),now=new Date(),ad=venue(f);
+  var tit="Dart: "+f.heim+" – "+f.gast;
+  var L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//DC Phoenix Durmersheim//Spielplan//DE","CALSCALE:GREGORIAN","METHOD:PUBLISH",
+  "BEGIN:VTIMEZONE","TZID:Europe/Berlin","BEGIN:DAYLIGHT","TZOFFSETFROM:+0100","TZOFFSETTO:+0200","TZNAME:CEST","DTSTART:19700329T020000","RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU","END:DAYLIGHT",
+  "BEGIN:STANDARD","TZOFFSETFROM:+0200","TZOFFSETTO:+0100","TZNAME:CET","DTSTART:19701025T030000","RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU","END:STANDARD","END:VTIMEZONE",
+  "BEGIN:VEVENT","UID:"+(t.liga||"liga")+"-"+(f.id||f.datum)+"-"+slug(f.heim)+"@dc-phoenix","DTSTAMP:"+stamp(now)+"Z",
+  "DTSTART;TZID=Europe/Berlin:"+se[0],"DTEND;TZID=Europe/Berlin:"+se[1],"SUMMARY:"+esc(tit)];
+  if(ad)L.push("LOCATION:"+esc(ad));
+  L.push("DESCRIPTION:"+esc((t.liga_name||"")+(f.spieltag?" · "+f.spieltag+". Spieltag":"")+" · Badische Dart Liga"));
+  L.push("BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:Dart heute Abend","TRIGGER:-PT3H","END:VALARM","END:VEVENT","END:VCALENDAR");
+  return L.map(fold).join("\r\n")+"\r\n"}
+function isIOS(){return /iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)}
+function addToCalendar(f,t){var txt=icsText(f,t);
+  if(isIOS()){location.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(txt);return}
+  var b=new Blob([txt],{type:"text/calendar;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");
+  a.href=u;a.download="dart-"+f.datum+".ics";document.body.appendChild(a);a.click();
+  setTimeout(function(){a.remove();URL.revokeObjectURL(u)},4000)}
+function googleCal(f,t){var se=startEnd(f),ad=venue(f);
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent("Dart: "+f.heim+" – "+f.gast)+"&dates="+se[0]+"/"+se[1]+"&ctz=Europe%2FBerlin&location="+encodeURIComponent(ad)+"&details="+encodeURIComponent((t.liga_name||"")+" · Badische Dart Liga")}
+function calMenu(f,t){return menu("Kalender",[
+  {t:"Zum Kalender hinzufügen",sub:"iPhone, Android, Outlook (.ics)",fn:function(){addToCalendar(f,t)}},
+  {t:"Google Kalender",sub:"öffnet im Browser oder in der App",href:googleCal(f,t)}])}
+function routeMenu(addr){return menu("Route",mapLinks(addr))}
+
+/* ---------- Spielzeile ---------- */
 function pv(o,i,n){if(!o)return {};function g(a){a=a||[];return a.length===n?a[i]:(a.length===1&&n===1?a[0]:null)}
   return {sl:g(o.sl),hf:g(o.hf),max:g(o.max)}}
 function extras(g){var out=[];
@@ -258,21 +363,49 @@ function renderReport(r){
   var ft=el("div",null,"rf");
   if(r.legs){var x=el("span","Legs ");x.appendChild(el("b",r.legs[0]+" : "+r.legs[1]));ft.appendChild(x)}
   if(r.sets){var y=el("span","Sets ");y.appendChild(el("b",r.sets[0]+" : "+r.sets[1]));ft.appendChild(y)}
-  var u=safeUrl(r.url);if(u){var a2=el("a","Originalbogen bei der BDL");a2.href=u;a2.target="_blank";a2.rel="noopener";ft.appendChild(a2)}
+  var u=safeUrl(r.url);if(u)ft.appendChild(extLink(u,"Originalbogen bei der BDL"));
   box.appendChild(ft);return box}
 
-/* Spielerstatistik: offizielle BDL-Statistik (Siege, HF, SL, Max) + gespielte Spiele aus den Berichten */
+/* opts: team (Teamname zeigen), actions */
+function fixRow(f,t,o){o=o||{};var own=norm(t.name),li=document.createElement("li"),up=isUpcoming(f);
+  var m=el("div",null,"m"),rr=el("div","","r n");
+  if(o.team)m.appendChild(el("div",short(t.name),"tl"));
+  var vs=el("div",vsText(f),"vs"),pp=pill(f,t);if(pp)vs.insertBefore(pp,vs.firstChild);m.appendChild(vs);
+  var tm=el("div",null,"tm"),ad=venue(f);
+  if(f.heim){tm.appendChild(el("b",(f.zeit||"20:00")+" Uhr"));if(ad)tm.appendChild(document.createTextNode(" · "+ad));else tm.appendChild(document.createTextNode(" · Adresse folgt"))}
+  else tm.appendChild(document.createTextNode("Uhrzeit folgt"));
+  m.appendChild(tm);
+  if(up&&o.count)m.appendChild(el("span",dayTxt(daysTo(f)),"count"));
+  if(f.ergebnis){rr.textContent=f.ergebnis[0]+" : "+f.ergebnis[1];
+    var home=norm(f.heim)===own,mine=home?f.ergebnis[0]:f.ergebnis[1],opp=home?f.ergebnis[1]:f.ergebnis[0];
+    rr.className="r "+(mine>opp?"w":mine<opp?"l":"n");li.className="past"}
+  li.appendChild(dateBox(f));li.appendChild(m);li.appendChild(rr);
+  var acts=el("div",null,"acts");
+  if(up&&f.heim){acts.appendChild(calMenu(f,t));if(ad)acts.appendChild(routeMenu(ad))}
+  var rep=reportOf(f);
+  if(rep){var btn=el("button","Spielbericht ▾","btn sm"),panel=null;btn.type="button";
+    btn.onclick=function(){if(panel){panel.remove();panel=null;btn.textContent="Spielbericht ▾"}
+      else{panel=renderReport(rep);li.appendChild(panel);btn.textContent="Spielbericht ▴"}};
+    acts.appendChild(btn)}
+  if(acts.children.length)li.appendChild(acts);
+  return li}
+function formDots(t){var own=norm(t.name),pl=(t.fixtures||[]).filter(function(f){return f.ergebnis}).sort(function(a,b){return a.datum<b.datum?-1:1}).slice(-5);
+  if(!pl.length)return null;var d=el("span",null,"form");d.title="Letzte Spiele";
+  pl.forEach(function(f){var h=norm(f.heim)===own,a=h?f.ergebnis[0]:f.ergebnis[1],b=h?f.ergebnis[1]:f.ergebnis[0];d.appendChild(el("i",null,a>b?"w":a<b?"l":"u"))});return d}
+
+/* ---------- Spielerstatistik ---------- */
 function buildStats(){
-  var own={},P={},hide=(CFG.verein.spieler_ausblenden||[]).map(norm);
+  var own={},P={},hide=(CFG.verein.spieler_ausblenden||[]).map(norm),PAIRS={};
   CFG.teams.forEach(function(t){own[norm(t.name)]=t.name});
   function get(n,tn){var k=norm(n);if(hide.indexOf(k)>=0)return null;
-    var p=P[k]||(P[k]={name:n,teams:{},ge:0,gd:0,ew:0,dw:0,hfc:0,slc:0,maxc:0,official:false,rew:0,rdw:0,rhf:0,rsl:0,rmx:0});
+    var p=P[k]||(P[k]={name:n,teams:{},ge:0,gd:0,ew:0,dw:0,hfc:0,slc:0,maxc:0,official:false,rew:0,rdw:0,rhf:0,rsl:0,rmx:0,log:[],pt:{}});
     p.teams[tn]=1;return p}
   DATA.teams.forEach(function(t){(t.players||[]).forEach(function(x){
     var tn=own[norm(x.team)];if(!tn)return;var p=get(x.name,tn);if(!p)return;
     p.official=true;p.ew=x.einzel||0;p.dw=x.doppel||0;p.hfc=x.hf||0;p.slc=x.sl||0;p.maxc=x.max||0})});
   function lev(a,b){var m=[],i,j;for(i=0;i<=a.length;i++)m[i]=[i];for(j=1;j<=b.length;j++)m[0][j]=j;
     for(i=1;i<=a.length;i++)for(j=1;j<=b.length;j++)m[i][j]=Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return m[a.length][b.length]}
+  var known=[];
   function matchName(n,tn){
     var t=norm(n).replace(/\s+/g," ").trim(),mine=known.filter(function(x){return x.team===tn});
     var ex=mine.filter(function(x){return x.ks.some(function(k){return t.indexOf(k)>=0})});
@@ -288,32 +421,132 @@ function buildStats(){
       if(c2.length===1)return c2}
     return []}
   var UN={};buildStats.unmatched=UN;
-  var known=[];
   DATA.teams.forEach(function(t){(t.players||[]).forEach(function(x){if(own[norm(x.team)]&&hide.indexOf(norm(x.name))<0){var k=norm(x.name).replace(/\s+/g," "),w=k.split(" "),alt=w.length>1?w[w.length-1]+", "+w.slice(0,-1).join(" "):k;known.push({ks:[k,alt],name:x.name,team:own[norm(x.team)]})}})});
   Object.keys(DATA.reports||{}).forEach(function(id){
-    var r=DATA.reports[id];
+    var r=DATA.reports[id],fx=FXI[id];
     [["heim","h"],["gast","g"]].forEach(function(s){
       var tn=own[norm(r[s[0]])];if(!tn)return;
+      var oppTeam=s[0]==="heim"?r.gast:r.heim;
       (r.spiele||[]).forEach(function(g){
         var mine=s[0]==="heim"?g.ergebnis[0]:g.ergebnis[1],opp=s[0]==="heim"?g.ergebnis[1]:g.ergebnis[0],names=g[s[0]];
         var found=[];names.forEach(function(n){var m=matchName(n,tn);if(!m.length)UN[n]=(UN[n]||0)+1;m.forEach(function(x){if(found.indexOf(x)<0)found.push(x)})});
         var dbl=g.typ==="Doppel"||found.length>=2,list=found.length?found.map(function(x){return x.name}):names;
         list.forEach(function(n,i){
           var p=get(n,tn);if(!p)return;
-          if(dbl){p.gd++;if(mine>opp)p.rdw++}else{p.ge++;if(mine>opp)p.rew++;
+          var partners=dbl?list.filter(function(x){return x!==n}):[];
+          p.log.push({d:fx?fx.datum:"",opp:short(oppTeam),typ:dbl?"Doppel":"Einzel",won:mine>opp,sc:mine+":"+opp,partners:partners});
+          if(dbl){p.gd++;if(mine>opp)p.rdw++;
+            partners.forEach(function(q){var e=p.pt[q]||(p.pt[q]={g:0,w:0});e.g++;if(mine>opp)e.w++});
+            if(i===0&&list.length===2){var key=list.slice().sort().join("|"),pe=PAIRS[key]||(PAIRS[key]={a:list[0],b:list[1],g:0,w:0});pe.g++;if(mine>opp)pe.w++}}
+          else{p.ge++;if(mine>opp)p.rew++;
             var v=list.length===names.length?pv(g[s[1]],i,names.length):{};if(v.hf!=null)p.rhf++;if(v.sl!=null)p.rsl++;if(v.max!=null)p.rmx+=(v.max<=20?v.max:1)}})})})});
   var comp={};
   DATA.teams.forEach(function(t){var played=(t.fixtures||[]).filter(function(f){return f.ergebnis});
     comp[t.name]=played.length>0&&played.every(function(f){return f.id&&DATA.reports&&DATA.reports[f.id]})});
-  return Object.keys(P).map(function(k){var p=P[k];
+  var out=Object.keys(P).map(function(k){var p=P[k];
     if(!p.official){p.ew=p.rew;p.dw=p.rdw;p.hfc=p.rhf;p.slc=p.rsl;p.maxc=p.rmx}
-    p.w=p.ew+p.dw;p.pts=2*p.ew+p.dw;
+    p.w=p.ew+p.dw;p.pts=2*p.ew+p.dw;p.slug=slug(p.name);
     var cp=Object.keys(p.teams).every(function(t){return comp[t]});
     p.ke=cp&&p.ge>=p.ew;p.kd=cp&&p.gd>=p.dw;p.known=p.ke&&p.kd;
-    p.g=p.known?p.ge+p.gd:0;p.q=p.known&&p.g?p.w/p.g:null;return p})}
+    p.g=p.known?p.ge+p.gd:0;p.q=p.known&&p.g?p.w/p.g:null;
+    p.log.sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:0});return p});
+  out.pairs=Object.keys(PAIRS).map(function(k){return PAIRS[k]});
+  return out}
+function stats(){if(!ALL)ALL=buildStats();return ALL}
+function pct(a,b){return b?Math.round(a/b*100)+" %":"–"}
+
+/* ---------- Seiten ---------- */
 var PS={sort:null,team:"all",view:"all"};
-function renderPlayers(){
-  var all=buildStats(),teams=CFG.teams.map(function(t){return t.name}),V=PS.view;
+function playerLink(p,cls){var a=el("a");a.href="#spieler-"+p.slug;if(cls)a.className=cls;return a}
+
+function viewStart(m){
+  var v=CFG.verein,hb=$("heroBox");hb.textContent="";
+  var h=el("header",null,"hero"),lg=document.createElement("img");lg.className="logo";lg.alt="";lg.onerror=function(){lg.remove()};if(v.logo)lg.src=v.logo;h.appendChild(lg);
+  var w=el("div",null,"wrap");w.appendChild(el("div",(v.ort?"Dart · "+v.ort:"Dart"),"eyebrow"));
+  var h1=el("h1");v.name.split(" ").forEach(function(x){h1.appendChild(el("span",x))});w.appendChild(h1);
+  w.appendChild(el("p","Dartverein in der Badischen Dart Liga","sub"));
+  var row=el("div",null,"row"),all=nextAll();
+  if(all.length){var x=all[0],p=parts(x.n.datum),a=el("a",null,"btn pri");a.href="#"+x.t.slug;a.textContent="Nächstes Spiel: "+p.w+", "+p.kurz+" · "+short(x.t.name)+" →";row.appendChild(a)}
+  socialButtons(row);w.appendChild(row);h.appendChild(w);hb.appendChild(h);
+
+  /* nächste Spiele */
+  if(all.length){var ul=el("ul",null,"fix");all.forEach(function(x){ul.appendChild(fixRow(x.n,x.t,{team:true,count:true}))});m.appendChild(sec("Nächste Spiele",ul))}
+  else m.appendChild(sec("Nächste Spiele",el("div","Aktuell sind keine Spiele angesetzt.","card todo")));
+  /* teams */
+  var tc=el("div",null,"teams");
+  DATA.teams.forEach(function(t){var a=el("a",null,"tc");a.href="#"+t.slug;
+    var pu=photoUrl("team",t.slug),ph=el("div",null,"ph"+(pu?"":" none"));
+    if(pu){var i=document.createElement("img");i.alt=t.name;i.loading="lazy";i.onerror=function(){i.remove();ph.className="ph none";ph.appendChild(el("b",initials(short(t.name))))};i.src=pu;ph.appendChild(i)}
+    else ph.appendChild(el("b",initials(short(t.name))));
+    a.appendChild(ph);var bd=el("div",null,"bd");bd.appendChild(el("h3",t.name));bd.appendChild(el("div",t.liga_name,"lg"));
+    var r=rank(t),rk=el("div",null,"rk");rk.appendChild(el("span",r?"Platz "+r.platz+" · "+r.punkte+" Pkt.":"Tabelle folgt"));var fd=formDots(t);if(fd)rk.appendChild(fd);bd.appendChild(rk);a.appendChild(bd);tc.appendChild(a)});
+  m.appendChild(sec("Unsere Teams",tc));
+  /* top spieler */
+  var st=stats().filter(function(p){return p.pts>0}).sort(function(a,b){return b.pts-a.pts||b.w-a.w||a.name.localeCompare(b.name)}).slice(0,3);
+  if(st.length){var tl=el("ul",null,"top");st.forEach(function(p,i){var li=el("li"),a=playerLink(p);
+    a.appendChild(el("span",String(i+1),"nr"));a.appendChild(avatar(p.name,playerPhoto(p.name)));
+    var nm=el("div",null,"nm");nm.appendChild(el("b",p.name));nm.appendChild(el("small",Object.keys(p.teams).map(short).join(" · ")));a.appendChild(nm);
+    var pt=el("div",null,"pt");pt.appendChild(document.createTextNode(String(p.pts)));pt.appendChild(el("small","Punkte"));a.appendChild(pt);li.appendChild(a);tl.appendChild(li)});
+    m.appendChild(sec("Top-Spieler",tl,["Alle Spieler →","#spieler"]))}
+  /* verein */
+  var f=el("div",null,"tiles");
+  [["Gegründet",v.gegruendet],["Teams",String(DATA.teams.length)],["Training",v.training],["Spieltag","Freitags, 20 Uhr"]].forEach(function(x){f.appendChild(tile(x[0],x[1]||"folgt"))});
+  m.appendChild(sec("Verein auf einen Blick",f,["Mehr über uns →","#verein"]));
+  var cta=el("div",null,"card");cta.appendChild(el("p",v.willkommen||"Interesse am Dartspielen? Schau beim Training vorbei oder melde dich bei uns.","lead"));
+  var br=el("div");br.style.cssText="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center";
+  if(v.spiellokal)br.appendChild(routeMenu(v.spiellokal));socialButtons(br);cta.appendChild(br);m.appendChild(sec("Mitmachen",cta))}
+
+function nextAll(){var all=[];DATA.teams.forEach(function(t){var n=nextOf(t);if(n)all.push({t:t,n:n})});
+  all.sort(function(a,b){return when(a.n)-when(b.n)});return all}
+
+function socialUrl(val,base){val=String(val||"").trim();if(!val)return null;
+  if(safeUrl(val))return val;if(/^(www\.)?(instagram|facebook|fb)\.\w+/i.test(val))return "https://"+val.replace(/^\/+/,"");
+  return base+val.replace(/^@/,"").replace(/^\/+/,"")}
+var ICON_IG='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/></svg>';
+var ICON_FB='<svg class="f" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.6-1.5h1.5V4.3c-.3 0-1.2-.1-2.2-.1-2.3 0-3.9 1.4-3.9 4v2.2H8v3h2.5V21z"/></svg>';
+function socialList(){var v=CFG.verein,o=[];
+  var ig=socialUrl(v.instagram,"https://www.instagram.com/"),fb=socialUrl(v.facebook,"https://www.facebook.com/");
+  if(ig)o.push({u:ig,n:"Instagram",i:ICON_IG});if(fb)o.push({u:fb,n:"Facebook",i:ICON_FB});return o}
+function socialButtons(host,withText){socialList().forEach(function(s){var a=el("a",null,"btn "+(withText?"":"ico"));a.href=s.u;a.target="_blank";a.rel="noopener";a.setAttribute("aria-label",s.n);a.title=s.n;a.innerHTML=s.i;
+  if(withText)a.appendChild(document.createTextNode(s.n));host.appendChild(a)})}
+
+function viewTeam(m,t){
+  var own=norm(t.name),r=rank(t);
+  var pu=photoUrl("team",t.slug);
+  var hd=el("section",null,"page-h");hd.appendChild(el("h1",t.name));hd.appendChild(el("p",t.liga_name+" · Badische Dart Liga"));m.appendChild(hd);
+  if(pu){var im=document.createElement("img");im.className="teamimg";im.alt="Teamfoto "+t.name;im.onerror=function(){im.remove()};im.src=pu;m.appendChild(im)}
+  var tl=el("div",null,"tiles");
+  if(r){tl.appendChild(tile("Platz",r.platz+"."));tl.appendChild(tile("Punkte",String(r.punkte)));tl.appendChild(tile("Spiele",String(r.spiele)))}
+  var fd=formDots(t);if(fd){var d=el("div",null,"tile");d.appendChild(el("small","Form"));var b=el("b");b.appendChild(fd);d.appendChild(b);tl.appendChild(d)}
+  if(tl.children.length)m.appendChild(tl);
+  var fx=(t.fixtures||[]).slice().sort(function(a,b){return a.datum<b.datum?-1:1});
+  var upc=fx.filter(isUpcoming),pas=fx.filter(function(f){return !isUpcoming(f)}).reverse();
+  var box=el("div"),ul=el("ul",null,"fix"),mode=upc.length||!pas.length?"u":"p";
+  function draw(){ul.textContent="";var list=mode==="u"?upc:pas;
+    if(!list.length)ul.appendChild(el("li",mode==="u"?"Aktuell ist kein Spiel angesetzt.":"Noch keine Spiele gespielt."));
+    list.forEach(function(f,i){ul.appendChild(fixRow(f,t,{count:mode==="u"&&i===0}))});
+    Array.prototype.forEach.call(seg.children,function(b){b.setAttribute("aria-pressed",b.dataset.m===mode)})}
+  var seg=el("div",null,"seg");
+  [["u","Kommend ("+upc.length+")"],["p","Gespielt ("+pas.length+")"]].forEach(function(x){var b=el("button",x[1]);b.type="button";b.dataset.m=x[0];b.onclick=function(){mode=x[0];draw()};seg.appendChild(b)});
+  box.appendChild(seg);box.appendChild(ul);draw();m.appendChild(sec("Spielplan",box));
+  /* Kader */
+  var kad=stats().filter(function(p){return p.teams[t.name]}).sort(function(a,b){return b.pts-a.pts||a.name.localeCompare(b.name)});
+  if(kad.length){var g=el("div",null,"grid");kad.forEach(function(p){var a=playerLink(p,"pc");a.appendChild(avatar(p.name,playerPhoto(p.name),"m"));a.appendChild(el("b",p.name));a.appendChild(el("small",p.ew+" Einzel · "+p.dw+" Doppel Siege"));g.appendChild(a)});
+    m.appendChild(sec("Kader",g,["Ranking →","#spieler"]))}
+  /* Tabelle */
+  var tb=document.createElement("table");tb.id="tbl";
+  if(!(t.table||[]).length)tb.appendChild(el("caption","Die Tabelle folgt."));
+  else{var th=document.createElement("thead"),hr=document.createElement("tr");
+    [["#",""],["Team",""],["Sp",""],["G","hide-s"],["U","hide-s"],["V","hide-s"],["Sets","hide-s"],["Legs","hide-s"],["Pkt",""]].forEach(function(c){hr.appendChild(el("th",c[0],c[1]))});
+    th.appendChild(hr);tb.appendChild(th);var tbd=document.createElement("tbody");
+    t.table.forEach(function(x){var tr=document.createElement("tr");if(norm(x.team)===own)tr.className="own";
+      [[x.platz,""],[x.team,""],[x.spiele,""],[x.g,"hide-s"],[x.u,"hide-s"],[x.v,"hide-s"],[x.sets,"hide-s"],[x.legs,"hide-s"],[x.punkte,""]].forEach(function(c){tr.appendChild(el("td",c[0],c[1]))});tbd.appendChild(tr)});
+    tb.appendChild(tbd)}
+  var sc=el("div",null,"scroll");sc.appendChild(tb);m.appendChild(sec("Tabelle",sc))}
+
+function viewPlayers(m){
+  var all=stats(),teams=CFG.teams.map(function(t){return t.name}),V=PS.view;
+  var hd=el("section",null,"page-h");hd.appendChild(el("h1","Spieler"));hd.appendChild(el("p","Ranking aus der BDL-Statistik und den Spielberichten. Tippe auf einen Namen für das Profil."));m.appendChild(hd);
   all.forEach(function(p){
     if(V==="e"){p.vw=p.ew;p.vk=p.ke;p.vg=p.ke?p.ge:0}
     else if(V==="d"){p.vw=p.dw;p.vk=p.kd;p.vg=p.kd?p.gd:0}
@@ -322,169 +555,158 @@ function renderPlayers(){
   var sk=PS.sort||(all.some(function(p){return p.vq!=null})?"q":"w");
   if(V==="d"&&["maxc","hfc","slc"].indexOf(sk)>=0)sk="q";
   if(V!=="all"&&sk==="pts")sk="w";
-  var hl=$("pHigh");hl.textContent="";
+  var hl=el("div",null,"tiles");
   function best(label,fn,fmt,list){var b=null;list.forEach(function(p){var v=fn(p);if(v==null)return;if(!b||v>b.k)b={k:v,p:p}});
-    var d=el("div",null,"fact");d.appendChild(el("small",label));d.appendChild(el("b",b?fmt(b.p):"–"));d.appendChild(el("span",b?b.p.name:"noch keine Daten"));hl.appendChild(d)}
-  var minG=all.filter(function(p){return p.vg>=3});
-  var VN=V==="e"?"Einzel":V==="d"?"Doppel":"";
+    hl.appendChild(tile(label,b?fmt(b.p):"–",b?b.p.name:"noch keine Daten"))}
+  var minG=all.filter(function(p){return p.vg>=3}),VN=V==="e"?"Einzel":V==="d"?"Doppel":"";
   best("Beste Quote"+(VN?" "+VN:""),function(p){return p.vq==null?null:p.vq*1000+p.vg},function(p){return Math.round(p.vq*100)+" %"},minG.length?minG:all);
   best("Meiste Siege"+(VN?" "+VN:""),function(p){return p.vw>0?p.vw*1000+p.pts:null},function(p){return V==="all"?p.ew+" E · "+p.dw+" D":String(p.vw)},all);
   best("Meiste Maximums",function(p){return p.maxc>0?p.maxc:null},function(p){return String(p.maxc)},all);
   best("Meiste High Finishes",function(p){return p.hfc>0?p.hfc:null},function(p){return String(p.hfc)},all);
-  function chips(id,label,items,key){var c=$(id);c.textContent="";c.appendChild(el("small",label));
-    items.forEach(function(x){var b=el("button",x[1]);b.type="button";b.setAttribute("aria-pressed",PS[key]===x[0]||(key==="sort"&&sk===x[0]));b.onclick=function(){PS[key]=x[0];renderPlayers()};c.appendChild(b)})}
-  chips("pView","Ansicht",[["all","Gesamt"],["e","Einzel"],["d","Doppel"]],"view");
-  chips("pTeam","Team",[["all","Alle"]].concat(teams.map(function(t){return [t,t.replace(/^DC Phönix\s*/i,"")]})),"team");
-  var sorts=[["q","Quote"],["w","Siege"],["g","Spiele"]];
-  if(V==="all")sorts.push(["pts","Punkte"]);
+  m.appendChild(sec("Highlights",hl));
+  var ctl=el("div",null,"ctl");
+  function chips(label,items,key){var c=el("div",null,"chips");c.appendChild(el("small",label));
+    items.forEach(function(x){var b=el("button",x[1]);b.type="button";b.setAttribute("aria-pressed",PS[key]===x[0]||(key==="sort"&&sk===x[0]));b.onclick=function(){PS[key]=x[0];render()};c.appendChild(b)});ctl.appendChild(c)}
+  chips("Ansicht",[["all","Gesamt"],["e","Einzel"],["d","Doppel"]],"view");
+  chips("Team",[["all","Alle"]].concat(teams.map(function(t){return [t,short(t)]})),"team");
+  var sorts=[["q","Quote"],["w","Siege"],["g","Spiele"]];if(V==="all")sorts.push(["pts","Punkte"]);
   if(V!=="d")sorts=sorts.concat([["maxc","Maximums"],["hfc","High Finish"],["slc","Short Leg"]]);
-  chips("pSort","Sortieren",sorts,"sort");
+  chips("Sortieren",sorts,"sort");
   var list=all.filter(function(p){return PS.team==="all"||p.teams[PS.team]});
   list.sort(function(a,b){
     if(sk==="q"){var x=a.vq==null?-1:a.vq,y=b.vq==null?-1:b.vq;return y-x||b.vg-a.vg||b.vw-a.vw}
     if(sk==="w")return b.vw-a.vw||b.pts-a.pts||a.name.localeCompare(b.name);
     if(sk==="g")return b.vg-a.vg||b.vw-a.vw;
     return (b[sk]||0)-(a[sk]||0)||b.pts-a.pts||a.name.localeCompare(b.name)});
+  var tb=document.createElement("table");tb.id="pTbl";
+  if(!list.length)tb.appendChild(el("caption","Noch keine Spielerdaten. Sie erscheinen nach dem nächsten automatischen Update."));
+  else{var cols=[["#",""],["Spieler",""],["Sp",""],["S",""],["Quote",""]];
+    if(V==="all")cols.push(["Pkt","hide-s"]);if(V!=="d")cols=cols.concat([["Max",""],["HF",""],["SL",""]]);
+    var th=document.createElement("thead"),hr=document.createElement("tr");cols.forEach(function(c){hr.appendChild(el("th",c[0],c[1]))});th.appendChild(hr);tb.appendChild(th);
+    var tbd=document.createElement("tbody");
+    list.forEach(function(p,i){var tr=document.createElement("tr"),nm=el("td",null,"pn"),a=playerLink(p);
+      a.appendChild(avatar(p.name,playerPhoto(p.name)));var tx=el("span",null,"tx");tx.appendChild(el("b",p.name));
+      var tn=Object.keys(p.teams).map(short).join(" · ");tx.appendChild(el("small",V==="all"?tn+" · E "+p.ew+(p.ke?"/"+p.ge:"")+" · D "+p.dw+(p.kd?"/"+p.gd:""):tn));a.appendChild(tx);nm.appendChild(a);
+      var cells=[[i+1,""],null,[p.vk?p.vg:"–",""],[p.vw,""],[p.vq==null?"–":Math.round(p.vq*100)+" %",""]];
+      if(V==="all")cells.push([p.pts,"hide-s"]);if(V!=="d")cells=cells.concat([[p.maxc||"–",""],[p.hfc||"–",""],[p.slc||"–",""]]);
+      cells.forEach(function(c){tr.appendChild(c?el("td",c[0],c[1]):nm)});tbd.appendChild(tr)});tb.appendChild(tbd)}
+  var rs=el("div");rs.appendChild(ctl);var sc=el("div",null,"scroll");sc.style.marginTop="12px";sc.appendChild(tb);rs.appendChild(sc);
+  rs.appendChild(el("p","S = Siege, Sp = gespielte Spiele, Quote = Siege geteilt durch Spiele. Siege, High Finishes (HF), Short Legs (SL) und Maximums kommen aus der offiziellen BDL-Statistik (HF, SL und Max zählen dort nicht getrennt nach Einzel und Doppel), die gespielten Spiele aus den Spielberichten. Punkte wie in der BDL: Einzelsieg 2, Doppelsieg 1. Die Quote erscheint erst, wenn zu allen gespielten Spielen des Teams ein Spielbericht eingelesen ist.","pnote"));
+  m.appendChild(sec("Ranking",rs));
+  /* Beste Doppel */
+  var pr=(all.pairs||[]).slice().sort(function(a,b){return b.w-a.w||(b.w/b.g)-(a.w/a.g)||b.g-a.g}).slice(0,6);
+  if(pr.length&&V!=="e"){var pl=el("ul",null,"top");pr.forEach(function(x,i){var li=el("li"),d=el("div");d.style.cssText="display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 16px";
+    d.appendChild(el("span",String(i+1),"nr"));var nm=el("div",null,"nm");nm.appendChild(el("b",x.a+" & "+x.b));nm.appendChild(el("small",x.g+(x.g===1?" Spiel":" Spiele")));d.appendChild(nm);
+    var pt=el("div",null,"pt");pt.appendChild(document.createTextNode(pct(x.w,x.g)));pt.appendChild(el("small",x.w+" Siege"));d.appendChild(pt);li.appendChild(d);pl.appendChild(li)});
+    m.appendChild(sec("Beste Doppel-Paare",pl))}
+  /* Diagnose */
   var dg=[];DATA.teams.forEach(function(t){var pl=(t.fixtures||[]).filter(function(f){return f.ergebnis}),wr=pl.filter(function(f){return f.id&&DATA.reports&&DATA.reports[f.id]});
-    dg.push(t.name.replace(/^DC Phönix\s*/i,"")+": "+wr.length+" von "+pl.length+" gespielten Spielen mit eingelesenem Spielbericht")});
-  var bad=all.filter(function(p){return p.ge<p.ew||p.gd<p.dw}).map(function(p){return p.name+" (Einzel "+p.ew+" Siege/"+p.ge+" Spiele, Doppel "+p.dw+" Siege/"+p.gd+" Spiele in Berichten)"});
+    dg.push(short(t.name)+": "+wr.length+" von "+pl.length+" gespielten Spielen mit eingelesenem Spielbericht")});
   var dgt="Spielberichte – "+dg.join(" · ")+".";
-  if(/[?&]debug/.test(location.search)){if(bad.length)dgt+=" Unstimmig: "+bad.join("; ")+".";var um=Object.keys(buildStats.unmatched||{});if(um.length)dgt+=" Namen in Berichten ohne Zuordnung zur BDL-Statistik: "+um.join("; ")+".";if(DATA.notes&&DATA.notes.length)dgt+=" Hinweise: "+DATA.notes.join(" | ")}
-  $("pDiag").textContent=dgt;
-  var tb=$("pTbl");tb.textContent="";
-  if(!list.length){tb.appendChild(el("caption","Noch keine Spielerdaten. Sie erscheinen nach dem nächsten automatischen Update."));$("pNote").textContent="";return}
-  var cols=[["#",""],["Spieler",""],["Sp",""],["S",""],["Quote",""]];
-  if(V==="all")cols.push(["Pkt","hide-s"]);
-  if(V!=="d")cols=cols.concat([["Max",""],["HF",""],["SL",""]]);
-  var th=document.createElement("thead"),hr=document.createElement("tr");
-  cols.forEach(function(c){hr.appendChild(el("th",c[0],c[1]))});th.appendChild(hr);tb.appendChild(th);
-  var tbd=document.createElement("tbody");
-  list.forEach(function(p,i){
-    var tr=document.createElement("tr"),nm=el("td",p.name,"pn");
-    var tn=Object.keys(p.teams).map(function(t){return t.replace(/^DC Phönix\s*/i,"")}).join(" · ");
-    nm.appendChild(el("small",V==="all"?tn+" · Einzel "+p.ew+(p.ke?"/"+p.ge:"")+" · Doppel "+p.dw+(p.kd?"/"+p.gd:""):tn));
-    var cells=[[i+1,""],null,[p.vk?p.vg:"–",""],[p.vw,""],[p.vq==null?"–":Math.round(p.vq*100)+" %",""]];
-    if(V==="all")cells.push([p.pts,"hide-s"]);
-    if(V!=="d")cells=cells.concat([[p.maxc||"–",""],[p.hfc||"–",""],[p.slc||"–",""]]);
-    cells.forEach(function(c){tr.appendChild(c?el("td",c[0],c[1]):nm)});tbd.appendChild(tr)});
-  tb.appendChild(tbd);
-  $("pNote").textContent="Nur Spieler der eigenen Teams. Die Ansicht trennt Einzel und Doppel: S = Siege, Sp = gespielte Spiele, Quote = Siege geteilt durch Spiele. Siege, High Finishes (HF), Short Legs (SL) und Maximums kommen aus der offiziellen BDL-Statistik (HF, SL und Max zählen BDL-seitig nicht getrennt nach Einzel und Doppel), die gespielten Spiele aus den Spielberichten. Punkte wie in der BDL: Einzelsieg 2, Doppelsieg 1. Die Quote erscheint erst, wenn zu allen gespielten Spielen des Teams ein Spielbericht eingelesen ist."}
+  if(/[?&]debug/.test(location.search)){var bad=all.filter(function(p){return p.ge<p.ew||p.gd<p.dw}).map(function(p){return p.name+" (Einzel "+p.ew+" Siege/"+p.ge+" Spiele, Doppel "+p.dw+" Siege/"+p.gd+" Spiele in Berichten)"});
+    if(bad.length)dgt+=" Unstimmig: "+bad.join("; ")+".";var um=Object.keys(buildStats.unmatched||{});if(um.length)dgt+=" Namen in Berichten ohne Zuordnung zur BDL-Statistik: "+um.join("; ")+".";if(DATA.notes&&DATA.notes.length)dgt+=" Hinweise: "+DATA.notes.join(" | ")}
+  var dp=el("p",dgt,"pnote");dp.id="pDiag";m.appendChild(dp)}
 
-function renderTeam(t){
-  var own=norm(t.name);
-  $("tName").textContent=t.name;
-  $("tLiga").textContent=t.liga_name+" · Badische Dart Liga";
-  var st=$("tStats");st.textContent="";
-  var r=rank(t);
-  if(r){[["Platz",r.platz+"."],["Punkte",r.punkte],["Spiele",r.spiele]].forEach(function(x){var d=el("div",null,"stat");d.appendChild(el("b",x[1]));d.appendChild(el("small",x[0]));st.appendChild(d)})}
-  var fx=(t.fixtures||[]).slice().sort(function(a,b){return a.datum<b.datum?-1:1});
-  var next=nextOf(t),n=$("next");n.textContent="";n.className="card";
-  if(next){
-    n.appendChild(el("div",(next.spieltag?next.spieltag+". Spieltag · ":"")+parts(next.datum).full,"lbl"));
-    var vsd=el("div",vsText(next),"vs"),pp=pill(next,t);if(pp)vsd.insertBefore(pp,vsd.firstChild);n.appendChild(vsd);
-    var dd=daysTo(next),big=el("div",null,"big");
-    big.appendChild(el("b",dd<=0?"Heute":dd===1?"1":String(dd)));big.appendChild(el("small",dd<=0?"Spieltag":dd===1?"Tag":"Tage"));n.appendChild(big);
-    var inf=el("div",next.heim?(next.zeit||"20:00")+" Uhr":"Uhrzeit folgt","info");
-    var ve=venueEl(next);if(ve)inf.appendChild(ve);n.appendChild(inf);
-  }else{n.className="card plain";n.textContent="Aktuell ist kein Spiel angesetzt."}
-  var ul=$("fix");ul.textContent="";
-  if(!fx.length)ul.appendChild(el("li","Der Spielplan folgt."));
-  fx.forEach(function(f){
-    var li=document.createElement("li"),rr=el("div","","r n");
-    if(f.ergebnis){rr.textContent=f.ergebnis[0]+" : "+f.ergebnis[1];
-      var home=norm(f.heim)===own,mine=home?f.ergebnis[0]:f.ergebnis[1],opp=home?f.ergebnis[1]:f.ergebnis[0];
-      rr.className="r "+(mine>opp?"w":mine<opp?"l":"n");li.className="past"}
-    else rr.textContent=f.heim?(f.zeit||"20:00"):"";
-    var mm=el("div",null,"m");mm.appendChild(vsLine(f,t));var v2=venueEl(f);if(v2)mm.appendChild(v2);
-    var rep=reportOf(f);
-    if(rep){var btn=el("button","Spielbericht ▾","rb"),panel=null;btn.type="button";btn.setAttribute("aria-expanded","false");
-      btn.onclick=function(){if(panel){panel.remove();panel=null;btn.setAttribute("aria-expanded","false");btn.textContent="Spielbericht ▾"}
-        else{panel=renderReport(rep);li.appendChild(panel);btn.setAttribute("aria-expanded","true");btn.textContent="Spielbericht ▴"}};
-      mm.appendChild(btn)}
-    li.appendChild(dateBox(f));li.appendChild(mm);li.appendChild(rr);ul.appendChild(li)});
-  var tb=$("tbl");tb.textContent="";
-  if(!(t.table||[]).length){tb.appendChild(el("caption","Die Tabelle folgt."));return}
-  var th=document.createElement("thead"),hr=document.createElement("tr");
-  [["#",""],["Team",""],["Sp",""],["G","hide-s"],["U","hide-s"],["V","hide-s"],["Sets","hide-s"],["Legs","hide-s"],["Pkt",""]].forEach(function(c){hr.appendChild(el("th",c[0],c[1]))});
-  th.appendChild(hr);tb.appendChild(th);
-  var tbd=document.createElement("tbody");
-  t.table.forEach(function(x){
-    var tr=document.createElement("tr");if(norm(x.team)===own)tr.className="own";
-    [[x.platz,""],[x.team,""],[x.spiele,""],[x.g,"hide-s"],[x.u,"hide-s"],[x.v,"hide-s"],[x.sets,"hide-s"],[x.legs,"hide-s"],[x.punkte,""]].forEach(function(c){tr.appendChild(el("td",c[0],c[1]))});
-    tbd.appendChild(tr)});
-  tb.appendChild(tbd)}
+function viewProfile(m,key){
+  var p=stats().filter(function(x){return x.slug===key})[0];
+  if(!p){var b=el("a","← Alle Spieler","back");b.href="#spieler";m.appendChild(b);m.appendChild(el("p","Dieses Profil gibt es nicht (mehr).","todo"));return}
+  var info=playerInfo(p.name),b2=el("a","← Alle Spieler","back");b2.href="#spieler";m.appendChild(b2);
+  var pr=el("section",null,"prof");pr.appendChild(avatar(p.name,playerPhoto(p.name),"l"));
+  var tx=el("div");tx.appendChild(el("h1",p.name));if(info.spitzname)tx.appendChild(el("div","„"+info.spitzname+"“","nick"));
+  var sb=el("div",null,"sub");Object.keys(p.teams).forEach(function(t){var a=el("a",short(t),"pill h"),tm=DATA.teams.filter(function(x){return x.name===t})[0];if(tm)a.href="#"+tm.slug;a.style.textDecoration="none";sb.appendChild(a)});
+  if(info.seit)sb.appendChild(el("span","Dabei seit "+info.seit));tx.appendChild(sb);pr.appendChild(tx);m.appendChild(pr);
+  if(info.text)m.appendChild(el("div",info.text,"card lead"));
+  var tl=el("div",null,"tiles big");
+  tl.appendChild(tile("Quote",p.q==null?"–":Math.round(p.q*100)+" %",p.known?p.w+" von "+p.g+" Spielen":"wird berechnet, sobald alle Berichte da sind"));
+  tl.appendChild(tile("Siege",String(p.w),p.ew+" Einzel · "+p.dw+" Doppel"));
+  tl.appendChild(tile("Punkte",String(p.pts)));
+  tl.appendChild(tile("Maximums",String(p.maxc||0)));tl.appendChild(tile("High Finishes",String(p.hfc||0)));tl.appendChild(tile("Short Legs",String(p.slc||0)));
+  m.appendChild(sec("Bilanz",tl));
+  var bars=el("div",null,"bars card");
+  [["Einzel",p.ew,p.ge,p.ke],["Doppel",p.dw,p.gd,p.kd]].forEach(function(x){var d=el("div",null,"bar2"),s=el("small"),l=el("span",x[0]);s.appendChild(l);
+    var rt=el("b",x[3]?x[1]+" von "+x[2]+" · "+pct(x[1],x[2]):x[1]+" Siege");s.appendChild(rt);d.appendChild(s);
+    var tr=el("div",null,"tr"),i=el("i");i.style.width=(x[3]&&x[2]?Math.round(x[1]/x[2]*100):0)+"%";tr.appendChild(i);d.appendChild(tr);bars.appendChild(d)});
+  m.appendChild(sec("Einzel & Doppel",bars));
+  var tw=el("div",null,"two"),pts=Object.keys(p.pt).map(function(k){return {n:k,g:p.pt[k].g,w:p.pt[k].w}}).sort(function(a,b){return b.w-a.w||b.g-a.g});
+  if(pts.length){var ul=el("ul",null,"log");pts.forEach(function(x){var li=el("li"),d=el("span","","d"),t=el("div",null,"t");li.appendChild(avatar(x.n,playerPhoto(x.n)));
+      t.appendChild(el("b",x.n));t.appendChild(el("small",x.g+(x.g===1?" Doppel":" Doppel")+" zusammen"));li.appendChild(t);li.appendChild(el("span",x.w+" S","s"));ul.appendChild(li)});
+    ul.querySelectorAll("li").forEach(function(li){li.style.gridTemplateColumns="auto 1fr auto"});tw.appendChild(sec("Doppel-Partner",ul))}
+  if(p.log.length){var lg=el("ul",null,"log");p.log.slice(0,14).forEach(function(x){var li=el("li");li.appendChild(el("span",x.d?parts(x.d).kurz:"","d"));
+      var t=el("div",null,"t");t.appendChild(el("b",x.typ+" gegen "+x.opp));if(x.partners.length)t.appendChild(el("small","mit "+x.partners.join(", ")));li.appendChild(t);li.appendChild(el("span",x.sc,"s "+(x.won?"w":"l")));lg.appendChild(li)});
+    tw.appendChild(sec("Letzte Spiele",lg))}
+  if(tw.children.length)m.appendChild(tw)}
 
-function renderStart(){
+function viewClub(m){
   var v=CFG.verein;
-  $("beschr").textContent=v.beschreibung||(v.name+" ist ein Dartverein aus "+(v.ort||"der Region")+" und spielt mit "+DATA.teams.length+" Teams in der Badischen Dart Liga.");
-  var f=$("facts");f.textContent="";
-  [["Verein",v.name],["Ort",v.ort],["Gegründet",v.gegruendet],["Teams",String(DATA.teams.length)],["Training",v.training],["Spieltag","freitags, 20 Uhr"]].forEach(function(p){
-    var d=el("div",null,"fact");d.appendChild(el("small",p[0]));d.appendChild(el("b",p[1]||"folgt"));f.appendChild(d)});
-  var tc=$("teamCards");tc.textContent="";
-  DATA.teams.forEach(function(t){
-    var a=el("a",null,"tc");a.href="#"+t.slug;
-    a.appendChild(el("h3",t.name));a.appendChild(el("span",t.liga_name));
-    var r=rank(t);a.appendChild(el("div",r?"Platz "+r.platz+" · "+r.punkte+" Punkte":"Tabelle folgt","rk"));
-    a.appendChild(el("div","Zum Team →","go"));tc.appendChild(a)});
-  var na=$("nextAll");na.textContent="";
-  var all=[];
-  DATA.teams.forEach(function(t){var n=nextOf(t);if(n)all.push({t:t,n:n})});
-  all.sort(function(a,b){return a.n.datum<b.n.datum?-1:1});
-  all.forEach(function(x){
-    var li=document.createElement("li");li.className="two";
-    var m=el("div",null,"m");m.appendChild(el("b",x.t.name));m.appendChild(vsLine(x.n,x.t));
-    var ve=venueEl(x.n);if(ve)m.appendChild(ve);
-    m.appendChild(el("div",dayTxt(daysTo(x.n))+(x.n.heim?" · "+(x.n.zeit||"20:00")+" Uhr":""),"dd2"));
-    li.appendChild(dateBox(x.n));li.appendChild(m);na.appendChild(li)});
-  if(!all.length)na.appendChild(el("li","Aktuell sind keine Spiele angesetzt."));
-  var hn=$("heroNext");
-  if(all.length){var x=all[0],p=parts(x.n.datum);hn.hidden=false;hn.textContent="";hn.href="#"+x.t.slug;
-    hn.appendChild(el("span","Nächstes Spiel"));hn.appendChild(el("b",p.w+", "+p.day+". "+p.mon+" · "+x.t.name.replace(/^DC Phönix\s*/i,"")));hn.appendChild(el("span","Mehr →","go"))}
-  else hn.hidden=true;
-  var vs=$("vorstand");vs.textContent="";
-  if(v.vorstand&&v.vorstand.length)v.vorstand.forEach(function(p){fillRow(vs,p.rolle,p.name)});
-  else vs.appendChild(el("span","Der Vorstand wird noch eingetragen.","todo"));
-  $("willkommen").textContent=v.willkommen||"Interesse am Dartspielen? Schau beim Training vorbei oder melde dich über die Kontaktdaten.";
-  var dl=$("info");dl.textContent="";
-  fillRow(dl,"Training",v.training);fillRow(dl,"Spiellokal",v.spiellokal);fillRow(dl,"Kontakt",v.kontakt);
-  fillRow(dl,"Instagram",v.instagram,true);fillRow(dl,"Facebook",v.facebook,true)}
+  var hd=el("section",null,"page-h");hd.appendChild(el("h1","Verein"));hd.appendChild(el("p",v.name+(v.ort?" · "+v.ort:"")));m.appendChild(hd);
+  m.appendChild(el("div",v.beschreibung||(v.name+" ist ein Dartverein aus "+(v.ort||"der Region")+" und spielt mit "+DATA.teams.length+" Teams in der Badischen Dart Liga."),"card lead"));
+  /* Vorstand */
+  var bd=el("div",null,"board");
+  (v.vorstand||[]).forEach(function(p){var c=el("div",null,"bc");c.appendChild(avatar(p.name,photoUrl("vorstand",p.name,p.foto),"l"));c.appendChild(el("b",p.name));c.appendChild(el("span",p.rolle||"","rl"));bd.appendChild(c)});
+  m.appendChild(sec("Vorstand",(v.vorstand&&v.vorstand.length)?bd:el("p","Der Vorstand wird noch eingetragen.","todo")));
+  /* Infos */
+  var c=el("div",null,"card"),dl=el("dl");
+  function row(k,val,node){dl.appendChild(el("dt",k));var dd=el("dd");if(node)dd.appendChild(node);else if(val)dd.textContent=val;else dd.appendChild(el("span","folgt","todo"));dl.appendChild(dd)}
+  row("Training",v.training);
+  var sl=el("div");if(v.spiellokal){sl.appendChild(document.createTextNode(v.spiellokal));sl.appendChild(routeMenu(v.spiellokal))}
+  row("Spiellokal",v.spiellokal,v.spiellokal?sl:null);
+  var k=v.kontakt,kn=null;if(k){kn=el("span");if(/@/.test(k)&&!/\s/.test(k)){kn=el("a",k);kn.href="mailto:"+k}else if(/^[+\d][\d\s\/\-()]{5,}$/.test(k)){kn=el("a",k);kn.href="tel:"+k.replace(/[^\d+]/g,"")}else kn.textContent=k}
+  row("Kontakt",k,kn);
+  if(v.gegruendet)row("Gegründet",v.gegruendet);
+  c.appendChild(dl);var so=el("div",null,"social");so.style.marginTop="16px";socialButtons(so,true);if(so.children.length)c.appendChild(so);
+  m.appendChild(sec("Infos & Kontakt",c));
+  /* Teams */
+  var tg=el("div",null,"teams");
+  DATA.teams.forEach(function(t){var a=el("a",null,"tc");a.href="#"+t.slug;var pu=photoUrl("team",t.slug),ph=el("div",null,"ph"+(pu?"":" none"));
+    if(pu){var i=document.createElement("img");i.alt=t.name;i.loading="lazy";i.onerror=function(){i.remove();ph.className="ph none";ph.appendChild(el("b",initials(short(t.name))))};i.src=pu;ph.appendChild(i)}else ph.appendChild(el("b",initials(short(t.name))));
+    a.appendChild(ph);var b=el("div",null,"bd");b.appendChild(el("h3",t.name));b.appendChild(el("div",t.liga_name,"lg"));a.appendChild(b);tg.appendChild(a)});
+  m.appendChild(sec("Teams",tg));
+  /* Galerie */
+  var gl=PH.galerie||[];
+  if(gl.length){var g=el("div",null,"gal");gl.forEach(function(n){var u="fotos/galerie/"+encodeURIComponent(n),b=el("button");b.type="button";b.setAttribute("aria-label","Foto vergrößern");
+      var i=document.createElement("img");i.loading="lazy";i.alt="";i.onerror=function(){b.remove()};i.src=u;b.appendChild(i);b.onclick=function(){lightbox(u)};g.appendChild(b)});
+    m.appendChild(sec("Galerie",g))}}
+function lightbox(u){var o=el("div",null,"lb"),i=document.createElement("img");i.src=u;i.alt="";o.appendChild(i);
+  function close(){o.remove();document.removeEventListener("keydown",key)}function key(e){if(e.key==="Escape")close()}
+  o.onclick=close;document.addEventListener("keydown",key);document.body.appendChild(o)}
 
-function route(){
-  var h=(location.hash||"#start").slice(1),t=null;
+/* ---------- Routing ---------- */
+function render(){
+  var h=(location.hash||"#start").slice(1),m=$("main"),t=null;
   DATA.teams.forEach(function(x){if(x.slug===h)t=x});
-  var pl=!t&&h==="spieler",st=!t&&!pl;
-  $("vStart").hidden=!st;$("vTeam").hidden=!t;$("vPlayers").hidden=!pl;
-  if(t)renderTeam(t);else if(pl)renderPlayers();else renderStart();
-  if(!st)$("heroNext").hidden=true;
-  var cur=t?t.slug:pl?"spieler":"start";
-  Array.prototype.forEach.call($("tabs").children,function(a){
-    if(a.getAttribute("href")==="#"+cur)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
-  document.title=(t?t.name+" · ":pl?"Spieler · ":"")+CFG.verein.name;
-  var nv=document.querySelector(".nav");if(window.scrollY>nv.offsetTop)window.scrollTo(0,nv.offsetTop)}
+  m.textContent="";$("heroBox").textContent="";
+  var cur="start",ttl="";
+  if(t){viewTeam(m,t);cur=t.slug;ttl=t.name+" · "}
+  else if(h==="spieler"){viewPlayers(m);cur="spieler";ttl="Spieler · "}
+  else if(h.indexOf("spieler-")===0){viewProfile(m,h.slice(8));cur="spieler";var p=stats().filter(function(x){return x.slug===h.slice(8)})[0];ttl=p?p.name+" · ":""}
+  else if(h==="verein"){viewClub(m);cur="verein";ttl="Verein · "}
+  else viewStart(m);
+  Array.prototype.forEach.call($("tabs").children,function(a){if(a.getAttribute("href")==="#"+cur)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  document.title=ttl+CFG.verein.name}
+function onHash(){render();window.scrollTo(0,0)}
 
 function init(){
   var v=CFG.verein;
-  DATA.teams.forEach(function(t,i){var c=CFG.teams[i]||{};t.slug=slug(c.slug||t.name.replace(/^dc ph(ö|oe)nix\s*/i,"")||t.name)||("team"+i)});
-  var words=v.name.split(" "),h=$("vname");h.textContent="";
-  words.forEach(function(w,i){var s=el("span",w);if(/^ph(ö|oe)nix$/i.test(w))s.className="grad";h.appendChild(s)});
-  $("vsub").textContent="Dart"+(v.ort?" · "+v.ort:"");
-  $("vtag").textContent="Dartverein in der Badischen Dart Liga";
+  DATA.teams.forEach(function(t,i){var c=CFG.teams[i]||{};t.slug=slug(c.slug||t.name.replace(/^dc ph(ö|oe)nix\s*/i,"")||t.name)||("team"+i);
+    (t.fixtures||[]).forEach(function(f){if(f.id)FXI[f.id]=f})});
+  $("bname").textContent=short(v.name).length<v.name.length?"DC Phönix":v.name;
+  var bl=$("blogo");if(v.logo){bl.onload=function(){bl.hidden=false};bl.onerror=function(){bl.hidden=true};bl.src=v.logo}
   $("entwurf").hidden=!v.entwurf;
-  var lg=$("logo");if(v.logo){lg.onload=function(){lg.hidden=false};lg.onerror=function(){lg.hidden=true};lg.src=v.logo}
   var tabs=$("tabs");
-  [["Start","start"]].concat(DATA.teams.map(function(t){return [t.name.replace(/^DC Phönix\s*/i,"")||t.name,t.slug]})).concat([["Spieler","spieler"]]).forEach(function(p){
-    var a=el("a",p[0]);a.href="#"+p[1];tabs.appendChild(a)});
+  [["Start","start"]].concat(DATA.teams.map(function(t){return [short(t.name),t.slug]})).concat([["Spieler","spieler"],["Verein","verein"]]).forEach(function(p){var a=el("a",p[0]);a.href="#"+p[1];tabs.appendChild(a)});
   var lk=$("links");
   [["Impressum",v.impressum],["Datenschutz",v.datenschutz]].forEach(function(p){
     var u=safeUrl(p[1])||(p[1]&&/^[\w.\-\/]+$/.test(p[1])?p[1]:null);
     if(u){var a=el("a",p[0]);a.href=u;lk.appendChild(a)}else lk.appendChild(el("span",p[0]+" folgt"))});
+  socialButtons($("soc"));
   var u=DATA.updated?new Date(DATA.updated):null;
   $("upd").textContent=u&&!isNaN(u)?"Stand: "+u.toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"}):"";
-  window.addEventListener("hashchange",route);route()}
+  document.addEventListener("click",function(e){document.querySelectorAll("details.menu[open]").forEach(function(d){if(!d.contains(e.target))d.open=false})});
+  window.addEventListener("hashchange",onHash);render()}
 
-Promise.all([getJSON("config.json"),getJSON("data.json")]).then(function(r){CFG=r[0];DATA=r[1];
+Promise.all([getJSON("config.json"),getJSON("data.json"),getJSON("fotos/index.json").catch(function(){return {}})]).then(function(r){CFG=r[0];DATA=r[1];PH=r[2]||{};
   if(!DATA.teams||!DATA.teams.length)throw new Error("keine Teams");init()})
-.catch(function(e){var m=document.querySelector("main");m.textContent="Daten konnten nicht geladen werden.";m.className="wrap err";console.error(e)});
+.catch(function(e){$("main").textContent="Daten konnten nicht geladen werden.";$("main").className="wrap err";console.error(e)});
 })();
 </script>
 </body>

@@ -355,6 +355,22 @@ def load(name, offline):
     return fetch(BASE + name)
 
 
+def write_photo_index(root="fotos"):
+    """Listet alle Bilder in fotos/<Ordner>/ nach fotos/index.json auf (Ordner -> Dateinamen)."""
+    exts = (".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif")
+    out = {}
+    try:
+        if os.path.isdir(root):
+            for sub in sorted(os.listdir(root)):
+                d = os.path.join(root, sub)
+                if os.path.isdir(d):
+                    out[sub] = sorted(n for n in os.listdir(d) if n.lower().endswith(exts))
+            with open(os.path.join(root, "index.json"), "w", encoding="utf-8") as f:
+                json.dump(out, f, ensure_ascii=False, indent=1)
+    except Exception as e:
+        print("Fotoliste:", e)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default="config.json")
@@ -362,6 +378,7 @@ def main():
     ap.add_argument("--offline", help="Ordner mit Test-HTML statt Abruf von der BDL")
     args = ap.parse_args()
 
+    write_photo_index()
     with open(args.config, encoding="utf-8") as f:
         cfg = json.load(f)
     old = {}
