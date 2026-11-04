@@ -6,9 +6,9 @@
 <title>DC Phönix Durmersheim</title>
 <link rel="icon" href="logo.png">
 <style>
-:root{--bg:#0B0907;--bg2:#14100C;--card:rgba(255,255,255,.055);--card-solid:#18130F;--line:rgba(255,255,255,.11);--fg:#F6EFE0;--mute:#A99F8C;--a1:#FF7A2F;--a2:#FFC25A;--a-fg:#1A0F05;--own:rgba(255,138,61,.16);--win:#6CD08A;--loss:#FF7B63;--warn-bg:#2B2410;--warn-fg:#F3DE8A;--logo-filter:invert(1) grayscale(1);--logo-blend:screen;--logo-op:.3;color-scheme:dark}
-@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#F7F1E4;--bg2:#EFE6D2;--card:rgba(255,255,255,.75);--card-solid:#fff;--line:rgba(30,20,10,.12);--fg:#19130D;--mute:#6E6350;--a1:#E2541A;--a2:#F09A2A;--a-fg:#fff;--own:rgba(226,84,26,.12);--win:#2A7A45;--loss:#B63A27;--warn-bg:#FFE9A8;--warn-fg:#5A4500;--logo-filter:none;--logo-blend:multiply;--logo-op:.22;color-scheme:light}}
-:root[data-theme="light"]{--bg:#F7F1E4;--bg2:#EFE6D2;--card:rgba(255,255,255,.75);--card-solid:#fff;--line:rgba(30,20,10,.12);--fg:#19130D;--mute:#6E6350;--a1:#E2541A;--a2:#F09A2A;--a-fg:#fff;--own:rgba(226,84,26,.12);--win:#2A7A45;--loss:#B63A27;--warn-bg:#FFE9A8;--warn-fg:#5A4500;--logo-filter:none;--logo-blend:multiply;--logo-op:.22;color-scheme:light}
+:root{--bg:#080808;--bg2:#111111;--card:rgba(255,255,255,.05);--card-solid:#121212;--line:rgba(255,255,255,.13);--fg:#F5F5F3;--mute:#9D9D99;--a1:#FFFFFF;--a2:#B4B4AF;--a-fg:#0A0A0A;--own:rgba(255,255,255,.11);--win:#6CD08A;--loss:#FF7B63;--warn-bg:#262626;--warn-fg:#E8E8E4;--logo-filter:grayscale(1) contrast(1.12);--logo-blend:normal;--logo-op:1;color-scheme:dark}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#F3F3F0;--bg2:#E8E8E4;--card:rgba(255,255,255,.82);--card-solid:#FFFFFF;--line:rgba(0,0,0,.13);--fg:#0A0A0A;--mute:#62625E;--a1:#0A0A0A;--a2:#4B4B48;--a-fg:#FFFFFF;--own:rgba(0,0,0,.07);--win:#2A7A45;--loss:#B63A27;--warn-bg:#E4E4E0;--warn-fg:#222;--logo-filter:grayscale(1) contrast(1.1) brightness(1.05);--logo-blend:multiply;--logo-op:.5;color-scheme:light}}
+:root[data-theme="light"]{--bg:#F3F3F0;--bg2:#E8E8E4;--card:rgba(255,255,255,.82);--card-solid:#FFFFFF;--line:rgba(0,0,0,.13);--fg:#0A0A0A;--mute:#62625E;--a1:#0A0A0A;--a2:#4B4B48;--a-fg:#FFFFFF;--own:rgba(0,0,0,.07);--win:#2A7A45;--loss:#B63A27;--warn-bg:#E4E4E0;--warn-fg:#222;--logo-filter:grayscale(1) contrast(1.1) brightness(1.05);--logo-blend:multiply;--logo-op:.5;color-scheme:light}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
@@ -21,15 +21,16 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .banner{background:var(--warn-bg);color:var(--warn-fg);font-size:.85rem;padding-block:8px;padding-top:calc(8px + env(safe-area-inset-top,0px))}
 
 /* Hero mit Logo im Hintergrund */
-.hero{position:relative;overflow:hidden;isolation:isolate;padding-block:46px 54px;background:
- radial-gradient(70% 90% at 85% 10%,color-mix(in srgb,var(--a1) 28%,transparent),transparent 70%),
- radial-gradient(60% 70% at 0% 100%,color-mix(in srgb,var(--a2) 14%,transparent),transparent 70%),var(--bg)}
-.hero .logo{position:absolute;z-index:-1;right:-18%;top:50%;width:min(125vw,760px);aspect-ratio:1;object-fit:cover;transform:translateY(-50%);
+.hero{position:relative;overflow:hidden;isolation:isolate;min-height:min(80vh,600px);display:flex;align-items:flex-end;padding-block:56px 48px;background:
+ radial-gradient(60% 80% at 80% 20%,color-mix(in srgb,var(--fg) 9%,transparent),transparent 70%),var(--bg)}
+.hero .wrap{width:100%}
+.hero .logo{position:absolute;z-index:-1;right:-6%;top:46%;width:min(112vw,620px);aspect-ratio:1;object-fit:cover;transform:translateY(-52%);
  filter:var(--logo-filter);mix-blend-mode:var(--logo-blend);opacity:var(--logo-op);
- -webkit-mask-image:radial-gradient(closest-side,#000 35%,transparent 100%);mask-image:radial-gradient(closest-side,#000 35%,transparent 100%)}
+ -webkit-mask-image:radial-gradient(closest-side,#000 70%,transparent 100%);mask-image:radial-gradient(closest-side,#000 70%,transparent 100%)}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,var(--bg) 0%,color-mix(in srgb,var(--bg) 92%,transparent) 30%,transparent 62%),linear-gradient(90deg,var(--bg) 0%,transparent 55%)}
 .eyebrow{display:inline-flex;gap:8px;align-items:center;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:600}
 .eyebrow::before{content:"";width:28px;height:2px;background:linear-gradient(90deg,var(--a1),var(--a2));border-radius:2px}
-.hero h1{font-size:clamp(2.6rem,12vw,5.2rem);line-height:.95;font-weight:900;letter-spacing:-.035em;text-transform:uppercase;margin-top:14px;max-width:11ch}
+.hero h1{font-size:clamp(2.8rem,13vw,5.8rem);line-height:.92;font-weight:900;letter-spacing:-.035em;text-transform:uppercase;margin-top:14px;max-width:11ch}
 .hero h1 span{display:block}
 .hero .sub{margin:16px 0 0;max-width:34ch;color:var(--mute);font-size:1.05rem}
 .chip{display:inline-flex;flex-wrap:wrap;gap:4px 10px;align-items:center;margin-top:24px;padding:10px 16px;border-radius:16px;background:var(--card);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:.92rem;text-decoration:none}
@@ -49,7 +50,7 @@ main{padding-block:30px 48px}
 section{min-width:0}
 h2{font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:10px}
 h2::after{content:"";flex:1;height:1px;background:var(--line)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:0 1px 0 color-mix(in srgb,var(--fg) 8%,transparent) inset;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .lead p{margin:0;font-size:1.15rem;line-height:1.5}
 
 .facts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}@media (min-width:640px){.facts{grid-template-columns:repeat(3,1fr)}}
@@ -273,11 +274,20 @@ function buildStats(){
   function lev(a,b){var m=[],i,j;for(i=0;i<=a.length;i++)m[i]=[i];for(j=1;j<=b.length;j++)m[0][j]=j;
     for(i=1;i<=a.length;i++)for(j=1;j<=b.length;j++)m[i][j]=Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return m[a.length][b.length]}
   function matchName(n,tn){
-    var t=norm(n).replace(/\s+/g," "),mine=known.filter(function(x){return x.team===tn});
+    var t=norm(n).replace(/\s+/g," ").trim(),mine=known.filter(function(x){return x.team===tn});
     var ex=mine.filter(function(x){return x.ks.some(function(k){return t.indexOf(k)>=0})});
     if(ex.length)return ex;
     var best=null,bd=99;mine.forEach(function(x){var d=lev(t,x.ks[0]);if(d<bd){bd=d;best=x}});
-    return best&&bd<=2&&t.length>=8?[best]:[]}
+    if(best&&bd<=2&&t.length>=8)return [best];
+    var toks=t.split(/[ ,.]+/).filter(function(w){return w.length>=1}),long=toks.filter(function(w){return w.length>=3});
+    var cand=mine.filter(function(x){var w=x.ks[0].split(" "),sur=w[w.length-1],tol=sur.length>=6?2:0;
+      return long.some(function(tk){return tk===sur||(tol&&lev(tk,sur)<=tol)})});
+    if(cand.length===1)return cand;
+    if(cand.length>1){var ini=toks.map(function(w){return w[0]});
+      var c2=cand.filter(function(x){return ini.indexOf(x.ks[0][0])>=0});
+      if(c2.length===1)return c2}
+    return []}
+  var UN={};buildStats.unmatched=UN;
   var known=[];
   DATA.teams.forEach(function(t){(t.players||[]).forEach(function(x){if(own[norm(x.team)]&&hide.indexOf(norm(x.name))<0){var k=norm(x.name).replace(/\s+/g," "),w=k.split(" "),alt=w.length>1?w[w.length-1]+", "+w.slice(0,-1).join(" "):k;known.push({ks:[k,alt],name:x.name,team:own[norm(x.team)]})}})});
   Object.keys(DATA.reports||{}).forEach(function(id){
@@ -286,7 +296,7 @@ function buildStats(){
       var tn=own[norm(r[s[0]])];if(!tn)return;
       (r.spiele||[]).forEach(function(g){
         var mine=s[0]==="heim"?g.ergebnis[0]:g.ergebnis[1],opp=s[0]==="heim"?g.ergebnis[1]:g.ergebnis[0],names=g[s[0]];
-        var found=[];names.forEach(function(n){matchName(n,tn).forEach(function(x){if(found.indexOf(x)<0)found.push(x)})});
+        var found=[];names.forEach(function(n){var m=matchName(n,tn);if(!m.length)UN[n]=(UN[n]||0)+1;m.forEach(function(x){if(found.indexOf(x)<0)found.push(x)})});
         var dbl=g.typ==="Doppel"||found.length>=2,list=found.length?found.map(function(x){return x.name}):names;
         list.forEach(function(n,i){
           var p=get(n,tn);if(!p)return;
@@ -339,7 +349,7 @@ function renderPlayers(){
     dg.push(t.name.replace(/^DC Phönix\s*/i,"")+": "+wr.length+" von "+pl.length+" gespielten Spielen mit eingelesenem Spielbericht")});
   var bad=all.filter(function(p){return p.ge<p.ew||p.gd<p.dw}).map(function(p){return p.name+" (Einzel "+p.ew+" Siege/"+p.ge+" Spiele, Doppel "+p.dw+" Siege/"+p.gd+" Spiele in Berichten)"});
   var dgt="Spielberichte – "+dg.join(" · ")+".";
-  if(/[?&]debug/.test(location.search)){if(bad.length)dgt+=" Unstimmig: "+bad.join("; ")+".";if(DATA.notes&&DATA.notes.length)dgt+=" Hinweise: "+DATA.notes.join(" | ")}
+  if(/[?&]debug/.test(location.search)){if(bad.length)dgt+=" Unstimmig: "+bad.join("; ")+".";var um=Object.keys(buildStats.unmatched||{});if(um.length)dgt+=" Namen in Berichten ohne Zuordnung zur BDL-Statistik: "+um.join("; ")+".";if(DATA.notes&&DATA.notes.length)dgt+=" Hinweise: "+DATA.notes.join(" | ")}
   $("pDiag").textContent=dgt;
   var tb=$("pTbl");tb.textContent="";
   if(!list.length){tb.appendChild(el("caption","Noch keine Spielerdaten. Sie erscheinen nach dem nächsten automatischen Update."));$("pNote").textContent="";return}
@@ -353,7 +363,7 @@ function renderPlayers(){
     var tr=document.createElement("tr"),nm=el("td",p.name,"pn");
     var tn=Object.keys(p.teams).map(function(t){return t.replace(/^DC Phönix\s*/i,"")}).join(" · ");
     nm.appendChild(el("small",V==="all"?tn+" · Einzel "+p.ew+(p.ke?"/"+p.ge:"")+" · Doppel "+p.dw+(p.kd?"/"+p.gd:""):tn));
-    var cells=[[i+1,""],null,[p.vk&&p.vg?p.vg:"–",""],[p.vw,""],[p.vq==null?"–":Math.round(p.vq*100)+" %",""]];
+    var cells=[[i+1,""],null,[p.vk?p.vg:"–",""],[p.vw,""],[p.vq==null?"–":Math.round(p.vq*100)+" %",""]];
     if(V==="all")cells.push([p.pts,"hide-s"]);
     if(V!=="d")cells=cells.concat([[p.maxc||"–",""],[p.hfc||"–",""],[p.slc||"–",""]]);
     cells.forEach(function(c){tr.appendChild(c?el("td",c[0],c[1]):nm)});tbd.appendChild(tr)});
