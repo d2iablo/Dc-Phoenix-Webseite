@@ -58,6 +58,7 @@
     "Dart Club Rheinau 2024 e.V. 1": "Sporthaus Freistett, Am Friedrich Stephan Stadion 1, 77866 Rheinau Freistett",
     "Rastatter SC/DJK Surrounders 3": "Hotel Brückenhof, Richard-Wagner-Ring 61, 76437 Rastatt",
     "SC Eisental Darts 1": "Clubhaus SC Eisental, Engertweg 12, 77815 Bühl"
-  },
-  "spieler": { "Paul Konradi": { "spitzname": "King Kong", "seit": "2021", "text": "Spieler." } },
+  }
 }
+
+  "spieler": { "Paul Konradi": { "spitzname": "King Kong", "seit": "2021", "text": "Spieler." } }
