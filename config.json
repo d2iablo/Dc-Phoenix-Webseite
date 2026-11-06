@@ -73,49 +73,64 @@
   "sponsoren": [],
   "spieler": {
     "Franck Vandamme": {
-      "rolle": "Kapitän"
+      "rolle": "Kapitän",
+      "spitzname": ""
     },
     "Paul Konradi": {
-      "rolle": "Spieler"
+      "rolle": "Spieler",
+      "spitzname": ""
     },
     "Simon Becker": {
-      "rolle": "Spieler"
+      "rolle": "Spieler",
+      "spitzname": ""
     },
     "Fabian Waible": {
-      "rolle": "Spieler"
+      "rolle": "Spieler",
+      "spitzname": ""
     },
     "Mario Schiefer": {
-      "rolle": "Spieler"
+      "rolle": "Spieler",
+      "spitzname": ""
     },
     "Celine Vandamme": {
-      "rolle": "Spieler"
+      "rolle": "Spieler",
+      "spitzname": ""
     },
     "Thomas Weisbrod": {
-      "rolle": "Spieler"
+      "rolle": "Spieler",
+      "spitzname": ""
     },
     "Dominik Piro": {
-      "rolle": "Spieler"
+      "rolle": "Spieler",
+      "spitzname": ""
     },
     "Pierre Vandamme": {
-      "rolle": "Spieler"
+      "rolle": "Spieler",
+      "spitzname": ""
     },
     "Artur Lang": {
-      "rolle": "Kapitän"
+      "rolle": "Kapitän",
+      "spitzname": ""
     },
     "Richard Lang": {
-      "rolle": "Spieler"
+      "rolle": "Spieler",
+      "spitzname": ""
     },
     "Marcel Diller": {
-      "rolle": "Spieler"
+      "rolle": "Spieler",
+      "spitzname": ""
     },
     "Daniel Scherhaufer": {
-      "rolle": "Co-Kapitän"
+      "rolle": "Co-Kapitän",
+      "spitzname": ""
     },
     "Paul Jung": {
-      "rolle": "Spieler"
+      "rolle": "Spieler",
+      "spitzname": ""
     },
     "Rudolf Beck": {
-      "rolle": "Spieler"
+      "rolle": "Spieler",
+      "spitzname": ""
     }
   }
 }
