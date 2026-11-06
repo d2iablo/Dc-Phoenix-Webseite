@@ -10,7 +10,7 @@
     "logo": "logo.png",
     "impressum": "impressum.html",
     "datenschutz": "datenschutz.html",
-    "entwurf": true,
+    "entwurf": false,
     "gegruendet": "2021",
     "beschreibung": "",
     "willkommen": "",
