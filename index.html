@@ -512,7 +512,7 @@ function viewStart(m){
   var st=stats().filter(function(p){return p.pts>0}).sort(function(a,b){return b.pts-a.pts||b.w-a.w||a.name.localeCompare(b.name)}).slice(0,3);
   if(st.length){var tl=el("ul",null,"top cols");st.forEach(function(p,i){var li=el("li"),a=playerLink(p);
     a.appendChild(el("span",String(i+1),"nr"));a.appendChild(avatar(p.name,playerPhoto(p.name)));
-    var nm=el("div",null,"nm");nm.appendChild(el("b",p.name));nm.appendChild(el("small",Object.keys(p.teams).map(short).join(" · ")));a.appendChild(nm);
+    var nm=el("div",null,"nm");var ti=playerInfo(p.name);nm.appendChild(el("b",p.name));nm.appendChild(el("small",(ti.spitzname?"„"+ti.spitzname+"“ · ":"")+Object.keys(p.teams).map(short).join(" · ")));a.appendChild(nm);
     var pt=el("div",null,"pt");pt.appendChild(document.createTextNode(String(p.pts)));pt.appendChild(el("small","Punkte"));a.appendChild(pt);li.appendChild(a);tl.appendChild(li)});
     m.appendChild(sec("Top-Spieler",tl,["Alle Spieler →","#spieler"]))}
   /* verein */
@@ -545,6 +545,7 @@ function viewTeam(m,t){
   var tl=el("div",null,"tiles");
   if(r){tl.appendChild(tile("Platz",r.platz+"."));tl.appendChild(tile("Punkte",String(r.punkte)));tl.appendChild(tile("Spiele",String(r.spiele)))}
   var fd=formDots(t);if(fd){var d=el("div",null,"tile");d.appendChild(el("small","Form"));var b=el("b");b.appendChild(fd);d.appendChild(b);tl.appendChild(d)}
+  stats().filter(function(p){return p.teams[t.name]&&/kapit/i.test(playerInfo(p.name).rolle||"")}).forEach(function(p){tl.appendChild(tile(playerInfo(p.name).rolle,p.name))});
   if(tl.children.length)m.appendChild(tl);
   var fx=(t.fixtures||[]).slice().sort(function(a,b){return a.datum<b.datum?-1:1});
   var upc=fx.filter(isUpcoming),pas=fx.filter(function(f){return !isUpcoming(f)}).reverse();
@@ -560,7 +561,7 @@ function viewTeam(m,t){
   box.appendChild(seg);box.appendChild(ul);box.appendChild(more);draw();m.appendChild(sec("Spielplan",box));
   /* Kader */
   var kad=stats().filter(function(p){return p.teams[t.name]}).sort(function(a,b){return b.pts-a.pts||a.name.localeCompare(b.name)});
-  if(kad.length){var g=el("div",null,"grid");kad.forEach(function(p){var a=playerLink(p,"pc");a.appendChild(avatar(p.name,playerPhoto(p.name),"m"));a.appendChild(el("b",p.name));a.appendChild(el("small",p.ew+" Einzel · "+p.dw+" Doppel Siege"));g.appendChild(a)});
+  if(kad.length){var g=el("div",null,"grid");kad.forEach(function(p){var a=playerLink(p,"pc");a.appendChild(avatar(p.name,playerPhoto(p.name),"m"));var inf=playerInfo(p.name);if(inf.rolle)a.appendChild(el("span",inf.rolle,"rl"));a.appendChild(el("b",p.name));if(inf.spitzname)a.appendChild(el("small","„"+inf.spitzname+"“"));a.appendChild(el("small",p.ew+" Einzel · "+p.dw+" Doppel Siege"));g.appendChild(a)});
     m.appendChild(sec("Kader",g,["Ranking →","#spieler"]))}
   /* Tabelle */
   var tb=document.createElement("table");tb.id="tbl";
@@ -615,7 +616,7 @@ function viewPlayers(m){
     var tbd=document.createElement("tbody");
     list.forEach(function(p,i){var tr=document.createElement("tr"),nm=el("td",null,"pn"),a=playerLink(p);
       a.appendChild(avatar(p.name,playerPhoto(p.name)));var tx=el("span",null,"tx");tx.appendChild(el("b",p.name));
-      var tn=Object.keys(p.teams).map(short).join(" · ");tx.appendChild(el("small",V==="all"?tn+" · E "+p.ew+(p.ke?"/"+p.ge:"")+" · D "+p.dw+(p.kd?"/"+p.gd:""):tn));a.appendChild(tx);nm.appendChild(a);
+      var tn=Object.keys(p.teams).map(short).join(" · ");var ni=playerInfo(p.name);if(ni.spitzname)tn="„"+ni.spitzname+"“ · "+tn;tx.appendChild(el("small",V==="all"?tn+" · E "+p.ew+(p.ke?"/"+p.ge:"")+" · D "+p.dw+(p.kd?"/"+p.gd:""):tn));a.appendChild(tx);nm.appendChild(a);
       var cells=[[i+1,""],null,[p.vk?p.vg:"–",""],[p.vw,""],[p.vq==null?"–":Math.round(p.vq*100)+" %",""]];
       if(V==="all")cells.push([p.pts,"hide-s"]);if(V!=="d")cells=cells.concat([[p.maxc||"–",""],[p.hfc||"–",""],[p.slc||"–",""]]);
       cells.forEach(function(c){tr.appendChild(c?el("td",c[0],c[1]):nm)});tbd.appendChild(tr)});tb.appendChild(tbd)}
@@ -643,7 +644,7 @@ function viewProfile(m,key){
   var pr=el("section",null,"prof");pr.appendChild(avatar(p.name,playerPhoto(p.name),"l"));
   var tx=el("div");tx.appendChild(el("h1",p.name));if(info.spitzname)tx.appendChild(el("div","„"+info.spitzname+"“","nick"));
   var sb=el("div",null,"sub");Object.keys(p.teams).forEach(function(t){var a=el("a",short(t),"pill h"),tm=DATA.teams.filter(function(x){return x.name===t})[0];if(tm)a.href="#"+tm.slug;a.style.textDecoration="none";sb.appendChild(a)});
-  if(info.seit)sb.appendChild(el("span","Dabei seit "+info.seit));tx.appendChild(sb);pr.appendChild(tx);m.appendChild(pr);
+  if(info.rolle)sb.insertBefore(el("span",info.rolle,"pill g"),sb.firstChild);if(info.seit)sb.appendChild(el("span","Dabei seit "+info.seit));tx.appendChild(sb);pr.appendChild(tx);m.appendChild(pr);
   if(info.text)m.appendChild(el("div",info.text,"card lead"));
   var tl=el("div",null,"tiles big");
   tl.appendChild(tile("Quote",p.q==null?"–":Math.round(p.q*100)+" %",p.known?p.w+" von "+p.g+" Spielen":"wird berechnet, sobald alle Berichte da sind"));
