@@ -4,7 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>DC Phönix Durmersheim</title>
-<link rel="icon" href="logo.png">
+<meta name="description" content="DC Phönix Durmersheim – Dartverein in der Badischen Dart Liga: Spielplan, Tabellen, Spieler.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="DC Phönix Durmersheim">
+<meta property="og:description" content="Dartverein in der Badischen Dart Liga: Spielplan, Tabellen, Spieler.">
+<meta property="og:image" content="https://d2iablo.github.io/Dc-Ph-nix-Webseite/logo-share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://d2iablo.github.io/Dc-Ph-nix-Webseite/logo-share.png">
+<meta name="theme-color" content="#070707">
+<link rel="icon" type="image/png" sizes="48x48" href="logo-favicon-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="logo-favicon.png">
+<link rel="apple-touch-icon" href="logo-apple.png">
 <style>
 :root{--bg:#070707;--bg2:#101010;--card:#121212;--card2:#191919;--line:rgba(255,255,255,.12);--fg:#F4F4F2;--mute:#9A9A96;--a1:#FFFFFF;--a2:#B4B4AF;--a-fg:#0A0A0A;--own:rgba(255,255,255,.09);--win:#6CD08A;--loss:#FF7B63;--warn-bg:#262626;--warn-fg:#E8E8E4;--logo-filter:grayscale(1) contrast(1.12);--logo-blend:normal;--logo-op:1;--shadow:0 10px 30px rgba(0,0,0,.35);color-scheme:dark}
 @media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#F2F2EF;--bg2:#E8E8E4;--card:#FFFFFF;--card2:#F6F6F3;--line:rgba(0,0,0,.12);--fg:#0A0A0A;--mute:#62625E;--a1:#0A0A0A;--a2:#4B4B48;--a-fg:#FFFFFF;--own:rgba(0,0,0,.06);--win:#2A7A45;--loss:#B63A27;--warn-bg:#E4E4E0;--warn-fg:#222;--logo-filter:grayscale(1) contrast(1.1) brightness(1.05);--logo-blend:multiply;--logo-op:.5;--shadow:0 10px 30px rgba(0,0,0,.08);color-scheme:light}}
@@ -118,6 +130,7 @@ h2 a{order:3;font-size:.72rem;letter-spacing:.1em;color:var(--a2);text-decoratio
 .seg button{border:0;background:transparent;color:var(--mute);font-weight:800;font-size:.85rem;padding:7px 16px;border-radius:999px;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--a1);color:var(--a-fg)}
 .hero-next{border:2px solid var(--a1)}
+.btn.more{width:100%;justify-content:center;margin-top:10px}
 
 /* Menüs (Kalender / Route) */
 details.menu{position:relative}
@@ -280,7 +293,8 @@ function pill(f,t){var h=norm(f.heim)===norm(t.name),a=!h&&norm(f.gast)===norm(t
 function venue(f){if(!f.heim)return "";var k=norm(f.heim),sp=CFG.spielorte||{},a="";
   for(var n in sp)if(norm(n)===k)a=sp[n];
   if(!a&&CFG.teams.some(function(c){return norm(c.name)===k}))a=CFG.verein.spiellokal||"";return a}
-function vsText(f){return f.heim?f.heim+" – "+f.gast:"Gegner folgt"}
+function isFree(f){return /spielfrei/i.test((f.heim||"")+" "+(f.gast||""))}
+function vsText(f){return isFree(f)?"Spielfrei":f.heim?f.heim+" – "+f.gast:"Gegner folgt"}
 function dateBox(f){var p=parts(f.datum),d=el("div",null,"dt");d.appendChild(el("i",p.w));d.appendChild(el("b",p.day));d.appendChild(el("small",p.mon));return d}
 function sec(title,node,more){var s=el("section");if(title){var h=el("h2",title);if(more){var a=el("a",more[0]);a.href=more[1];h.appendChild(a)}s.appendChild(h)}if(node)s.appendChild(node);return s}
 function tile(label,val,sub){var d=el("div",null,"tile");d.appendChild(el("small",label));d.appendChild(el("b",val));if(sub)d.appendChild(el("span",sub));return d}
@@ -372,7 +386,8 @@ function fixRow(f,t,o){o=o||{};var own=norm(t.name),li=document.createElement("l
   if(o.team)m.appendChild(el("div",short(t.name),"tl"));
   var vs=el("div",vsText(f),"vs"),pp=pill(f,t);if(pp)vs.insertBefore(pp,vs.firstChild);m.appendChild(vs);
   var tm=el("div",null,"tm"),ad=venue(f);
-  if(f.heim){tm.appendChild(el("b",(f.zeit||"20:00")+" Uhr"));if(ad)tm.appendChild(document.createTextNode(" · "+ad));else tm.appendChild(document.createTextNode(" · Adresse folgt"))}
+  if(isFree(f)){tm.appendChild(el("b","Kein Spiel an diesem Tag"));ad=""}
+  else if(f.heim){tm.appendChild(el("b",(f.zeit||"20:00")+" Uhr"));if(ad)tm.appendChild(document.createTextNode(" · "+ad));else tm.appendChild(document.createTextNode(" · Adresse folgt"))}
   else tm.appendChild(document.createTextNode("Uhrzeit folgt"));
   m.appendChild(tm);
   if(up&&o.count)m.appendChild(el("span",dayTxt(daysTo(f)),"count"));
@@ -381,7 +396,7 @@ function fixRow(f,t,o){o=o||{};var own=norm(t.name),li=document.createElement("l
     rr.className="r "+(mine>opp?"w":mine<opp?"l":"n");li.className="past"}
   li.appendChild(dateBox(f));li.appendChild(m);li.appendChild(rr);
   var acts=el("div",null,"acts");
-  if(up&&f.heim){acts.appendChild(calMenu(f,t));if(ad)acts.appendChild(routeMenu(ad))}
+  if(up&&f.heim&&!isFree(f)){acts.appendChild(calMenu(f,t));if(ad)acts.appendChild(routeMenu(ad))}
   var rep=reportOf(f);
   if(rep){var btn=el("button","Spielbericht ▾","btn sm"),panel=null;btn.type="button";
     btn.onclick=function(){if(panel){panel.remove();panel=null;btn.textContent="Spielbericht ▾"}
@@ -521,14 +536,16 @@ function viewTeam(m,t){
   if(tl.children.length)m.appendChild(tl);
   var fx=(t.fixtures||[]).slice().sort(function(a,b){return a.datum<b.datum?-1:1});
   var upc=fx.filter(isUpcoming),pas=fx.filter(function(f){return !isUpcoming(f)}).reverse();
-  var box=el("div"),ul=el("ul",null,"fix"),mode=upc.length||!pas.length?"u":"p";
-  function draw(){ul.textContent="";var list=mode==="u"?upc:pas;
+  var box=el("div"),ul=el("ul",null,"fix"),mode=upc.length||!pas.length?"u":"p",open={u:false,p:false},CAP=3;
+  var more=el("button",null,"btn more");more.type="button";more.onclick=function(){open[mode]=!open[mode];draw()};
+  function draw(){ul.textContent="";var list=mode==="u"?upc:pas,hid=Math.max(0,list.length-CAP);
     if(!list.length)ul.appendChild(el("li",mode==="u"?"Aktuell ist kein Spiel angesetzt.":"Noch keine Spiele gespielt."));
-    list.forEach(function(f,i){ul.appendChild(fixRow(f,t,{count:mode==="u"&&i===0}))});
+    (open[mode]?list:list.slice(0,CAP)).forEach(function(f,i){ul.appendChild(fixRow(f,t,{count:mode==="u"&&i===0}))});
+    more.hidden=!hid;more.textContent=open[mode]?"Weniger anzeigen ▴":(mode==="u"?"Weitere "+hid+" kommende Spiele anzeigen ▾":"Weitere "+hid+" gespielte Spiele anzeigen ▾");
     Array.prototype.forEach.call(seg.children,function(b){b.setAttribute("aria-pressed",b.dataset.m===mode)})}
   var seg=el("div",null,"seg");
   [["u","Kommend ("+upc.length+")"],["p","Gespielt ("+pas.length+")"]].forEach(function(x){var b=el("button",x[1]);b.type="button";b.dataset.m=x[0];b.onclick=function(){mode=x[0];draw()};seg.appendChild(b)});
-  box.appendChild(seg);box.appendChild(ul);draw();m.appendChild(sec("Spielplan",box));
+  box.appendChild(seg);box.appendChild(ul);box.appendChild(more);draw();m.appendChild(sec("Spielplan",box));
   /* Kader */
   var kad=stats().filter(function(p){return p.teams[t.name]}).sort(function(a,b){return b.pts-a.pts||a.name.localeCompare(b.name)});
   if(kad.length){var g=el("div",null,"grid");kad.forEach(function(p){var a=playerLink(p,"pc");a.appendChild(avatar(p.name,playerPhoto(p.name),"m"));a.appendChild(el("b",p.name));a.appendChild(el("small",p.ew+" Einzel · "+p.dw+" Doppel Siege"));g.appendChild(a)});
