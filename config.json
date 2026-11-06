@@ -10,7 +10,7 @@
     "logo": "logo.png",
     "impressum": "impressum.html",
     "datenschutz": "datenschutz.html",
-    "entwurf": false,
+    "entwurf": true,
     "gegruendet": "2021",
     "beschreibung": "",
     "willkommen": "",
@@ -70,5 +70,10 @@
   },
   "news": [],
   "termine": [],
-  "sponsoren": []
+  "sponsoren": [],
+  "spieler": {
+    "Artur Lang": {
+      "rolle": "Kapitän"
+    }
+  }
 }
