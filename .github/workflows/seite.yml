@@ -38,7 +38,7 @@ jobs:
       - name: Seite zusammenstellen
         run: |
           mkdir _site
-          cp index.html config.json data.json _site/
+          cp *.html config.json data.json _site/
           cp logo.* _site/ 2>/dev/null || true
           cp logo-*.png _site/ 2>/dev/null || true
           cp -r fotos _site/ 2>/dev/null || true
