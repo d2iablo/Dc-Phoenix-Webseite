@@ -8,8 +8,8 @@
     "instagram": "https://www.instagram.com/dc_phoenix_ev?utm_source=ig_web_button_share_sheet&dlrf=ZDNlZDc0MzIxNw==",
     "facebook": "https://www.facebook.com/dcphoenixdtown?locale=de_DE",
     "logo": "logo.png",
-    "impressum": "",
-    "datenschutz": "",
+    "impressum": "impressum.html",
+    "datenschutz": "datenschutz.html",
     "entwurf": true,
     "gegruendet": "2021",
     "beschreibung": "",
@@ -59,4 +59,13 @@
     "Rastatter SC/DJK Surrounders 3": "Hotel Brückenhof, Richard-Wagner-Ring 61, 76437 Rastatt",
     "SC Eisental Darts 1": "Clubhaus SC Eisental, Engertweg 12, 77815 Bühl"
   }
+}
+"rechtliches": {
+  "verein_name": "DC Phönix Durmersheim e.V.",
+  "strasse": "Grenzstr. 78",
+  "plz_ort": "76448 Durmersheim",
+  "email": "",
+  "telefon": "+49 176 31262767",
+  "registergericht": "Mannheim",
+  "registernummer": "VR 703461"
 }
