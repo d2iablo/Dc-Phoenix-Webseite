@@ -14,13 +14,12 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://d2iablo.github.io/Dc-Ph-nix-Webseite/logo-share.png">
 <meta name="theme-color" content="#070707">
+<meta name="color-scheme" content="dark">
 <link rel="icon" type="image/png" sizes="48x48" href="logo-favicon-48.png">
 <link rel="icon" type="image/png" sizes="192x192" href="logo-favicon.png">
 <link rel="apple-touch-icon" href="logo-apple.png">
 <style>
 :root{--bg:#070707;--bg2:#101010;--card:#121212;--card2:#191919;--line:rgba(255,255,255,.12);--fg:#F4F4F2;--mute:#9A9A96;--a1:#FFFFFF;--a2:#B4B4AF;--a-fg:#0A0A0A;--own:rgba(255,255,255,.09);--win:#6CD08A;--loss:#FF7B63;--warn-bg:#262626;--warn-fg:#E8E8E4;--logo-filter:grayscale(1) contrast(1.12);--logo-blend:normal;--logo-op:1;--shadow:0 10px 30px rgba(0,0,0,.35);color-scheme:dark}
-@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#F2F2EF;--bg2:#E8E8E4;--card:#FFFFFF;--card2:#F6F6F3;--line:rgba(0,0,0,.12);--fg:#0A0A0A;--mute:#62625E;--a1:#0A0A0A;--a2:#4B4B48;--a-fg:#FFFFFF;--own:rgba(0,0,0,.06);--win:#2A7A45;--loss:#B63A27;--warn-bg:#E4E4E0;--warn-fg:#222;--logo-filter:grayscale(1) contrast(1.1) brightness(1.05);--logo-blend:multiply;--logo-op:.5;--shadow:0 10px 30px rgba(0,0,0,.08);color-scheme:light}}
-:root[data-theme="light"]{--bg:#F2F2EF;--bg2:#E8E8E4;--card:#FFFFFF;--card2:#F6F6F3;--line:rgba(0,0,0,.12);--fg:#0A0A0A;--mute:#62625E;--a1:#0A0A0A;--a2:#4B4B48;--a-fg:#FFFFFF;--own:rgba(0,0,0,.06);--win:#2A7A45;--loss:#B63A27;--warn-bg:#E4E4E0;--warn-fg:#222;--logo-filter:grayscale(1) contrast(1.1) brightness(1.05);--logo-blend:multiply;--logo-op:.5;--shadow:0 10px 30px rgba(0,0,0,.08);color-scheme:light}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
@@ -29,7 +28,7 @@ a{color:inherit}
 h1,h2,h3,p{margin:0}
 h1,h3{text-wrap:balance}
 button{font:inherit;color:inherit}
-.wrap{max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .banner{background:var(--warn-bg);color:var(--warn-fg);font-size:.82rem;padding-block:7px;padding-top:calc(7px + env(safe-area-inset-top,0px))}
 
 /* Kopfleiste */
@@ -255,6 +254,19 @@ footer .sp{flex:1}
 #links{display:flex;gap:14px}
 .err{color:var(--loss)}
 a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--a2);outline-offset:2px}
+@media (min-width:900px){
+.fix{grid-template-columns:1fr 1fr;align-items:start}
+.top.cols{grid-template-columns:repeat(3,1fr)}
+.hero{min-height:min(78vh,600px)}
+.hero .logo{right:3%;top:50%;width:640px;transform:translateY(-50%)}
+.hero h1{font-size:clamp(4rem,7vw,6.4rem);max-width:12ch}
+.tiles{grid-template-columns:repeat(4,1fr)}
+.tiles.big{grid-template-columns:repeat(6,1fr)}
+.tiles.big b{font-size:1.7rem}
+main{gap:44px;padding-block:34px 72px}
+.board{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+}
+@media (min-width:1200px){.grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}}
 @media (prefers-reduced-motion:no-preference){.tc,.pc,.btn,.top a{transition:transform .2s,border-color .2s}.tc:hover,.pc:hover{transform:translateY(-3px)}}
 </style>
 </head>
@@ -498,7 +510,7 @@ function viewStart(m){
   m.appendChild(sec("Unsere Teams",tc));
   /* top spieler */
   var st=stats().filter(function(p){return p.pts>0}).sort(function(a,b){return b.pts-a.pts||b.w-a.w||a.name.localeCompare(b.name)}).slice(0,3);
-  if(st.length){var tl=el("ul",null,"top");st.forEach(function(p,i){var li=el("li"),a=playerLink(p);
+  if(st.length){var tl=el("ul",null,"top cols");st.forEach(function(p,i){var li=el("li"),a=playerLink(p);
     a.appendChild(el("span",String(i+1),"nr"));a.appendChild(avatar(p.name,playerPhoto(p.name)));
     var nm=el("div",null,"nm");nm.appendChild(el("b",p.name));nm.appendChild(el("small",Object.keys(p.teams).map(short).join(" · ")));a.appendChild(nm);
     var pt=el("div",null,"pt");pt.appendChild(document.createTextNode(String(p.pts)));pt.appendChild(el("small","Punkte"));a.appendChild(pt);li.appendChild(a);tl.appendChild(li)});
