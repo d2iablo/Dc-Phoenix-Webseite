@@ -71,10 +71,51 @@
   "news": [],
   "termine": [],
   "sponsoren": [],
-"spieler": {
-  "Artur Lang": { "rolle": "Kapitän" },
-  "Franck Vandamme": { "rolle": "Kapitän" },
-  "Daniel Scherhaufer": { "rolle": "Co-Kapitän", "spitzname": "…" }
-}
+  "spieler": {
+    "Franck Vandamme": {
+      "rolle": "Kapitän"
+    },
+    "Paul Konradi": {
+      "rolle": "Spieler"
+    },
+    "Simon Becker": {
+      "rolle": "Spieler"
+    },
+    "Fabian Waible": {
+      "rolle": "Spieler"
+    },
+    "Mario Schiefer": {
+      "rolle": "Spieler"
+    },
+    "Celine Vandamme": {
+      "rolle": "Spieler"
+    },
+    "Thomas Weisbrod": {
+      "rolle": "Spieler"
+    },
+    "Dominik Piro": {
+      "rolle": "Spieler"
+    },
+    "Pierre Vandamme": {
+      "rolle": "Spieler"
+    },
+    "Artur Lang": {
+      "rolle": "Kapitän"
+    },
+    "Richard Lang": {
+      "rolle": "Spieler"
+    },
+    "Marcel Diller": {
+      "rolle": "Spieler"
+    },
+    "Daniel Scherhaufer": {
+      "rolle": "Co-Kapitän"
+    },
+    "Paul Jung": {
+      "rolle": "Spieler"
+    },
+    "Rudolf Beck": {
+      "rolle": "Spieler"
+    }
   }
 }
