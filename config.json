@@ -10,7 +10,7 @@
     "logo": "logo.png",
     "impressum": "impressum.html",
     "datenschutz": "datenschutz.html",
-    "entwurf": true,
+    "entwurf": false,
     "gegruendet": "2021",
     "beschreibung": "",
     "willkommen": "",
@@ -71,9 +71,10 @@
   "news": [],
   "termine": [],
   "sponsoren": [],
-  "spieler": {
-    "Artur Lang": {
-      "rolle": "Kapitän"
-    }
+"spieler": {
+  "Artur Lang": { "rolle": "Kapitän" },
+  "Franck Vandamme": { "rolle": "Kapitän" },
+  "Daniel Scherhaufer": { "rolle": "Co-Kapitän", "spitzname": "…" }
+}
   }
 }
