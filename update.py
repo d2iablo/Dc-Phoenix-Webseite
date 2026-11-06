@@ -259,8 +259,10 @@ def parse_report(html):
             return ""
 
         games, legs, sets = [], None, None
+        prev_game = False
         for r in rows[head + 1:]:
             if any(norm(c).startswith("ergebnis") for c in r):
+                prev_game = False
                 nums = [m for c in r for m in re.findall(r"(\d+)\s*:\s*(\d+)", c)]
                 if nums:
                     legs = [int(nums[0][0]), int(nums[0][1])]
@@ -269,6 +271,22 @@ def parse_report(html):
                 continue
             idx = next((j for j, c in enumerate(r) if SCORE_RE.match(c)), None)
             if idx is None:
+                # Doppel: Die zweite Zeile enthält die Partner (ohne Ergebnis): HF | Max | Name | Name | Max | HF
+                lets = [j for j, c in enumerate(r) if LET_RE.search(c)]
+                if prev_game and games and len(lets) == 2 and not games[-1].get("_done"):
+                    a, b = lets
+                    g = games[-1]
+                    g["heim"] += split_names(r[a])
+                    g["gast"] += split_names(r[b])
+                    g["typ"] = "Doppel"
+                    g["_done"] = True
+                    if a >= 2:
+                        g["h"]["hf"] += vals(r[a - 2])
+                        g["h"]["max"] += vals(r[a - 1])
+                    if b + 2 < len(r):
+                        g["g"]["max"] += vals(r[b + 1])
+                        g["g"]["hf"] += vals(r[b + 2])
+                prev_game = False
                 continue
             li = max((j for j in range(idx) if LET_RE.search(r[j])), default=None)
             ri = min((j for j in range(idx + 1, len(r)) if LET_RE.search(r[j])), default=None)
@@ -280,6 +298,7 @@ def parse_report(html):
             right = right + [""] * (3 - len(right))
             hn, gn = split_names(r[li]), split_names(r[ri])
             m = SCORE_RE.match(r[idx])
+            prev_game = True
             games.append({
                 "typ": "Doppel" if len(hn) > 1 or len(gn) > 1 else "Einzel",
                 "heim": hn, "gast": gn,
@@ -291,8 +310,10 @@ def parse_report(html):
             # Aufbau einer Begegnung: 4 Einzel, 2 Doppel, 4 Einzel, 2 Doppel
             for i, g in enumerate(games):
                 g["typ"] = "Doppel" if i in (4, 5, 10, 11) else "Einzel"
+        for g in games:
+            g.pop("_done", None)
         if games:
-            return {"heim": after("heim"), "gast": after("gast"), "legs": legs, "sets": sets, "spiele": games}
+            return {"v": 2, "heim": after("heim"), "gast": after("gast"), "legs": legs, "sets": sets, "spiele": games}
     return None
 
 
@@ -429,7 +450,7 @@ def main():
             if not url or not f.get("id") or not f.get("ergebnis"):
                 continue
             recent = f["datum"] >= cutoff
-            if f["id"] in reports and not recent:
+            if f["id"] in reports and not recent and reports[f["id"]].get("v", 1) >= 2:
                 continue
             try:
                 rep_ = parse_report(load_url(url, args.offline))
