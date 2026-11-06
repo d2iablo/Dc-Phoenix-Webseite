@@ -63,9 +63,12 @@
     "verein_name": "DC Phönix Durmersheim e.V.",
     "strasse": "Grenzstr. 78",
     "plz_ort": "76448 Durmersheim",
-    "email": "dcdarts@aol.com",
+    "email": "",
     "telefon": "+49 176 31262767",
     "registergericht": "Mannheim",
     "registernummer": "VR 703461"
-  }
+  },
+  "news": [],
+  "termine": [],
+  "sponsoren": []
 }

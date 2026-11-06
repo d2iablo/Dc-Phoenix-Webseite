@@ -465,6 +465,15 @@ def main():
             except Exception as e:  # noqa: BLE001
                 notes.append("Spielbericht %s: %s" % (f["id"], e))
 
+    # Datensparsamkeit: Namen von Spielern anderer Vereine nicht veröffentlichen
+    if not cfg.get("verein", {}).get("gegner_namen_zeigen", False):
+        own_names = {norm(t["name"]) for t in cfg.get("teams", [])}
+        for rep_ in reports.values():
+            for side, key in (("heim", "heim"), ("gast", "gast")):
+                if norm(rep_.get(side, "")) not in own_names:
+                    for g in rep_.get("spiele", []):
+                        g[key] = ["Gegner"] * max(1, len(g[key]))
+
     data = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "teams": teams, "reports": reports, "notes": notes[:30]}
     with open(args.data, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)

@@ -1,0 +1,22 @@
+{
+  "name": "DC Phönix Durmersheim",
+  "short_name": "DC Phönix",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#070707",
+  "theme_color": "#070707",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "logo-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

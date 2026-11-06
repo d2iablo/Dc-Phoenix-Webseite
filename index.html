@@ -18,6 +18,11 @@
 <link rel="icon" type="image/png" sizes="48x48" href="logo-favicon-48.png">
 <link rel="icon" type="image/png" sizes="192x192" href="logo-favicon.png">
 <link rel="apple-touch-icon" href="logo-apple.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DC Phönix">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <style>
 :root{--bg:#070707;--bg2:#101010;--card:#121212;--card2:#191919;--line:rgba(255,255,255,.12);--fg:#F4F4F2;--mute:#9A9A96;--a1:#FFFFFF;--a2:#B4B4AF;--a-fg:#0A0A0A;--own:rgba(255,255,255,.09);--win:#6CD08A;--loss:#FF7B63;--warn-bg:#262626;--warn-fg:#E8E8E4;--logo-filter:grayscale(1) contrast(1.12);--logo-blend:normal;--logo-op:1;--shadow:0 10px 30px rgba(0,0,0,.35);color-scheme:dark}
 *{box-sizing:border-box}
@@ -254,6 +259,21 @@ footer .sp{flex:1}
 #links{display:flex;gap:14px}
 .err{color:var(--loss)}
 a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--a2);outline-offset:2px}
+.fix .sent{font-weight:900;font-size:1.02rem;line-height:1.25}
+.news{display:grid;gap:10px}
+@media (min-width:900px){.news{grid-template-columns:repeat(3,1fr);align-items:stretch}}
+.nw{display:grid;gap:8px;align-content:start}
+.nw h3{font-size:1.15rem;font-weight:900;letter-spacing:-.01em}
+.nw p{color:var(--mute)}
+.nw .nd{color:var(--a2);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-weight:800}
+.nw .btn{justify-self:start}
+.sp{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.spc{display:flex;align-items:center;justify-content:center;min-height:84px;padding:14px;border-radius:16px;background:#fff;color:#0A0A0A;text-decoration:none;text-align:center}
+.spc img{max-width:100%;max-height:58px;object-fit:contain}
+details.menu.pri>summary{background:var(--a1);color:var(--a-fg);border-color:transparent;font-size:.9rem;padding:10px 16px}
+details.menu.pri>summary::after{color:var(--a-fg)}
+.tip{display:grid;gap:6px;color:var(--mute);font-size:.92rem}
+.tip b{color:var(--fg)}
 @media (min-width:900px){
 .fix{grid-template-columns:1fr 1fr;align-items:start}
 .top.cols{grid-template-columns:repeat(3,1fr)}
@@ -329,8 +349,8 @@ function playerPhoto(name){return photoUrl("spieler",name,playerInfo(name).foto)
 function mapLinks(addr){var q=encodeURIComponent(addr);return [
   {t:"In Google Maps öffnen",href:"https://www.google.com/maps/dir/?api=1&destination="+q},
   {t:"In Apple Karten öffnen",href:"https://maps.apple.com/?daddr="+q+"&dirflg=d"}]}
-function menu(label,items){
-  var d=el("details",null,"menu");d.appendChild(el("summary",label));var p=el("div",null,"mp");
+function menu(label,items,cls){
+  var d=el("details",null,"menu"+(cls?" "+cls:""));d.appendChild(el("summary",label));var p=el("div",null,"mp");
   items.forEach(function(it){var a;
     if(it.href){a=el("a");a.href=it.href;a.target="_blank";a.rel="noopener"}
     else{a=el("button");a.type="button";a.onclick=function(){it.fn();d.open=false}}
@@ -338,33 +358,36 @@ function menu(label,items){
   d.appendChild(p);return d}
 function two(n){return (n<10?"0":"")+n}
 function stamp(d){return d.getUTCFullYear()+two(d.getUTCMonth()+1)+two(d.getUTCDate())+"T"+two(d.getUTCHours())+two(d.getUTCMinutes())+"00"}
-function startEnd(f){var p=f.datum.split("-"),t=(f.zeit||"20:00").split(":");
-  var s=new Date(Date.UTC(+p[0],+p[1]-1,+p[2],+t[0]||20,+t[1]||0)),e=new Date(s.getTime()+3*3600e3);return [stamp(s),stamp(e)]}
+function fixEv(f,t){return {datum:f.datum,zeit:f.zeit,titel:"Dart: "+f.heim+" – "+f.gast,ort:venue(f),beschr:(t.liga_name||"")+(f.spieltag?" · "+f.spieltag+". Spieltag":"")+" · Badische Dart Liga",uid:(t.liga||"liga")+"-"+(f.id||f.datum)+"-"+slug(f.heim),dauer:3,alarm:"-PT3H"}}
+function startEnd(ev){var p=ev.datum.split("-"),t=(ev.zeit||"20:00").split(":");
+  var s=new Date(Date.UTC(+p[0],+p[1]-1,+p[2],+t[0]||0,+t[1]||0)),e=new Date(s.getTime()+(ev.dauer||3)*3600e3);return [stamp(s),stamp(e)]}
 function esc(s){return String(s||"").replace(/\\/g,"\\\\").replace(/;/g,"\;").replace(/,/g,"\\,").replace(/\r?\n/g,"\\n")}
 function fold(l){var o=[];while(l.length>60){o.push(l.slice(0,60));l=" "+l.slice(60)}o.push(l);return o.join("\r\n")}
-function icsText(f,t){var se=startEnd(f),now=new Date(),ad=venue(f);
-  var tit="Dart: "+f.heim+" – "+f.gast;
-  var L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//DC Phoenix Durmersheim//Spielplan//DE","CALSCALE:GREGORIAN","METHOD:PUBLISH",
+function icsText(ev){var se=startEnd(ev),now=new Date();
+  var L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//DC Phoenix Durmersheim//Kalender//DE","CALSCALE:GREGORIAN","METHOD:PUBLISH",
   "BEGIN:VTIMEZONE","TZID:Europe/Berlin","BEGIN:DAYLIGHT","TZOFFSETFROM:+0100","TZOFFSETTO:+0200","TZNAME:CEST","DTSTART:19700329T020000","RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU","END:DAYLIGHT",
   "BEGIN:STANDARD","TZOFFSETFROM:+0200","TZOFFSETTO:+0100","TZNAME:CET","DTSTART:19701025T030000","RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU","END:STANDARD","END:VTIMEZONE",
-  "BEGIN:VEVENT","UID:"+(t.liga||"liga")+"-"+(f.id||f.datum)+"-"+slug(f.heim)+"@dc-phoenix","DTSTAMP:"+stamp(now)+"Z",
-  "DTSTART;TZID=Europe/Berlin:"+se[0],"DTEND;TZID=Europe/Berlin:"+se[1],"SUMMARY:"+esc(tit)];
-  if(ad)L.push("LOCATION:"+esc(ad));
-  L.push("DESCRIPTION:"+esc((t.liga_name||"")+(f.spieltag?" · "+f.spieltag+". Spieltag":"")+" · Badische Dart Liga"));
-  L.push("BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:Dart heute Abend","TRIGGER:-PT3H","END:VALARM","END:VEVENT","END:VCALENDAR");
+  "BEGIN:VEVENT","UID:"+ev.uid+"@dc-phoenix","DTSTAMP:"+stamp(now)+"Z",
+  "DTSTART;TZID=Europe/Berlin:"+se[0],"DTEND;TZID=Europe/Berlin:"+se[1],"SUMMARY:"+esc(ev.titel)];
+  if(ev.ort)L.push("LOCATION:"+esc(ev.ort));
+  if(ev.beschr)L.push("DESCRIPTION:"+esc(ev.beschr));
+  L.push("BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+esc(ev.titel),"TRIGGER:"+(ev.alarm||"-PT3H"),"END:VALARM","END:VEVENT","END:VCALENDAR");
   return L.map(fold).join("\r\n")+"\r\n"}
 function isIOS(){return /iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)}
-function addToCalendar(f,t){var txt=icsText(f,t);
+function addToCalendar(ev){var txt=icsText(ev);
   if(isIOS()){location.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(txt);return}
   var b=new Blob([txt],{type:"text/calendar;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");
-  a.href=u;a.download="dart-"+f.datum+".ics";document.body.appendChild(a);a.click();
+  a.href=u;a.download="termin-"+ev.datum+".ics";document.body.appendChild(a);a.click();
   setTimeout(function(){a.remove();URL.revokeObjectURL(u)},4000)}
-function googleCal(f,t){var se=startEnd(f),ad=venue(f);
-  return "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent("Dart: "+f.heim+" – "+f.gast)+"&dates="+se[0]+"/"+se[1]+"&ctz=Europe%2FBerlin&location="+encodeURIComponent(ad)+"&details="+encodeURIComponent((t.liga_name||"")+" · Badische Dart Liga")}
-function calMenu(f,t){return menu("Kalender",[
-  {t:"Zum Kalender hinzufügen",sub:"iPhone, Android, Outlook (.ics)",fn:function(){addToCalendar(f,t)}},
-  {t:"Google Kalender",sub:"öffnet im Browser oder in der App",href:googleCal(f,t)}])}
+function googleCal(ev){var se=startEnd(ev);
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(ev.titel)+"&dates="+se[0]+"/"+se[1]+"&ctz=Europe%2FBerlin&location="+encodeURIComponent(ev.ort||"")+"&details="+encodeURIComponent(ev.beschr||"")}
+function calMenu(ev){return menu("Kalender",[
+  {t:"Zum Kalender hinzufügen",sub:"iPhone, Android, Outlook (.ics)",fn:function(){addToCalendar(ev)}},
+  {t:"Google Kalender",sub:"öffnet im Browser oder in der App",href:googleCal(ev)}])}
 function routeMenu(addr){return menu("Route",mapLinks(addr))}
+function phoneOf(){var v=CFG.verein,src=(v.probetraining&&v.probetraining.telefon)||v.kontakt||"",m=String(src).match(/\+?\d[\d\s\/\-()]{7,}\d/);return m?m[0].trim():""}
+function trialMenu(){var ph=phoneOf();if(!ph)return null;var d=ph.replace(/[^\d+]/g,""),wa=d.replace(/^\+/,"").replace(/^00/,"").replace(/^0/,"49");
+  return menu("Probetraining anfragen",[{t:"Anrufen",sub:ph,href:"tel:"+d},{t:"Per WhatsApp schreiben",sub:ph,href:"https://wa.me/"+wa+"?text="+encodeURIComponent("Hallo, ich habe Interesse an einem Probetraining bei "+CFG.verein.name+".")}],"pri")}
 
 /* ---------- Spielzeile ---------- */
 function pv(o,i,n){if(!o)return {};function g(a){a=a||[];return a.length===n?a[i]:(a.length===1&&n===1?a[0]:null)}
@@ -375,16 +398,18 @@ function extras(g){var out=[];
     if(b.length)out.push(n+": "+b.join(" · "))})});
   return out.join("   ")}
 function reportOf(f){return f.id&&DATA.reports?DATA.reports[f.id]:null}
+function isOwnTeam(n){return CFG.teams.some(function(t){return norm(t.name)===norm(n)})}
 function renderReport(r){
+  var oh=!isOwnTeam(r.heim)&&CFG.verein.gegner_namen_zeigen!==true,og=!isOwnTeam(r.gast)&&CFG.verein.gegner_namen_zeigen!==true;
   var box=el("div",null,"report");
   var hd=el("div",null,"rh");hd.appendChild(el("b",r.heim));hd.appendChild(el("span","gegen"));hd.appendChild(el("b",r.gast));box.appendChild(hd);
   var tb=document.createElement("table");tb.className="rt";var tbd=document.createElement("tbody");
   (r.spiele||[]).forEach(function(g){
     var tr=document.createElement("tr");tr.className=g.typ==="Doppel"?"dbl":"sgl";
-    var a=el("td",null,"l");g.heim.forEach(function(n){a.appendChild(el("div",n))});
-    var b=el("td",null,"r2");g.gast.forEach(function(n){b.appendChild(el("div",n))});
+    var a=el("td",null,"l");g.heim.forEach(function(n){a.appendChild(el("div",oh?"Gegner":n))});
+    var b=el("td",null,"r2");g.gast.forEach(function(n){b.appendChild(el("div",og?"Gegner":n))});
     tr.appendChild(a);tr.appendChild(el("td",g.ergebnis[0]+" : "+g.ergebnis[1],"sc"));tr.appendChild(b);tbd.appendChild(tr);
-    var ex=extras(g);if(ex){var t2=document.createElement("tr");t2.className="ex";var c=el("td",ex);c.colSpan=3;t2.appendChild(c);tbd.appendChild(t2)}});
+    var ex=extras(g);if(ex&&!oh&&!og){var t2=document.createElement("tr");t2.className="ex";var c=el("td",ex);c.colSpan=3;t2.appendChild(c);tbd.appendChild(t2)}});
   tb.appendChild(tbd);box.appendChild(tb);
   var ft=el("div",null,"rf");
   if(r.legs){var x=el("span","Legs ");x.appendChild(el("b",r.legs[0]+" : "+r.legs[1]));ft.appendChild(x)}
@@ -396,6 +421,8 @@ function renderReport(r){
 function fixRow(f,t,o){o=o||{};var own=norm(t.name),li=document.createElement("li"),up=isUpcoming(f);
   var m=el("div",null,"m"),rr=el("div","","r n");
   if(o.team)m.appendChild(el("div",short(t.name),"tl"));
+  if(o.sentence&&f.ergebnis){var hh=norm(f.heim)===own,mi=hh?f.ergebnis[0]:f.ergebnis[1],op=hh?f.ergebnis[1]:f.ergebnis[0],gg=hh?f.gast:f.heim;
+    m.appendChild(el("div",short(t.name)+(mi>op?" gewinnt ":mi<op?" verliert ":" spielt unentschieden ")+mi+":"+op+" gegen "+gg,"sent"))}
   var vs=el("div",vsText(f),"vs"),pp=pill(f,t);if(pp)vs.insertBefore(pp,vs.firstChild);m.appendChild(vs);
   var tm=el("div",null,"tm"),ad=venue(f);
   if(isFree(f)){tm.appendChild(el("b","Kein Spiel an diesem Tag"));ad=""}
@@ -408,7 +435,7 @@ function fixRow(f,t,o){o=o||{};var own=norm(t.name),li=document.createElement("l
     rr.className="r "+(mine>opp?"w":mine<opp?"l":"n");li.className="past"}
   li.appendChild(dateBox(f));li.appendChild(m);li.appendChild(rr);
   var acts=el("div",null,"acts");
-  if(up&&f.heim&&!isFree(f)){acts.appendChild(calMenu(f,t));if(ad)acts.appendChild(routeMenu(ad))}
+  if(up&&f.heim&&!isFree(f)){acts.appendChild(calMenu(fixEv(f,t)));if(ad)acts.appendChild(routeMenu(ad))}
   var rep=reportOf(f);
   if(rep){var btn=el("button","Spielbericht ▾","btn sm"),panel=null;btn.type="button";
     btn.onclick=function(){if(panel){panel.remove();panel=null;btn.textContent="Spielbericht ▾"}
@@ -425,7 +452,7 @@ function buildStats(){
   var own={},P={},hide=(CFG.verein.spieler_ausblenden||[]).map(norm),PAIRS={};
   CFG.teams.forEach(function(t){own[norm(t.name)]=t.name});
   function get(n,tn){var k=norm(n);if(hide.indexOf(k)>=0)return null;
-    var p=P[k]||(P[k]={name:n,teams:{},ge:0,gd:0,ew:0,dw:0,hfc:0,slc:0,maxc:0,official:false,rew:0,rdw:0,rhf:0,rsl:0,rmx:0,log:[],pt:{}});
+    var p=P[k]||(P[k]={name:n,teams:{},ge:0,gd:0,ew:0,dw:0,hfc:0,slc:0,maxc:0,official:false,rew:0,rdw:0,rhf:0,rsl:0,rmx:0,log:[],pt:{},bestHF:0,bestSL:0,mp:0});
     p.teams[tn]=1;return p}
   DATA.teams.forEach(function(t){(t.players||[]).forEach(function(x){
     var tn=own[norm(x.team)];if(!tn)return;var p=get(x.name,tn);if(!p)return;
@@ -461,11 +488,13 @@ function buildStats(){
         list.forEach(function(n,i){
           var p=get(n,tn);if(!p)return;
           var partners=dbl?list.filter(function(x){return x!==n}):[];
+          if(fx&&mine>opp&&(Date.now()-new Date(fx.datum).getTime())<=30*864e5)p.mp+=dbl?1:2;
           p.log.push({d:fx?fx.datum:"",opp:short(oppTeam),typ:dbl?"Doppel":"Einzel",won:mine>opp,sc:mine+":"+opp,partners:partners});
           if(dbl){p.gd++;if(mine>opp)p.rdw++;
             partners.forEach(function(q){var e=p.pt[q]||(p.pt[q]={g:0,w:0});e.g++;if(mine>opp)e.w++});
             if(i===0&&list.length===2){var key=list.slice().sort().join("|"),pe=PAIRS[key]||(PAIRS[key]={a:list[0],b:list[1],g:0,w:0});pe.g++;if(mine>opp)pe.w++}}
           else{p.ge++;if(mine>opp)p.rew++;
+            if(names.length===1){var o1=g[s[1]]||{};(o1.hf||[]).forEach(function(x){if(x>p.bestHF)p.bestHF=x});(o1.sl||[]).forEach(function(x){if(!p.bestSL||x<p.bestSL)p.bestSL=x})}
             var v=list.length===names.length?pv(g[s[1]],i,names.length):{};if(v.hf!=null)p.rhf++;if(v.sl!=null)p.rsl++;if(v.max!=null)p.rmx+=(v.max<=20?v.max:1)}})})})});
   var comp={};
   DATA.teams.forEach(function(t){var played=(t.fixtures||[]).filter(function(f){return f.ergebnis});
@@ -494,11 +523,17 @@ function viewStart(m){
   w.appendChild(el("p","Dartverein in der Badischen Dart Liga","sub"));
   var row=el("div",null,"row"),all=nextAll();
   if(all.length){var x=all[0],p=parts(x.n.datum),a=el("a",null,"btn pri");a.href="#"+x.t.slug;a.textContent="Nächstes Spiel: "+p.w+", "+p.kurz+" · "+short(x.t.name)+" →";row.appendChild(a)}
+  var tb=el("button","Probetraining","btn");tb.type="button";tb.onclick=function(){var x=$("mitmachen");if(x)x.scrollIntoView({behavior:"smooth"})};row.appendChild(tb);
   socialButtons(row);w.appendChild(row);h.appendChild(w);hb.appendChild(h);
+  viewNews(m);
 
   /* nächste Spiele */
   if(all.length){var ul=el("ul",null,"fix");all.forEach(function(x){ul.appendChild(fixRow(x.n,x.t,{team:true,count:true}))});m.appendChild(sec("Nächste Spiele",ul))}
   else m.appendChild(sec("Nächste Spiele",el("div","Aktuell sind keine Spiele angesetzt.","card todo")));
+  var lr=el("ul",null,"fix"),lc=0;
+  DATA.teams.forEach(function(t){var pl=(t.fixtures||[]).filter(function(f){return f.ergebnis}).sort(function(a,b){return a.datum<b.datum?1:-1})[0];if(pl){lr.appendChild(fixRow(pl,t,{team:true,sentence:true}));lc++}});
+  if(lc)m.appendChild(sec("Letzte Ergebnisse",lr));
+  var ts=termineSec();if(ts)m.appendChild(ts);
   /* teams */
   var tc=el("div",null,"teams");
   DATA.teams.forEach(function(t){var a=el("a",null,"tc");a.href="#"+t.slug;
@@ -514,14 +549,56 @@ function viewStart(m){
     a.appendChild(el("span",String(i+1),"nr"));a.appendChild(avatar(p.name,playerPhoto(p.name)));
     var nm=el("div",null,"nm");var ti=playerInfo(p.name);nm.appendChild(el("b",p.name));nm.appendChild(el("small",(ti.spitzname?"„"+ti.spitzname+"“ · ":"")+Object.keys(p.teams).map(short).join(" · ")));a.appendChild(nm);
     var pt=el("div",null,"pt");pt.appendChild(document.createTextNode(String(p.pts)));pt.appendChild(el("small","Punkte"));a.appendChild(pt);li.appendChild(a);tl.appendChild(li)});
-    m.appendChild(sec("Top-Spieler",tl,["Alle Spieler →","#spieler"]))}
+    m.appendChild(sec("Top-Spieler",tl,["Alle Spieler →","#spieler"]));
+    var rt=el("div",null,"tiles");recordTiles(stats()).forEach(function(x){rt.appendChild(x)});m.appendChild(sec("Rekorde",rt))}
   /* verein */
   var f=el("div",null,"tiles");
   [["Gegründet",v.gegruendet],["Teams",String(DATA.teams.length)],["Training",v.training],["Spieltag","Freitags, 20 Uhr"]].forEach(function(x){f.appendChild(tile(x[0],x[1]||"folgt"))});
   m.appendChild(sec("Verein auf einen Blick",f,["Mehr über uns →","#verein"]));
-  var cta=el("div",null,"card");cta.appendChild(el("p",v.willkommen||"Interesse am Dartspielen? Schau beim Training vorbei oder melde dich bei uns.","lead"));
+  var cta=el("div",null,"card"),pt=v.probetraining||{};cta.appendChild(el("p",pt.text||v.willkommen||("Interesse am Dartspielen? Komm einfach zum Training vorbei"+(v.training?" ("+v.training+")":"")+" oder melde dich bei uns."),"lead"));
   var br=el("div");br.style.cssText="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center";
-  if(v.spiellokal)br.appendChild(routeMenu(v.spiellokal));socialButtons(br);cta.appendChild(br);m.appendChild(sec("Mitmachen",cta))}
+  var tm2=trialMenu();if(tm2)br.appendChild(tm2);if(v.spiellokal)br.appendChild(routeMenu(v.spiellokal));socialButtons(br);cta.appendChild(br);var ms=sec("Mitmachen",cta);ms.id="mitmachen";m.appendChild(ms);
+  var sps=sponsorSec();if(sps)m.appendChild(sps)}
+
+function viewNews(m){
+  var n=(CFG.news||[]).filter(function(x){return x&&x.titel}).sort(function(a,b){return (a.datum||"")<(b.datum||"")?1:-1}).slice(0,3);
+  if(!n.length)return;var box=el("div",null,"news");
+  n.forEach(function(x){var c=el("article",null,"card nw");
+    if(/^\d{4}-\d{2}-\d{2}$/.test(x.datum||""))c.appendChild(el("small",parts(x.datum).full,"nd"));
+    c.appendChild(el("h3",x.titel));if(x.text)c.appendChild(el("p",x.text));
+    if(safeUrl(x.link)){var a=extLink(x.link,x.linktext||"Mehr erfahren →");a.className="btn sm";c.appendChild(a)}box.appendChild(c)});
+  m.appendChild(sec("Neuigkeiten",box))}
+function eventList(){var today=new Date();today.setHours(0,0,0,0);
+  return (CFG.termine||[]).filter(function(x){return x&&x.titel&&/^\d{4}-\d{2}-\d{2}$/.test(x.datum||"")&&new Date(x.datum+"T23:59:00")>=today}).sort(function(a,b){return a.datum<b.datum?-1:a.datum>b.datum?1:0})}
+function termineSec(){var l=eventList();if(!l.length)return null;var ul=el("ul",null,"fix");
+  l.slice(0,4).forEach(function(x){var li=document.createElement("li"),mm=el("div",null,"m");
+    mm.appendChild(el("div",x.titel,"vs"));var tm=el("div",null,"tm");tm.appendChild(el("b",x.zeit?x.zeit+" Uhr":"Uhrzeit folgt"));if(x.ort)tm.appendChild(document.createTextNode(" · "+x.ort));mm.appendChild(tm);
+    if(x.text)mm.appendChild(el("div",x.text,"tm"));
+    li.appendChild(dateBox(x));li.appendChild(mm);li.appendChild(el("div"));
+    var a=el("div",null,"acts");a.appendChild(calMenu({datum:x.datum,zeit:x.zeit||"19:00",titel:x.titel,ort:x.ort||"",beschr:x.text||"",uid:"termin-"+x.datum+"-"+slug(x.titel),dauer:x.dauer||3,alarm:"-P1D"}));
+    if(x.ort)a.appendChild(routeMenu(x.ort));li.appendChild(a);ul.appendChild(li)});
+  return sec("Termine",ul)}
+function sponsorSec(){var l=(CFG.sponsoren||[]).filter(function(x){return x&&x.name});if(!l.length)return null;var g=el("div",null,"sp");
+  l.forEach(function(x){var u=photoUrl("sponsoren",x.name,x.logo),ln=safeUrl(x.link),a=el(ln?"a":"div",null,"spc");
+    if(ln){a.href=ln;a.target="_blank";a.rel="noopener"}
+    if(u){var i=document.createElement("img");i.alt=x.name;i.loading="lazy";i.onerror=function(){i.remove();a.appendChild(el("b",x.name))};i.src=u;a.appendChild(i)}else a.appendChild(el("b",x.name));
+    g.appendChild(a)});
+  return sec("Unterstützer",g)}
+function recordTiles(all){
+  function top(fn){var b=null;all.forEach(function(p){var v=fn(p);if(v&&(!b||v>b.v))b={v:v,p:p}});return b}
+  var mo=top(function(p){return p.mp}),hf=top(function(p){return p.bestHF}),sl=top(function(p){return p.bestSL?1000-p.bestSL:0});
+  return [tile("Spieler des Monats",mo?mo.p.name:"–",mo?mo.v+" Punkte in 30 Tagen":"noch keine Spiele"),
+    tile("Höchstes Finish",hf?String(hf.v):"–",hf?hf.p.name:"noch keine Daten"),
+    tile("Kürzestes Leg",sl?(1000-sl.v)+" Darts":"–",sl?sl.p.name:"noch keine Daten")]}
+function bilanzSec(t){var own=norm(t.name),M={};
+  (t.fixtures||[]).filter(function(f){return f.ergebnis&&f.heim&&!isFree(f)}).forEach(function(f){var h=norm(f.heim)===own,mi=h?f.ergebnis[0]:f.ergebnis[1],op=h?f.ergebnis[1]:f.ergebnis[0],gg=h?f.gast:f.heim,e=M[gg]||(M[gg]={n:gg,sp:0,s:0,u:0,v:0,a:0,b:0});
+    e.sp++;e.a+=mi;e.b+=op;if(mi>op)e.s++;else if(mi<op)e.v++;else e.u++});
+  var l=Object.keys(M).map(function(k){return M[k]});if(!l.length)return null;
+  l.sort(function(a,b){return b.s-a.s||b.sp-a.sp||a.n.localeCompare(b.n)});
+  var ul=el("ul",null,"log");
+  l.forEach(function(e){var li=el("li"),tt=el("div",null,"t");tt.appendChild(el("b",e.n));tt.appendChild(el("small",e.sp+(e.sp===1?" Spiel":" Spiele")+" · "+e.s+" S · "+e.u+" U · "+e.v+" N"));
+    li.appendChild(tt);li.appendChild(el("span",e.a+":"+e.b,"s "+(e.a>e.b?"w":e.a<e.b?"l":"")));li.style.gridTemplateColumns="1fr auto";ul.appendChild(li)});
+  return sec("Bilanz gegen Gegner",ul)}
 
 function nextAll(){var all=[];DATA.teams.forEach(function(t){var n=nextOf(t);if(n)all.push({t:t,n:n})});
   all.sort(function(a,b){return when(a.n)-when(b.n)});return all}
@@ -572,7 +649,8 @@ function viewTeam(m,t){
     t.table.forEach(function(x){var tr=document.createElement("tr");if(norm(x.team)===own)tr.className="own";
       [[x.platz,""],[x.team,""],[x.spiele,""],[x.g,"hide-s"],[x.u,"hide-s"],[x.v,"hide-s"],[x.sets,"hide-s"],[x.legs,"hide-s"],[x.punkte,""]].forEach(function(c){tr.appendChild(el("td",c[0],c[1]))});tbd.appendChild(tr)});
     tb.appendChild(tbd)}
-  var sc=el("div",null,"scroll");sc.appendChild(tb);m.appendChild(sec("Tabelle",sc))}
+  var sc=el("div",null,"scroll");sc.appendChild(tb);m.appendChild(sec("Tabelle",sc));
+  var bs=bilanzSec(t);if(bs)m.appendChild(bs)}
 
 function viewPlayers(m){
   var all=stats(),teams=CFG.teams.map(function(t){return t.name}),V=PS.view;
@@ -593,6 +671,7 @@ function viewPlayers(m){
   best("Meiste Siege"+(VN?" "+VN:""),function(p){return p.vw>0?p.vw*1000+p.pts:null},function(p){return V==="all"?p.ew+" E · "+p.dw+" D":String(p.vw)},all);
   best("Meiste Maximums",function(p){return p.maxc>0?p.maxc:null},function(p){return String(p.maxc)},all);
   best("Meiste High Finishes",function(p){return p.hfc>0?p.hfc:null},function(p){return String(p.hfc)},all);
+  recordTiles(all).forEach(function(x){hl.appendChild(x)});
   m.appendChild(sec("Highlights",hl));
   var ctl=el("div",null,"ctl");
   function chips(label,items,key){var c=el("div",null,"chips");c.appendChild(el("small",label));
@@ -683,8 +762,10 @@ function viewClub(m){
   var k=v.kontakt,kn=null;if(k){kn=el("span");if(/@/.test(k)&&!/\s/.test(k)){kn=el("a",k);kn.href="mailto:"+k}else if(/^[+\d][\d\s\/\-()]{5,}$/.test(k)){kn=el("a",k);kn.href="tel:"+k.replace(/[^\d+]/g,"")}else kn.textContent=k}
   row("Kontakt",k,kn);
   if(v.gegruendet)row("Gegründet",v.gegruendet);
-  c.appendChild(dl);var so=el("div",null,"social");so.style.marginTop="16px";socialButtons(so,true);if(so.children.length)c.appendChild(so);
+  c.appendChild(dl);var tmc=trialMenu();if(tmc){var tw0=el("div");tw0.style.marginTop="16px";tw0.appendChild(tmc);c.appendChild(tw0)}
+  var so=el("div",null,"social");so.style.marginTop="16px";socialButtons(so,true);if(so.children.length)c.appendChild(so);
   m.appendChild(sec("Infos & Kontakt",c));
+  var tsv=termineSec();if(tsv)m.appendChild(tsv);
   /* Teams */
   var tg=el("div",null,"teams");
   DATA.teams.forEach(function(t){var a=el("a",null,"tc");a.href="#"+t.slug;var pu=photoUrl("team",t.slug),ph=el("div",null,"ph"+(pu?"":" none"));
@@ -695,7 +776,11 @@ function viewClub(m){
   var gl=PH.galerie||[];
   if(gl.length){var g=el("div",null,"gal");gl.forEach(function(n){var u="fotos/galerie/"+encodeURIComponent(n),b=el("button");b.type="button";b.setAttribute("aria-label","Foto vergrößern");
       var i=document.createElement("img");i.loading="lazy";i.alt="";i.onerror=function(){b.remove()};i.src=u;b.appendChild(i);b.onclick=function(){lightbox(u)};g.appendChild(b)});
-    m.appendChild(sec("Galerie",g))}}
+    m.appendChild(sec("Galerie",g))}
+  var sv=sponsorSec();if(sv)m.appendChild(sv);
+  var tp=el("div",null,"card tip");
+  [["iPhone (Safari)","Teilen-Symbol antippen, dann „Zum Home-Bildschirm“."],["Android (Chrome)","Menü ⋮ öffnen, dann „Zum Startbildschirm hinzufügen“."]].forEach(function(x){var d=el("div");d.appendChild(el("b",x[0]+": "));d.appendChild(document.createTextNode(x[1]));tp.appendChild(d)});
+  m.appendChild(sec("Als App aufs Handy",tp))}
 function lightbox(u){var o=el("div",null,"lb"),i=document.createElement("img");i.src=u;i.alt="";o.appendChild(i);
   function close(){o.remove();document.removeEventListener("keydown",key)}function key(e){if(e.key==="Escape")close()}
   o.onclick=close;document.addEventListener("keydown",key);document.body.appendChild(o)}
