@@ -401,10 +401,10 @@ def fetch_profiles(path="profile.json"):
     if not url.startswith("https://"):
         print("Profile: SUPABASE_URL muss mit https:// beginnen")
         return
-    req = urllib.request.Request(
-        url + "/rest/v1/oeffentliche_profile?select=*",
-        headers={"apikey": key, "Authorization": "Bearer " + key, "Accept": "application/json", "User-Agent": "dc-phoenix-update"},
-    )
+    hdr = {"apikey": key, "Accept": "application/json", "User-Agent": "dc-phoenix-update"}
+    if not key.startswith("sb_"):  # alte JWT-Schlüssel brauchen zusätzlich den Bearer-Header
+        hdr["Authorization"] = "Bearer " + key
+    req = urllib.request.Request(url + "/rest/v1/oeffentliche_profile?select=*", headers=hdr)
     try:
         with urllib.request.urlopen(req, timeout=30) as r:
             rows = json.load(r)

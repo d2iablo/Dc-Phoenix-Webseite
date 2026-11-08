@@ -43,8 +43,10 @@ def http_json(url, headers=None, data=None, method=None, timeout=30):
 
 
 def sb_headers(key, extra=None):
-    h = {"apikey": key, "Authorization": "Bearer " + key, "Accept": "application/json",
+    h = {"apikey": key, "Accept": "application/json",
          "Content-Type": "application/json", "User-Agent": "dc-phoenix-erinnerung"}
+    if not key.startswith("sb_"):  # alte JWT-Schlüssel brauchen zusätzlich den Bearer-Header, neue "sb_secret_" nicht
+        h["Authorization"] = "Bearer " + key
     h.update(extra or {})
     return h
 
