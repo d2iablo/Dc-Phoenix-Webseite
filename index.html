@@ -823,8 +823,16 @@ function init(){
   var u=DATA.updated?new Date(DATA.updated):null;
   $("upd").textContent=u&&!isNaN(u)?"Stand: "+u.toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"}):"";
   document.addEventListener("click",function(e){document.querySelectorAll("details.menu[open]").forEach(function(d){if(!d.contains(e.target))d.open=false})});
-  window.addEventListener("hashchange",onHash);render()}
+  window.addEventListener("hashchange",onHash);render();liveProfiles()}
 
+function liveProfiles(){
+  var k=CFG&&CFG.konto;if(!k||!k.supabase_url||!k.anon_key)return;
+  fetch(String(k.supabase_url).replace(/\/+$/,"")+"/rest/v1/rpc/oeffentliche_profile_live",{method:"POST",headers:{apikey:k.anon_key,"Content-Type":"application/json"},body:"{}",cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"})
+  .then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(rows){
+    var o={};rows.forEach(function(r){var n=r.spielername;delete r.spielername;var v={};for(var x in r)if(r[x]!==null&&r[x]!=="")v[x]=r[x];if(n&&Object.keys(v).length)o[n]=v});
+    if(JSON.stringify(o)!==JSON.stringify(PROF)){PROF=o;ALL=null;render()}
+  }).catch(function(){})
+}
 function accountBtn(){
   var box=$("acct"),k=CFG&&CFG.konto;if(!box||!k||!k.supabase_url){return}
   var ses=null;try{ses=JSON.parse(sessionStorage.getItem("dcp_session")||"null")}catch(e){}
