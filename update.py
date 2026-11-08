@@ -392,6 +392,35 @@ def write_photo_index(root="fotos"):
         print("Fotoliste:", e)
 
 
+def fetch_profiles(path="profile.json"):
+    """Holt die vom Spieler freigegebenen Profilangaben (Spielerkonten, optional) nach profile.json."""
+    url = os.environ.get("SUPABASE_URL", "").strip().rstrip("/")
+    key = os.environ.get("SUPABASE_SERVICE_KEY", "").strip()
+    if not url or not key:
+        return
+    if not url.startswith("https://"):
+        print("Profile: SUPABASE_URL muss mit https:// beginnen")
+        return
+    req = urllib.request.Request(
+        url + "/rest/v1/oeffentliche_profile?select=*",
+        headers={"apikey": key, "Authorization": "Bearer " + key, "Accept": "application/json", "User-Agent": "dc-phoenix-update"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            rows = json.load(r)
+        out = {}
+        for row in rows:
+            name = row.pop("spielername", None)
+            vals = {k: v for k, v in row.items() if v not in (None, "")}
+            if name and vals:
+                out[name] = vals
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(out, f, ensure_ascii=False, indent=1)
+        print("Profile: %d Spielerprofile mit freigegebenen Angaben" % len(out))
+    except Exception as e:  # noqa: BLE001
+        print("Profile: nicht abrufbar (%s)" % type(e).__name__)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default="config.json")
@@ -400,6 +429,7 @@ def main():
     args = ap.parse_args()
 
     write_photo_index()
+    fetch_profiles()
     with open(args.config, encoding="utf-8") as f:
         cfg = json.load(f)
     old = {}

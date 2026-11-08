@@ -34,9 +34,16 @@ E-Mail: <a data-k="email"></a></p>
 <p>Erst wenn du auf einen Link oder Knopf tippst, verlässt du diese Seite. Das betrifft Google Maps, Apple Karten, Google Kalender, Instagram, Facebook und die Seite der Badischen Dart Liga. Ab dann gelten die Datenschutzbestimmungen des jeweiligen Anbieters. Die Kalender-Datei (.ics) wird direkt in deinem Browser erzeugt und nicht an uns gesendet.</p>
 <h2>6. Kontakt per E-Mail</h2>
 <p>Wenn du uns schreibst, verarbeiten wir deine Angaben nur zur Bearbeitung deiner Anfrage (Art. 6 Abs. 1 lit. f DSGVO) und löschen sie, wenn sie nicht mehr gebraucht werden.</p>
-<h2>7. Deine Rechte</h2>
+<div id="konto" hidden>
+<h2>7. Spielerkonto (nur für Mitglieder, freiwillig)</h2>
+<p>Spieler können ein Konto bekommen, um ihr Profil selbst zu pflegen. Das Konto legt der Vorstand an. Dabei verarbeiten wir die E-Mail-Adresse, ein verschlüsselt gespeichertes Passwort (Hash), den Spielernamen und die Angaben, die du freiwillig im Profil einträgst: Spitzname, Dartpfeile, Gewicht der Pfeile, bestes Finish, bester Short Leg, Herkunft, Geburtstag, Geburtsort, Nationalität und deine Erinnerungs-Einstellung.</p>
+<p>Zweck ist die Pflege deines Profils und, wenn du es willst, der Versand von Erinnerungen an dein nächstes Spiel. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) und für das Konto selbst die Durchführung der Vereinsmitgliedschaft (Art. 6 Abs. 1 lit. b DSGVO). Auf der Webseite erscheint jede Angabe nur, wenn du sie ausdrücklich mit „Öffentlich zeigen“ freigibst. Vom Geburtstag wird nur Tag und Monat gezeigt, nie das Jahr. Alles andere sieht nur der Vorstand. Du kannst Freigaben und Angaben jederzeit selbst ändern oder löschen. Eine Einwilligung kannst du jederzeit mit Wirkung für die Zukunft widerrufen. Bei Minderjährigen braucht es die Einwilligung der Eltern.</p>
+<p>Die Konten und Profildaten liegen bei Supabase (Server in der EU, Frankfurt). Mit dem Anbieter besteht ein Auftragsverarbeitungsvertrag. Beim Anmelden verbindet sich dein Browser mit Supabase. Dabei wird deine IP-Adresse übertragen. Die Anmeldung wird nur für die Dauer des Besuchs im Browser (Session-Speicher) gehalten und beim Schließen des Tabs gelöscht. Es werden keine Cookies gesetzt. Erinnerungs-Mails verschicken wir über <b data-k="mail_anbieter" data-opt="1"></b> per verschlüsselter Verbindung. Wir speichern, für welches Spiel eine Mail verschickt wurde, damit keine doppelt ankommt.</p>
+<p>Wir löschen dein Konto und deine Daten, wenn du es verlangst oder wenn du den Verein verlässt.</p>
+</div>
+<h2 id="hr">7. Deine Rechte</h2>
 <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch (Art. 15 bis 21 DSGVO). Wende dich dafür an die E-Mail-Adresse oben. Du kannst dich außerdem bei einer Datenschutzaufsichtsbehörde beschweren, in Baden-Württemberg beim Landesbeauftragten für den Datenschutz und die Informationsfreiheit, Lautenbachstraße 7, 70173 Stuttgart.</p>
-<h2>8. Änderungen</h2>
+<h2 id="hc">8. Änderungen</h2>
 <p>Wir passen diese Erklärung an, wenn sich die Seite oder die Rechtslage ändert.</p>
 <p class="note">Stand: November 2026</p>
 </div><script>
@@ -51,8 +58,11 @@ fetch("config.json",{cache:"no-store"}).then(function(r){return r.json()}).then(
     vertreter:g(r,"vertreter")||vorstand,
     email:g(r,"email"),telefon:g(r,"telefon"),
     registergericht:g(r,"registergericht"),registernummer:g(r,"registernummer"),
-    verantwortlich:g(r,"verantwortlich")||g(r,"vertreter")||vorstand
+    verantwortlich:g(r,"verantwortlich")||g(r,"vertreter")||vorstand,
+    mail_anbieter:g(r,"mail_anbieter")
   };
+  var kon=!!(c.konto&&c.konto.supabase_url);document.getElementById("konto").hidden=!kon;
+  document.getElementById("hr").textContent=(kon?"8":"7")+". Deine Rechte";document.getElementById("hc").textContent=(kon?"9":"8")+". Änderungen";
   document.querySelectorAll("[data-k]").forEach(function(e){
     var k=e.getAttribute("data-k"),t=val[k];
     if(t){e.textContent=t;if(k==="email"&&e.tagName==="A")e.href="mailto:"+t}

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.supabase.co; form-action 'none'; base-uri 'none'">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#070707">
+<title>Spieler-Login · DC Phönix Durmersheim</title>
+<link rel="icon" type="image/png" sizes="192x192" href="logo-favicon.png">
+<style>
+:root{--bg:#070707;--card:#121212;--card2:#191919;--line:rgba(255,255,255,.14);--fg:#F4F4F2;--mute:#9A9A96;--a1:#fff;--a-fg:#0A0A0A;--ok:#6CD08A;--bad:#FF7B63;color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:640px;margin:0 auto;padding:24px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
+a{color:inherit}
+.back{display:inline-block;margin-bottom:16px;color:var(--mute);text-decoration:none;font-weight:700;font-size:.9rem}
+h1{font-size:clamp(1.8rem,7vw,2.6rem);font-weight:900;letter-spacing:-.03em;text-transform:uppercase;line-height:1;margin:0 0 8px}
+h2{font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:800;margin:28px 0 10px}
+p{margin:0 0 12px}.mute{color:var(--mute)}.small{font-size:.86rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px}
+label{display:block;font-weight:700;margin:14px 0 6px}
+.hint{color:var(--mute);font-size:.82rem;margin-top:4px}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],select{width:100%;font:inherit;color:var(--fg);background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-height:46px}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid #B4B4AF;outline-offset:2px}
+.pw{display:flex;gap:8px}.pw input{flex:1}
+.chk{display:flex;gap:10px;align-items:center;margin:8px 0 0;font-weight:500;font-size:.9rem;color:var(--mute)}
+.chk input{width:20px;height:20px;accent-color:#fff}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:800;border:1px solid var(--line);background:var(--card2);color:var(--fg);padding:11px 18px;border-radius:999px;cursor:pointer;text-decoration:none;min-height:44px}
+.btn.pri{background:var(--a1);color:var(--a-fg);border-color:transparent}
+.btn.sm{padding:8px 14px;min-height:38px;font-size:.88rem}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.msg{margin:12px 0 0;padding:10px 14px;border-radius:12px;font-size:.92rem;border:1px solid var(--line)}
+.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
+.field{padding-bottom:14px;border-bottom:1px solid var(--line)}.field:last-child{border-bottom:0}
+.next b{display:block}
+.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+footer{margin-top:32px;color:var(--mute);font-size:.82rem;display:flex;gap:16px;flex-wrap:wrap}
+</style></head>
+<body><div class="wrap">
+<a class="back" href="index.html#verein">← Zurück zur Webseite</a>
+<h1>Spieler-Login</h1>
+<p class="mute" id="sub">Hier pflegst du dein eigenes Spielerprofil.</p>
+<noscript><p class="msg bad">Diese Seite braucht JavaScript.</p></noscript>
+
+<div id="off" class="card" hidden><p>Die Spielerkonten sind noch nicht eingerichtet.</p></div>
+
+<!-- Anmeldung -->
+<section id="vLogin" hidden>
+  <form id="fLogin" class="card" autocomplete="on" novalidate>
+    <label for="liMail">E-Mail-Adresse</label>
+    <input id="liMail" type="email" autocomplete="username" inputmode="email" required>
+    <label for="liPw">Passwort</label>
+    <div class="pw"><input id="liPw" type="password" autocomplete="current-password" required>
+      <button type="button" class="btn sm" data-toggle="liPw">Zeigen</button></div>
+    <div class="row"><button class="btn pri" type="submit">Anmelden</button>
+      <button class="btn sm" type="button" id="bForgot">Passwort vergessen?</button></div>
+    <p class="msg" id="liMsg" hidden role="alert"></p>
+    <p class="hint">Dein Konto legt der Vorstand für dich an. Du bekommst dein Startpasswort persönlich.</p>
+  </form>
+  <form id="fForgot" class="card" hidden novalidate>
+    <p>Gib deine E-Mail-Adresse ein. Wenn es dazu ein Konto gibt, schicken wir dir einen Link zum Festlegen eines neuen Passworts. Er gilt nur kurz und nur einmal.</p>
+    <label for="fgMail">E-Mail-Adresse</label>
+    <input id="fgMail" type="email" autocomplete="username" inputmode="email" required>
+    <div class="row"><button class="btn pri" type="submit">Link anfordern</button>
+      <button class="btn sm" type="button" id="bBack">Zurück</button></div>
+    <p class="msg" id="fgMsg" hidden role="alert"></p>
+  </form>
+</section>
+
+<!-- Passwort festlegen (erster Login oder Zurücksetzen) -->
+<section id="vPw" hidden>
+  <form id="fPw" class="card" novalidate>
+    <p id="pwWhy"><b>Bitte lege jetzt ein eigenes Passwort fest.</b> Erst danach kannst du dein Profil bearbeiten.</p>
+    <label for="pwNew">Neues Passwort</label>
+    <div class="pw"><input id="pwNew" type="password" autocomplete="new-password" minlength="12" required>
+      <button type="button" class="btn sm" data-toggle="pwNew">Zeigen</button></div>
+    <label for="pwNew2">Neues Passwort wiederholen</label>
+    <input id="pwNew2" type="password" autocomplete="new-password" required>
+    <p class="hint">Mindestens 12 Zeichen, mit Groß- und Kleinbuchstaben, Zahl und Sonderzeichen. Oder ein langer Satz mit 16 oder mehr Zeichen. Ein Passwortmanager hilft. Nutze das Passwort nirgendwo sonst.</p>
+    <div class="row"><button class="btn pri" type="submit">Passwort speichern</button>
+      <button class="btn sm" type="button" id="pwOut">Abmelden</button></div>
+    <p class="msg" id="pwMsg" hidden role="alert"></p>
+  </form>
+</section>
+
+<!-- Profil -->
+<section id="vProfile" hidden>
+  <div class="card next" id="nextBox" hidden>
+    <h2 style="margin-top:0">Dein nächstes Spiel</h2>
+    <div id="nextTxt"></div>
+    <div class="links" id="nextLinks"></div>
+  </div>
+  <form id="fProfile" class="card" novalidate>
+    <p><b id="whoName"></b><br><span class="mute small" id="whoMail"></span></p>
+    <p class="hint">Jede Angabe ist freiwillig. Nur was du mit „Öffentlich zeigen“ freigibst, erscheint auf der Webseite. Alles andere sieht nur der Vorstand. Änderungen erscheinen nach der nächsten automatischen Aktualisierung der Seite (spätestens nach einigen Stunden).</p>
+    <div id="fields"></div>
+    <h2>Erinnerung per E-Mail</h2>
+    <label for="erinnerung">Mail vor deinem nächsten Spiel</label>
+    <select id="erinnerung">
+      <option value="keine">Keine Erinnerung</option>
+      <option value="1">1 Tag vorher</option>
+      <option value="3">3 Tage vorher</option>
+      <option value="beide">3 Tage und 1 Tag vorher</option>
+    </select>
+    <div class="row"><button class="btn pri" type="submit">Speichern</button></div>
+    <p class="msg" id="prMsg" hidden role="alert"></p>
+  </form>
+
+  <h2>Konto</h2>
+  <div class="card">
+    <div class="row" style="margin-top:0">
+      <button class="btn" type="button" id="bChangePw">Passwort ändern</button>
+      <button class="btn" type="button" id="bOut">Abmelden</button>
+    </div>
+    <p class="hint" style="margin-top:16px">Alle meine Angaben aus dem Profil löschen (Name und Konto bleiben bestehen):</p>
+    <div class="row" style="margin-top:6px">
+      <button class="btn sm" type="button" id="bWipe">Angaben löschen …</button>
+      <span id="wipeAsk" hidden><span class="small">Wirklich alles löschen?</span>
+        <button class="btn sm pri" type="button" id="bWipeYes">Ja, löschen</button>
+        <button class="btn sm" type="button" id="bWipeNo">Abbrechen</button></span>
+    </div>
+    <p class="hint">Dein Konto komplett löschen lassen kannst du jederzeit beim Vorstand.</p>
+  </div>
+</section>
+
+<footer><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></footer>
+</div>
+<script src="profil.js"></script>
+</body></html>
