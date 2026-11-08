@@ -135,7 +135,7 @@
     }
   },
   "konto": {
-    "supabase_url": "",
-    "anon_key": ""
+    "supabase_url": "https://taxshnfkamrriscchvrg.supabase.co",
+    "anon_key": "sb_publishable_bL8grOWTUK90GqXYYpd4Tg_6DEjammM"
   }
 }
