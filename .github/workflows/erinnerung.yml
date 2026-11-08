@@ -1,0 +1,33 @@
+name: Spiel-Erinnerungen per E-Mail
+
+on:
+  schedule:
+    - cron: "0 6 * * *"      # täglich ca. 7 oder 8 Uhr deutscher Zeit
+  workflow_dispatch:          # Knopf "Run workflow" zum Testen
+
+permissions:
+  contents: read
+
+concurrency:
+  group: erinnerung
+  cancel-in-progress: false
+
+jobs:
+  mail:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Erinnerungen versenden
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: python erinnerung.py
