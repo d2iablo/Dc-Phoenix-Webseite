@@ -33,12 +33,16 @@ jobs:
       - name: Tabelle und Spielplan von der BDL holen
         id: update
         continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: python update.py
 
       - name: Seite zusammenstellen
         run: |
           mkdir _site
-          cp *.html config.json data.json manifest.webmanifest _site/
+          cp *.html profil.js config.json data.json manifest.webmanifest _site/
+          cp profile.json _site/ 2>/dev/null || true
           cp logo.* _site/ 2>/dev/null || true
           cp logo-*.png _site/ 2>/dev/null || true
           cp -r fotos _site/ 2>/dev/null || true
