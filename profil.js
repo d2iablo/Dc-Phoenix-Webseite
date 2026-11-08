@@ -1,6 +1,6 @@
 (function () {
   "use strict";
-  var VERSION = "v5";
+  var VERSION = "v6";
   var $ = function (id) { return document.getElementById(id); };
   var CFG = null, SB = "", KEY = "", S = null, PROFILE = null, RECOVERY = false, CURPW = "", VIALINK = false;
   var SKEY = "dcp_session";
@@ -16,6 +16,8 @@
     { k: "geburtsort", l: "Geboren in", t: "text", max: 60 },
     { k: "nationalitaet", l: "Nationalität", t: "text", max: 40 }
   ];
+
+  function zk(f) { return f.k === "gewicht_gramm" ? "zeige_gewicht" : "zeige_" + f.k; }
 
   function show(id) {
     ["vLogin", "vPw", "vProfile", "off"].forEach(function (x) { $(x).hidden = x !== id; });
@@ -122,7 +124,7 @@
       w.appendChild(inp);
       if (f.h) { var h = document.createElement("div"); h.className = "hint"; h.textContent = f.h; w.appendChild(h); }
       var c = document.createElement("label"); c.className = "chk";
-      var cb = document.createElement("input"); cb.type = "checkbox"; cb.id = "z_" + f.k; cb.checked = !!PROFILE["zeige_" + f.k];
+      var cb = document.createElement("input"); cb.type = "checkbox"; cb.id = "z_" + f.k; cb.checked = !!PROFILE[zk(f)];
       c.appendChild(cb); c.appendChild(document.createTextNode("Öffentlich auf der Webseite zeigen"));
       w.appendChild(c); box.appendChild(w);
     });
@@ -149,7 +151,7 @@
     e.preventDefault();
     var body = {};
     try {
-      FELDER.forEach(function (f) { body[f.k] = wert(f, $("f_" + f.k)); body["zeige_" + f.k] = $("z_" + f.k).checked; });
+      FELDER.forEach(function (f) { body[f.k] = wert(f, $("f_" + f.k)); body[zk(f)] = $("z_" + f.k).checked; });
     } catch (er) { msg("prMsg", er.message); return; }
     body.erinnerung = $("erinnerung").value;
     patch(body, "Gespeichert. Auf der Webseite erscheint es nach der nächsten Aktualisierung.");
@@ -166,7 +168,7 @@
   }
   function onWipe() {
     var body = {};
-    FELDER.forEach(function (f) { body[f.k] = null; body["zeige_" + f.k] = false; });
+    FELDER.forEach(function (f) { body[f.k] = null; body[zk(f)] = false; });
     $("wipeAsk").hidden = true; $("bWipe").hidden = false;
     patch(body, "Alle Angaben wurden gelöscht.");
   }
