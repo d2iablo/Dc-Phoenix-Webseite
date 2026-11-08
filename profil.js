@@ -1,5 +1,6 @@
 (function () {
   "use strict";
+  var VERSION = "v4";
   var $ = function (id) { return document.getElementById(id); };
   var CFG = null, SB = "", KEY = "", S = null, PROFILE = null, RECOVERY = false, CURPW = "", VIALINK = false;
   var SKEY = "dcp_session";
@@ -103,7 +104,7 @@
       : "Willkommen! Bitte lege jetzt ein eigenes Passwort fest. Erst danach kannst du dein Profil bearbeiten.";
     $("pwWhy").style.fontWeight = "700";
     ["pwNew", "pwNew2", "pwOld"].forEach(function (i) { $(i).value = ""; });
-    $("oldBox").hidden = VIALINK || !!CURPW;
+    if ($("oldBox")) $("oldBox").hidden = VIALINK || !!CURPW;
     msg("pwMsg", ""); show("vPw");
   }
   function showProfile() {
@@ -248,6 +249,7 @@
       .then(function () { ["pwNew", "pwNew2", "pwOld"].forEach(function (i) { $(i).value = ""; }); showProfile(); msg("prMsg", "Dein neues Passwort ist gespeichert.", true); })
       .catch(function (er) {
         var t = er.body && (er.body.error_code || er.body.msg || "");
+        if (/current_password_required/.test(t) && $("oldBox")) { $("oldBox").hidden = false; msg("pwMsg", "Bitte gib oben dein aktuelles Passwort (dein Startpasswort) ein."); return; }
         msg("pwMsg", /same_password/.test(t) ? "Das neue Passwort muss anders sein als das alte."
           : /current_password/.test(t) ? "Das aktuelle Passwort fehlt oder stimmt nicht."
           : /weak_password/.test(t) ? "Dieses Passwort ist zu schwach. Wähle ein längeres."
