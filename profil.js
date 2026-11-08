@@ -237,15 +237,16 @@
     var p = $("pwNew").value, f = pwFehler(p, $("pwNew2").value);
     if (f) { msg("pwMsg", f); return; }
     msg("pwMsg", "Speichere …", true);
+    var step = 1;
     auth("/auth/v1/user", { method: "PUT", body: { password: p } })
-      .then(function () { return auth("/rest/v1/rpc/passwort_geaendert", { method: "POST", body: {} }); })
+      .then(function () { step = 2; return auth("/rest/v1/rpc/passwort_geaendert", { method: "POST", body: {} }); })
       .then(function () { RECOVERY = false; return loadProfile(); })
       .then(function () { ["pwNew", "pwNew2"].forEach(function (i) { $(i).value = ""; }); showProfile(); msg("prMsg", "Dein neues Passwort ist gespeichert.", true); })
       .catch(function (er) {
         var t = er.body && (er.body.error_code || er.body.msg || "");
         msg("pwMsg", /same_password/.test(t) ? "Das neue Passwort muss anders sein als das alte."
           : /weak_password/.test(t) ? "Dieses Passwort ist zu schwach. Wähle ein längeres."
-          : "Das hat nicht geklappt. Bitte versuche es noch einmal.");
+          : "Das hat nicht geklappt (Schritt " + step + ", Code " + (er.status || "?") + (t ? ", " + String(t).slice(0, 60) : "") + "). Bitte versuche es noch einmal.");
       });
   }
 
