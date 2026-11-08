@@ -1,6 +1,6 @@
 (function () {
   "use strict";
-  var VERSION = "v4";
+  var VERSION = "v5";
   var $ = function (id) { return document.getElementById(id); };
   var CFG = null, SB = "", KEY = "", S = null, PROFILE = null, RECOVERY = false, CURPW = "", VIALINK = false;
   var SKEY = "dcp_session";
@@ -159,7 +159,10 @@
     auth("/rest/v1/profiles?id=eq." + encodeURIComponent(S.uid), { method: "PATCH", body: body, prefer: "return=minimal" })
       .then(function () { return loadProfile(); })
       .then(function () { showProfile(); msg("prMsg", okText, true); })
-      .catch(function (e) { msg("prMsg", e.status === 401 || e.status === 403 ? "Bitte melde dich neu an." : "Speichern hat nicht geklappt. Prüfe deine Eingaben und versuche es noch einmal."); });
+      .catch(function (e) {
+        var b = e.body || {}, d = [e.status || "?", b.code || "", String(b.message || b.msg || b.error_code || "").slice(0, 120)].filter(Boolean).join(", ");
+        msg("prMsg", (e.status === 401 ? "Bitte melde dich neu an. " : "Speichern hat nicht geklappt. Prüfe deine Eingaben. ") + "(" + d + ")");
+      });
   }
   function onWipe() {
     var body = {};
