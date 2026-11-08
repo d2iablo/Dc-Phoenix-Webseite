@@ -178,6 +178,47 @@ def main():
         heute = date.fromisoformat(os.environ["TEST_HEUTE"])
     data = http_json(site.rstrip("/") + "/data.json", {"User-Agent": "dc-phoenix-erinnerung", "Cache-Control": "no-cache"})
 
+    # Testmodus: eine Probe-Mail an ein Konto, egal wann das nächste Spiel ist (nichts wird protokolliert)
+    test_an = os.environ.get("TEST_AN", "").strip()
+    if test_an:
+        rows = http_json(sb + "/rest/v1/profiles?select=email,spielername&email=eq." + urllib.parse.quote(test_an, safe=""),
+                         sb_headers(key)) or []
+        if not rows:
+            print("Testmail: Kein Konto mit dieser E-Mail-Adresse gefunden.")
+            return 1
+        me = norm(rows[0]["spielername"])
+        best = None
+        for t in data["teams"]:
+            if me not in {norm(p["name"]) for p in t.get("players", [])}:
+                continue
+            for f in t.get("fixtures", []):
+                if f.get("ergebnis") or not f.get("heim") or "spielfrei" in (f["heim"] + f["gast"]).lower():
+                    continue
+                try:
+                    d = date.fromisoformat(f["datum"])
+                except Exception:
+                    continue
+                if d >= heute and (best is None or d < best[0]):
+                    best = (d, t, f)
+        if not best:
+            print("Testmail: Für diesen Spieler wurde kein kommendes Spiel gefunden (Spielername in der Tabelle profiles prüfen).")
+            return 1
+        s, user, pw = smtp_senden(None)
+        try:
+            if user:
+                s.login(user, pw)
+            s.send_message(baue_mail(cfg, site, absender, test_an, best[1], best[2], max((best[0] - heute).days, 0)))
+            print("Testmail verschickt.")
+        except Exception as e:  # noqa: BLE001
+            print("Testmail fehlgeschlagen (%s)" % type(e).__name__)
+            return 1
+        finally:
+            try:
+                s.quit()
+            except Exception:  # noqa: BLE001
+                pass
+        return 0
+
     # Spiele der nächsten 1 und 3 Tage je Team
     anstehend = []  # (tage, team_cfg, fixture, spieler_normiert_liste)
     for t in data["teams"]:
