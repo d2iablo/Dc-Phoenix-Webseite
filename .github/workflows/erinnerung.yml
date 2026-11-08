@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "0 6 * * *"      # täglich ca. 7 oder 8 Uhr deutscher Zeit
   workflow_dispatch:          # Knopf "Run workflow" zum Testen
+    inputs:
+      testmail_an:
+        description: "Nur Testmail: E-Mail-Adresse eines Spielerkontos (leer lassen für normalen Lauf)"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -30,4 +35,5 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
           SITE_URL: ${{ secrets.SITE_URL }}
+          TEST_AN: ${{ github.event.inputs.testmail_an }}
         run: python erinnerung.py
