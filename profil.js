@@ -1,7 +1,7 @@
 (function () {
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
-  var CFG = null, SB = "", KEY = "", S = null, PROFILE = null, RECOVERY = false;
+  var CFG = null, SB = "", KEY = "", S = null, PROFILE = null, RECOVERY = false, CURPW = "", VIALINK = false;
   var SKEY = "dcp_session";
 
   var FELDER = [
@@ -66,7 +66,7 @@
 
   function logout(m) {
     var t = S && S.access_token;
-    S = null; PROFILE = null; saveS();
+    S = null; PROFILE = null; CURPW = ""; saveS();
     if (t) raw("/auth/v1/logout", { method: "POST", token: t }).catch(function () {});
     ["liPw", "pwNew", "pwNew2"].forEach(function (i) { $(i).value = ""; });
     show("vLogin"); $("fLogin").hidden = false; $("fForgot").hidden = true;
@@ -102,7 +102,8 @@
       ? "Lege ein neues Passwort fest."
       : "Willkommen! Bitte lege jetzt ein eigenes Passwort fest. Erst danach kannst du dein Profil bearbeiten.";
     $("pwWhy").style.fontWeight = "700";
-    ["pwNew", "pwNew2"].forEach(function (i) { $(i).value = ""; });
+    ["pwNew", "pwNew2", "pwOld"].forEach(function (i) { $(i).value = ""; });
+    $("oldBox").hidden = VIALINK || !!CURPW;
     msg("pwMsg", ""); show("vPw");
   }
   function showProfile() {
@@ -215,7 +216,7 @@
     if (!mail || !pw) { msg("liMsg", "Bitte E-Mail und Passwort eingeben."); return; }
     msg("liMsg", "Melde an …", true);
     raw("/auth/v1/token?grant_type=password", { method: "POST", body: { email: mail, password: pw } })
-      .then(function (j) { setSession(j); $("liPw").value = ""; RECOVERY = false; return loadProfile(); })
+      .then(function (j) { setSession(j); CURPW = pw; VIALINK = false; $("liPw").value = ""; RECOVERY = false; return loadProfile(); })
       .then(route)
       .catch(function (er) {
         S = null; saveS(); $("liPw").value = "";
@@ -238,13 +239,17 @@
     if (f) { msg("pwMsg", f); return; }
     msg("pwMsg", "Speichere …", true);
     var step = 1;
-    auth("/auth/v1/user", { method: "PUT", body: { password: p } })
+    var body = { password: p }, cur = CURPW || $("pwOld").value;
+    if (cur && !VIALINK) body.current_password = cur;
+    if (!VIALINK && !cur) { msg("pwMsg", "Bitte gib dein aktuelles Passwort ein."); return; }
+    auth("/auth/v1/user", { method: "PUT", body: body })
       .then(function () { step = 2; return auth("/rest/v1/rpc/passwort_geaendert", { method: "POST", body: {} }); })
-      .then(function () { RECOVERY = false; return loadProfile(); })
-      .then(function () { ["pwNew", "pwNew2"].forEach(function (i) { $(i).value = ""; }); showProfile(); msg("prMsg", "Dein neues Passwort ist gespeichert.", true); })
+      .then(function () { RECOVERY = false; CURPW = p; VIALINK = false; return loadProfile(); })
+      .then(function () { ["pwNew", "pwNew2", "pwOld"].forEach(function (i) { $(i).value = ""; }); showProfile(); msg("prMsg", "Dein neues Passwort ist gespeichert.", true); })
       .catch(function (er) {
         var t = er.body && (er.body.error_code || er.body.msg || "");
         msg("pwMsg", /same_password/.test(t) ? "Das neue Passwort muss anders sein als das alte."
+          : /current_password/.test(t) ? "Das aktuelle Passwort fehlt oder stimmt nicht."
           : /weak_password/.test(t) ? "Dieses Passwort ist zu schwach. Wähle ein längeres."
           : "Das hat nicht geklappt (Schritt " + step + ", Code " + (er.status || "?") + (t ? ", " + String(t).slice(0, 60) : "") + "). Bitte versuche es noch einmal.");
       });
@@ -261,7 +266,7 @@
       if (h.indexOf("access_token=") >= 0) {
         var q = new URLSearchParams(h);
         if (q.get("type") === "recovery" && q.get("access_token")) {
-          RECOVERY = true;
+          RECOVERY = true; VIALINK = true;
           var tok = q.get("access_token");
           history.replaceState(null, "", location.pathname);
           raw("/auth/v1/user", { token: tok }).then(function (u) {
