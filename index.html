@@ -43,6 +43,10 @@ button{font:inherit;color:inherit}
 .brand img{width:34px;height:34px;border-radius:50%;object-fit:cover;filter:var(--logo-filter)}
 .brand span{display:none}
 @media (min-width:560px){.brand span{display:inline}}
+.rtx{margin-top:14px;border:1px solid var(--line);border-radius:16px;background:var(--card2,var(--card));overflow:hidden}
+.rtxh{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line)}
+.rtxh b{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.rtxb{white-space:pre-wrap;padding:14px;font-size:.92rem;line-height:1.55;overflow-wrap:anywhere}
 .sbox{display:grid;gap:12px}
 .sbnum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .sbn{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 50% 0,color-mix(in srgb,var(--fg) 11%,var(--card)),var(--card) 62%);border:1px solid var(--line);border-radius:22px;padding:20px 12px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;transition:transform .25s,border-color .25s}
@@ -430,6 +434,34 @@ function extras(g){var out=[];
   return out.join("   ")}
 function reportOf(f){return f.id&&DATA.reports?DATA.reports[f.id]:null}
 function isOwnTeam(n){return CFG.teams.some(function(t){return norm(t.name)===norm(n)})}
+function reportText(r){
+  var ownH=isOwnTeam(r.heim),own=ownH?"heim":"gast",opp=ownH?"gast":"heim",os=ownH?0:1,ps=ownH?1:0,ok=ownH?"h":"g";
+  var team=short(r[own]),gegner=r[opp],sp=r.spiele||[];
+  var mine=0,theirs=0;
+  if(r.sets){mine=r.sets[os];theirs=r.sets[ps]}else{sp.forEach(function(g){if(g.ergebnis[os]>g.ergebnis[ps])mine++;else if(g.ergebnis[os]<g.ergebnis[ps])theirs++})}
+  var diff=Math.abs(mine-theirs),win=mine>theirs,draw=mine===theirs;
+  var verb=draw?"trennt sich unentschieden von":win?(diff>=6?"gewinnt klar gegen":diff<=1?"gewinnt knapp gegen":"gewinnt gegen"):(diff>=6?"verliert deutlich gegen":diff<=1?"verliert knapp gegen":"verliert gegen");
+  var ort=ownH?"zu Hause":"auswärts";
+  var t="🎯 "+team+" "+verb+" "+gegner+" ("+mine+":"+theirs+", "+ort+").";
+  if(r.legs)t+=" Legs: "+r.legs[os]+":"+r.legs[ps]+".";
+  var ew=0,el2=0,dw=0,dl=0,st={};
+  sp.forEach(function(g){var a=g.ergebnis[os],b=g.ergebnis[ps],w=a>b,l=a<b;
+    if(g.typ==="Doppel"){if(w)dw++;else if(l)dl++}else{if(w)ew++;else if(l)el2++}
+    (g[own]||[]).forEach(function(n){var o=st[n]||(st[n]={n:n,sp:0,w:0,hf:[],sl:[],mx:0});o.sp++;if(w)o.w++;
+      var v=pv(g[ok],(g[own]||[]).indexOf(n),(g[own]||[]).length);if(v.hf)o.hf.push(v.hf);if(v.sl)o.sl.push(v.sl);if(v.max)o.mx+=v.max})});
+  t+="\n\nEinzel "+ew+":"+el2+", Doppel "+dw+":"+dl+".";
+  var pl=Object.keys(st).map(function(k){return st[k]}).filter(function(o){return o.sp>0});
+  var best=0;pl.forEach(function(o){if(o.w>best)best=o.w});
+  if(best>=2){var bn=pl.filter(function(o){return o.w===best});
+    t+="\n\n⭐ Spieler des Tages: "+bn.map(function(o){return o.n+" ("+o.w+" Siege aus "+o.sp+" Spielen)"}).join(" und ")+"."}
+  var hl=[];pl.forEach(function(o){var b=[];
+    o.hf.forEach(function(x){b.push("High Finish "+x)});o.sl.forEach(function(x){b.push("Short Leg in "+x+" Darts")});if(o.mx)b.push(o.mx+(o.mx===1?" Maximum":" Maximums"));
+    if(b.length)hl.push(o.n+": "+b.join(", "))});
+  if(hl.length)t+="\n\n🔥 Highlights:\n"+hl.map(function(x){return "• "+x}).join("\n");
+  t+="\n\n#DCPhönix #Dart #BadischeDartLiga";return t}
+function copyText(txt,btn){var done=function(){var o=btn.textContent;btn.textContent="Kopiert ✓";setTimeout(function(){btn.textContent=o},1800)};
+  var fb=function(){var ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done()}catch(e){}document.body.removeChild(ta)};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,fb);else fb()}
 function renderReport(r){
   var oh=!isOwnTeam(r.heim)&&CFG.verein.gegner_namen_zeigen!==true,og=!isOwnTeam(r.gast)&&CFG.verein.gegner_namen_zeigen!==true;
   var box=el("div",null,"report");
@@ -446,7 +478,10 @@ function renderReport(r){
   if(r.legs){var x=el("span","Legs ");x.appendChild(el("b",r.legs[0]+" : "+r.legs[1]));ft.appendChild(x)}
   if(r.sets){var y=el("span","Sets ");y.appendChild(el("b",r.sets[0]+" : "+r.sets[1]));ft.appendChild(y)}
   var u=safeUrl(r.url);if(u)ft.appendChild(extLink(u,"Originalbogen bei der BDL"));
-  box.appendChild(ft);return box}
+  box.appendChild(ft);
+  var tx=reportText(r),bx=el("div",null,"rtx"),hh=el("div",null,"rtxh");hh.appendChild(el("b","Berichtstext zum Teilen"));
+  var cb=el("button","Text kopieren","btn sm");cb.type="button";cb.onclick=function(){copyText(tx,cb)};hh.appendChild(cb);
+  bx.appendChild(hh);bx.appendChild(el("div",tx,"rtxb"));box.appendChild(bx);return box}
 
 /* opts: team (Teamname zeigen), actions */
 function fixRow(f,t,o){o=o||{};var own=norm(t.name),li=document.createElement("li"),up=isUpcoming(f);
