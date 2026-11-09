@@ -462,6 +462,12 @@ function reportText(r){
 function copyText(txt,btn){var done=function(){var o=btn.textContent;btn.textContent="Kopiert ✓";setTimeout(function(){btn.textContent=o},1800)};
   var fb=function(){var ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done()}catch(e){}document.body.removeChild(ta)};
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,fb);else fb()}
+function textBox(tx){var bx=el("div",null,"rtx"),hh=el("div",null,"rtxh");hh.appendChild(el("b","Berichtstext zum Teilen"));
+  var cb=el("button","Text kopieren","btn sm");cb.type="button";cb.onclick=function(){copyText(tx,cb)};hh.appendChild(cb);
+  bx.appendChild(hh);bx.appendChild(el("div",tx,"rtxb"));return bx}
+function fixText(f,t){var own=norm(t.name),h=norm(f.heim)===own,m=h?f.ergebnis[0]:f.ergebnis[1],g=h?f.ergebnis[1]:f.ergebnis[0],diff=Math.abs(m-g);
+  var verb=m===g?"trennt sich unentschieden von":m>g?(diff>=6?"gewinnt klar gegen":diff<=1?"gewinnt knapp gegen":"gewinnt gegen"):(diff>=6?"verliert deutlich gegen":diff<=1?"verliert knapp gegen":"verliert gegen");
+  return "\uD83C\uDFAF "+short(t.name)+" "+verb+" "+(h?f.gast:f.heim)+" ("+m+":"+g+", "+(h?"zu Hause":"auswärts")+").\n\n#DCPhönix #Dart #BadischeDartLiga"}
 function renderReport(r){
   var oh=!isOwnTeam(r.heim)&&CFG.verein.gegner_namen_zeigen!==true,og=!isOwnTeam(r.gast)&&CFG.verein.gegner_namen_zeigen!==true;
   var box=el("div",null,"report");
@@ -479,9 +485,7 @@ function renderReport(r){
   if(r.sets){var y=el("span","Sets ");y.appendChild(el("b",r.sets[0]+" : "+r.sets[1]));ft.appendChild(y)}
   var u=safeUrl(r.url);if(u)ft.appendChild(extLink(u,"Originalbogen bei der BDL"));
   box.appendChild(ft);
-  var tx=reportText(r),bx=el("div",null,"rtx"),hh=el("div",null,"rtxh");hh.appendChild(el("b","Berichtstext zum Teilen"));
-  var cb=el("button","Text kopieren","btn sm");cb.type="button";cb.onclick=function(){copyText(tx,cb)};hh.appendChild(cb);
-  bx.appendChild(hh);bx.appendChild(el("div",tx,"rtxb"));box.appendChild(bx);return box}
+  box.appendChild(textBox(reportText(r)));return box}
 
 /* opts: team (Teamname zeigen), actions */
 function fixRow(f,t,o){o=o||{};var own=norm(t.name),li=document.createElement("li"),up=isUpcoming(f);
@@ -507,6 +511,9 @@ function fixRow(f,t,o){o=o||{};var own=norm(t.name),li=document.createElement("l
     btn.onclick=function(){if(panel){panel.remove();panel=null;btn.textContent="Spielbericht ▾"}
       else{panel=renderReport(rep);li.appendChild(panel);btn.textContent="Spielbericht ▴"}};
     acts.appendChild(btn)}
+  else if(f.ergebnis&&f.heim&&!isFree(f)){var tb2=el("button","Berichtstext ▾","btn sm"),pn=null;tb2.type="button";
+    tb2.onclick=function(){if(pn){pn.remove();pn=null;tb2.textContent="Berichtstext ▾"}else{pn=textBox(fixText(f,t));li.appendChild(pn);tb2.textContent="Berichtstext ▴"}};
+    acts.appendChild(tb2)}
   if(acts.children.length)li.appendChild(acts);
   return li}
 function formDots(t){var own=norm(t.name),pl=(t.fixtures||[]).filter(function(f){return f.ergebnis}).sort(function(a,b){return a.datum<b.datum?-1:1}).slice(-5);
