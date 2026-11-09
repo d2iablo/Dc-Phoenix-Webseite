@@ -490,7 +490,7 @@ function copyText2(){}
 function copyText(txt,btn){var done=function(){var o=btn.textContent;btn.textContent="Kopiert ✓";setTimeout(function(){btn.textContent=o},1800)};
   var fb=function(){var ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done()}catch(e){}document.body.removeChild(ta)};
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,fb);else fb()}
-function textBox(tx){var bx=el("div",null,"rtx"),hh=el("div",null,"rtxh");hh.appendChild(el("b","Berichtstext zum Teilen"));
+function textBox(tx,ki){var bx=el("div",null,"rtx"),hh=el("div",null,"rtxh");hh.appendChild(el("b",ki?"Berichtstext (mit KI erstellt)":"Berichtstext zum Teilen"));
   var cb=el("button","Text kopieren","btn sm");cb.type="button";cb.onclick=function(){copyText(tx,cb)};hh.appendChild(cb);
   bx.appendChild(hh);bx.appendChild(el("div",tx,"rtxb"));return bx}
 function fixText(f,t){var own=norm(t.name),h=norm(f.heim)===own,m=h?f.ergebnis[0]:f.ergebnis[1],g=h?f.ergebnis[1]:f.ergebnis[0];
@@ -539,7 +539,7 @@ function fixRow(f,t,o){o=o||{};var own=norm(t.name),li=document.createElement("l
       else{panel=renderReport(rep);li.appendChild(panel);btn.textContent="Spielbericht ▴"}};
     acts.appendChild(btn)}
   if(f.ergebnis&&f.heim&&!isFree(f)){var tb2=el("button","Berichtstext ▾","btn sm"),pn=null;tb2.type="button";
-    tb2.onclick=function(){if(pn){pn.remove();pn=null;tb2.textContent="Berichtstext ▾"}else{pn=textBox(rep?reportText(rep):fixText(f,t));li.appendChild(pn);tb2.textContent="Berichtstext ▴"}};
+    tb2.onclick=function(){if(pn){pn.remove();pn=null;tb2.textContent="Berichtstext ▾"}else{var kt=DATA.texte&&f.id?DATA.texte[f.id]:"";pn=kt?textBox("\uD83D\uDCF0 "+kt+"\n\n#DCPhönix #Dart #BadischeDartLiga",true):textBox(rep?reportText(rep):fixText(f,t));li.appendChild(pn);tb2.textContent="Berichtstext ▴"}};
     acts.appendChild(tb2)}
   if(acts.children.length)li.appendChild(acts);
   return li}

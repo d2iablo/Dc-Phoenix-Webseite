@@ -421,6 +421,177 @@ def fetch_profiles(path="profile.json"):
         print("Profile: nicht abrufbar (%s)" % type(e).__name__)
 
 
+# ---------------------------------------------------------------------------
+# KI-Berichtstexte (optional). Braucht ANTHROPIC_API_KEY + Supabase (Tabelle "berichte").
+# Jeder Text wird nur einmal erzeugt und in Supabase gespeichert.
+# ---------------------------------------------------------------------------
+KI_MODELL = os.environ.get("KI_MODELL", "claude-haiku-5-5")
+KI_URL = os.environ.get("ANTHROPIC_API_URL", "https://api.anthropic.com/v1/messages")
+WT = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
+MO = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+KI_SYSTEM = (
+    "Du schreibst kurze Zeitungsberichte über Dartspiele eines Amateurvereins (Badische Dart Liga) auf Deutsch. "
+    "Schreibe eine Überschrift (eine Zeile), danach 2 bis 4 kurze Absätze, insgesamt 90 bis 160 Wörter. "
+    "Ton: sachlich, lebendig, freundlich zum Verein, aber ohne Übertreibung. "
+    "STRIKTE REGELN: Verwende ausschließlich Fakten aus dem gelieferten JSON. Erfinde keine Zahlen, Namen, Zitate, "
+    "Tabellenplätze, Wetter, Zuschauer oder Spielverläufe. Nenne keine Spieler des Gegners. Wenn etwas im JSON fehlt, "
+    "erwähne es nicht. Zahlen müssen exakt übernommen werden. Schreibe nur den Bericht, ohne Einleitung, ohne "
+    "Markdown, ohne Hashtags, ohne Anführungszeichen um den Text."
+)
+
+
+def _sb(method, path, body=None, prefer=None):
+    url = os.environ.get("SUPABASE_URL", "").strip().rstrip("/")
+    key = os.environ.get("SUPABASE_SERVICE_KEY", "").strip()
+    hdr = {"apikey": key, "Content-Type": "application/json", "User-Agent": "dc-phoenix-update"}
+    if not key.startswith("sb_"):
+        hdr["Authorization"] = "Bearer " + key
+    if prefer:
+        hdr["Prefer"] = prefer
+    data = json.dumps(body).encode("utf-8") if body is not None else None
+    req = urllib.request.Request(url + path, data=data, headers=hdr, method=method)
+    with urllib.request.urlopen(req, timeout=30) as r:
+        raw = r.read()
+    return json.loads(raw) if raw else None
+
+
+def _datum_lang(ds):
+    try:
+        d = datetime.strptime(ds, "%Y-%m-%d")
+        return "%s, %d. %s %d" % (WT[d.weekday()], d.day, MO[d.month - 1], d.year)
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def _pv(o, i, n):
+    a = (o or {}) if isinstance(o, dict) else {}
+    out = {}
+    for k in ("sl", "hf", "max"):
+        v = a.get(k) or []
+        out[k] = v[i] if len(v) == n else (v[0] if len(v) == 1 and n == 1 else None)
+    return out
+
+
+def _short(n):
+    return re.sub(r"^DC Phönix\s*", "", n or "", flags=re.I) or n
+
+
+def ki_fakten(f, team, rep, own_names):
+    """Baut die Fakten für einen Bericht. Gegner-Spielernamen werden nie mitgeschickt."""
+    home = norm(f["heim"]) == norm(team["name"])
+    m, g = (f["ergebnis"][0], f["ergebnis"][1]) if home else (f["ergebnis"][1], f["ergebnis"][0])
+    fx = {
+        "team": _short(team["name"]), "gegner": f["gast"] if home else f["heim"],
+        "ort": "zu Hause" if home else "auswärts", "datum": _datum_lang(f.get("datum")),
+        "ergebnis_aus_sicht_des_teams": "%d:%d" % (m, g),
+    }
+    if rep:
+        side, oth, ok = ("heim", "gast", "h") if home else ("gast", "heim", "g")
+        os_, ps_ = (0, 1) if home else (1, 0)
+        ew = el = dw = dl = 0
+        st = {}
+        for sp in rep.get("spiele", []):
+            a, b = sp["ergebnis"][os_], sp["ergebnis"][ps_]
+            if sp.get("typ") == "Doppel":
+                dw += a > b
+                dl += a < b
+            else:
+                ew += a > b
+                el += a < b
+            names = sp.get(side, [])
+            for i, n in enumerate(names):
+                if n == "Gegner":
+                    continue
+                o = st.setdefault(n, {"name": n, "spiele": 0, "siege": 0, "high_finish": [], "short_leg_darts": [], "maximums": 0})
+                o["spiele"] += 1
+                o["siege"] += a > b
+                v = _pv(sp.get(ok), i, len(names))
+                if v["hf"]:
+                    o["high_finish"].append(v["hf"])
+                if v["sl"]:
+                    o["short_leg_darts"].append(v["sl"])
+                if v["max"]:
+                    o["maximums"] += v["max"]
+        if rep.get("legs"):
+            fx["legs"] = "%d:%d" % (rep["legs"][os_], rep["legs"][ps_])
+        fx["einzel"] = "%d:%d" % (ew, el)
+        fx["doppel"] = "%d:%d" % (dw, dl)
+        fx["spieler_des_eigenen_teams"] = [v for v in st.values() if v["spiele"]]
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    later = [x for x in team.get("fixtures", []) if x.get("ergebnis") and x["datum"] > f["datum"]]
+    if not later:
+        nxt = sorted([x for x in team.get("fixtures", []) if not x.get("ergebnis") and x.get("heim") and x["datum"] >= today
+                      and "spielfrei" not in (x["heim"] + x["gast"]).lower()], key=lambda x: x["datum"])
+        if nxt:
+            n = nxt[0]
+            h = norm(n["heim"]) == norm(team["name"])
+            fx["naechstes_spiel"] = "%s, %s Uhr, %s %s" % (_datum_lang(n["datum"]), n.get("zeit") or "20:00",
+                                                           "zu Hause gegen" if h else "auswärts bei", n["gast"] if h else n["heim"])
+    return fx
+
+
+def ki_pruefen(text, fx):
+    """Lehnt Texte ab, die Zahlen enthalten, die nicht in den Fakten stehen, oder das Ergebnis nicht nennen."""
+    if not (200 <= len(text) <= 2200):
+        return False
+    erlaubt = set(re.findall(r"\d+", json.dumps(fx, ensure_ascii=False)))
+    erlaubt |= {str(i) for i in range(0, 13)}  # kleine Zahlen als Wörter/Zählungen
+    for z in re.findall(r"\d+", text):
+        if z not in erlaubt:
+            return False
+    return fx["ergebnis_aus_sicht_des_teams"] in text.replace(" : ", ":").replace(" zu ", ":")
+
+
+def ki_schreiben(fx, key):
+    body = {"model": KI_MODELL, "max_tokens": 700, "system": KI_SYSTEM,
+            "messages": [{"role": "user", "content": "Fakten (JSON):\n" + json.dumps(fx, ensure_ascii=False, indent=1)}]}
+    req = urllib.request.Request(KI_URL, data=json.dumps(body).encode("utf-8"), method="POST", headers={
+        "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json", "User-Agent": "dc-phoenix-update"})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        j = json.load(r)
+    return "".join(b.get("text", "") for b in j.get("content", []) if b.get("type") == "text").strip()
+
+
+def ki_berichte(cfg, teams, reports):
+    """Gibt {spiel_id: text} zurück. Ohne Schlüssel/Supabase passiert nichts."""
+    key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+    if not key or not os.environ.get("SUPABASE_URL") or not os.environ.get("SUPABASE_SERVICE_KEY"):
+        return {}
+    try:
+        rows = _sb("GET", "/rest/v1/berichte?select=spiel_id,text") or []
+    except Exception as e:  # noqa: BLE001
+        print("KI-Berichte: Speicher nicht abrufbar (%s)" % type(e).__name__)
+        return {}
+    texte = {r["spiel_id"]: r["text"] for r in rows}
+    limit = int(os.environ.get("KI_MAX_PRO_LAUF", "4"))
+    neu = fehl = 0
+    own_names = {norm(t["name"]) for t in cfg.get("teams", [])}
+    for t in teams:
+        for f in sorted(t.get("fixtures", []), key=lambda x: x["datum"], reverse=True):
+            if neu >= limit:
+                break
+            if not f.get("ergebnis") or not f.get("id") or f["id"] in texte or not f.get("heim"):
+                continue
+            if "spielfrei" in (f["heim"] + f["gast"]).lower():
+                continue
+            fx = ki_fakten(f, t, reports.get(f["id"]), own_names)
+            try:
+                text = ki_schreiben(fx, key)
+                if not ki_pruefen(text, fx):
+                    fehl += 1
+                    continue
+                _sb("POST", "/rest/v1/berichte", {"spiel_id": f["id"], "text": text, "modell": KI_MODELL},
+                    prefer="resolution=ignore-duplicates,return=minimal")
+                texte[f["id"]] = text
+                neu += 1
+                time.sleep(1)
+            except Exception as e:  # noqa: BLE001
+                fehl += 1
+                print("KI-Bericht %s: %s" % (f["id"], type(e).__name__))
+    print("KI-Berichte: %d vorhanden, %d neu, %d abgelehnt oder fehlgeschlagen" % (len(texte), neu, fehl))
+    return texte
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default="config.json")
@@ -504,7 +675,10 @@ def main():
                     for g in rep_.get("spiele", []):
                         g[key] = ["Gegner"] * max(1, len(g[key]))
 
+    texte = ki_berichte(cfg, teams, reports)
     data = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "teams": teams, "reports": reports, "notes": notes[:30]}
+    if texte:
+        data["texte"] = texte
     with open(args.data, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
         f.write("\n")

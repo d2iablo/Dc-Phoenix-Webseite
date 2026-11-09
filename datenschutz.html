@@ -41,6 +41,10 @@ E-Mail: <a data-k="email"></a></p>
 <p>Die Konten und Profildaten liegen bei Supabase (Server in der EU, Frankfurt). Mit dem Anbieter besteht ein Auftragsverarbeitungsvertrag. Beim Anmelden verbindet sich dein Browser mit Supabase. Dabei wird deine IP-Adresse übertragen. Die Anmeldung wird nur für die Dauer des Besuchs im Browser (Session-Speicher) gehalten und beim Schließen des Tabs gelöscht. Es werden keine Cookies gesetzt. Beim Öffnen der Webseite ruft dein Browser außerdem die von Spielern freigegebenen Profilangaben direkt bei Supabase ab. Dabei wird deine IP-Adresse an Supabase übertragen (Art. 6 Abs. 1 lit. f DSGVO, Zweck: aktuelle Anzeige der Profile). Erinnerungs-Mails verschicken wir über <b data-k="mail_anbieter" data-opt="1"></b> per verschlüsselter Verbindung. Wir speichern, für welches Spiel eine Mail verschickt wurde, damit keine doppelt ankommt.</p>
 <p>Wir löschen dein Konto und deine Daten, wenn du es verlangst oder wenn du den Verein verlässt.</p>
 </div>
+<div id="ki" hidden>
+<h2>Automatisch erstellte Berichtstexte (KI)</h2>
+<p>Die Berichtstexte zu Spielen werden mit Hilfe eines KI-Sprachmodells (Claude von Anthropic) automatisch erstellt und als solche gekennzeichnet. Dafür werden beim Aktualisieren der Seite Spielergebnisse, Spieldaten und die Leistungen der Spieler unseres Vereins (Name, Siege, High Finish, Short Leg, Maximums) an Anthropic übertragen. Namen von Spielern anderer Vereine werden nicht übertragen. Rechtsgrundlage ist unser berechtigtes Interesse an einer ansprechenden Vereinsberichterstattung (Art. 6 Abs. 1 lit. f DSGVO). Die erzeugten Texte speichern wir bei Supabase. Anthropic kann Daten in den USA verarbeiten, die Übermittlung stützt sich auf Standardvertragsklauseln.</p>
+</div>
 <h2 id="hr">7. Deine Rechte</h2>
 <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch (Art. 15 bis 21 DSGVO). Wende dich dafür an die E-Mail-Adresse oben. Du kannst dich außerdem bei einer Datenschutzaufsichtsbehörde beschweren, in Baden-Württemberg beim Landesbeauftragten für den Datenschutz und die Informationsfreiheit, Lautenbachstraße 7, 70173 Stuttgart.</p>
 <h2 id="hc">8. Änderungen</h2>
@@ -61,7 +65,7 @@ fetch("config.json",{cache:"no-store"}).then(function(r){return r.json()}).then(
     verantwortlich:g(r,"verantwortlich")||g(r,"vertreter")||vorstand,
     mail_anbieter:g(r,"mail_anbieter")
   };
-  var kon=!!(c.konto&&c.konto.supabase_url);document.getElementById("konto").hidden=!kon;
+  var kon=!!(c.konto&&c.konto.supabase_url);document.getElementById("ki").hidden=!(c.verein&&c.verein.ki_berichte===true);document.getElementById("konto").hidden=!kon;
   document.getElementById("hr").textContent=(kon?"8":"7")+". Deine Rechte";document.getElementById("hc").textContent=(kon?"9":"8")+". Änderungen";
   document.querySelectorAll("[data-k]").forEach(function(e){
     var k=e.getAttribute("data-k"),t=val[k];
