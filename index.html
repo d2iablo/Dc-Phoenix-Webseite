@@ -43,7 +43,7 @@ button{font:inherit;color:inherit}
 .brand img{width:34px;height:34px;border-radius:50%;object-fit:cover;filter:var(--logo-filter)}
 .brand span{display:none}
 @media (min-width:560px){.brand span{display:inline}}
-.rtx{margin-top:14px;border:1px solid var(--line);border-radius:16px;background:var(--card2,var(--card));overflow:hidden}
+.rtx{grid-column:1/-1;width:100%;margin-top:14px;border:1px solid var(--line);border-radius:16px;background:var(--card2,var(--card));overflow:hidden}
 .rtxh{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line)}
 .rtxh b{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
 .rtxb{white-space:pre-wrap;padding:14px;font-size:.92rem;line-height:1.55;overflow-wrap:anywhere}
@@ -485,7 +485,7 @@ function renderReport(r){
   if(r.sets){var y=el("span","Sets ");y.appendChild(el("b",r.sets[0]+" : "+r.sets[1]));ft.appendChild(y)}
   var u=safeUrl(r.url);if(u)ft.appendChild(extLink(u,"Originalbogen bei der BDL"));
   box.appendChild(ft);
-  box.appendChild(textBox(reportText(r)));return box}
+  return box}
 
 /* opts: team (Teamname zeigen), actions */
 function fixRow(f,t,o){o=o||{};var own=norm(t.name),li=document.createElement("li"),up=isUpcoming(f);
@@ -511,8 +511,8 @@ function fixRow(f,t,o){o=o||{};var own=norm(t.name),li=document.createElement("l
     btn.onclick=function(){if(panel){panel.remove();panel=null;btn.textContent="Spielbericht ▾"}
       else{panel=renderReport(rep);li.appendChild(panel);btn.textContent="Spielbericht ▴"}};
     acts.appendChild(btn)}
-  else if(f.ergebnis&&f.heim&&!isFree(f)){var tb2=el("button","Berichtstext ▾","btn sm"),pn=null;tb2.type="button";
-    tb2.onclick=function(){if(pn){pn.remove();pn=null;tb2.textContent="Berichtstext ▾"}else{pn=textBox(fixText(f,t));li.appendChild(pn);tb2.textContent="Berichtstext ▴"}};
+  if(f.ergebnis&&f.heim&&!isFree(f)){var tb2=el("button","Berichtstext ▾","btn sm"),pn=null;tb2.type="button";
+    tb2.onclick=function(){if(pn){pn.remove();pn=null;tb2.textContent="Berichtstext ▾"}else{pn=textBox(rep?reportText(rep):fixText(f,t));li.appendChild(pn);tb2.textContent="Berichtstext ▴"}};
     acts.appendChild(tb2)}
   if(acts.children.length)li.appendChild(acts);
   return li}
