@@ -531,15 +531,19 @@ def ki_fakten(f, team, rep, own_names):
 
 
 def ki_pruefen(text, fx):
-    """Lehnt Texte ab, die Zahlen enthalten, die nicht in den Fakten stehen, oder das Ergebnis nicht nennen."""
-    if not ((200 if "einzel" in fx else 100) <= len(text) <= 2200):
-        return False
+    """Gibt None zurück, wenn der Text in Ordnung ist, sonst den Grund der Ablehnung."""
+    if not (60 <= len(text) <= 2600):
+        return "Länge %d" % len(text)
     erlaubt = set(re.findall(r"\d+", json.dumps(fx, ensure_ascii=False)))
-    erlaubt |= {str(i) for i in range(0, 13)}  # kleine Zahlen als Wörter/Zählungen
+    erlaubt |= {str(i) for i in range(0, 32)}  # kleine Zahlen, Tage im Monat
+    erlaubt |= {str(datetime.now(timezone.utc).year), str(datetime.now(timezone.utc).year - 1)}
     for z in re.findall(r"\d+", text):
         if z not in erlaubt:
-            return False
-    return fx["ergebnis_aus_sicht_des_teams"] in text.replace(" : ", ":").replace(" zu ", ":")
+            return "Zahl %s nicht in den Fakten" % z
+    m, g = fx["ergebnis_aus_sicht_des_teams"].split(":")
+    if not re.search(r"(?<!\d)%s\s*(?::|-|–|zu)\s*%s(?!\d)" % (m, g), text):
+        return "Ergebnis %s:%s fehlt" % (m, g)
+    return None
 
 
 def ki_schreiben(fx, key):
@@ -578,9 +582,15 @@ def ki_berichte(cfg, teams, reports):
                 continue
             fx = ki_fakten(f, t, reports.get(f["id"]), own_names)
             try:
-                text = ki_schreiben(fx, key)
-                if not ki_pruefen(text, fx):
+                grund = None
+                for _versuch in range(2):
+                    text = ki_schreiben(fx, key)
+                    grund = ki_pruefen(text, fx)
+                    if not grund:
+                        break
+                if grund:
                     fehl += 1
+                    print("KI-Bericht %s abgelehnt: %s" % (f["id"], grund))
                     continue
                 _sb("POST", "/rest/v1/berichte", {"spiel_id": f["id"], "text": text, "modell": KI_MODELL},
                     prefer="resolution=ignore-duplicates,return=minimal")
@@ -589,7 +599,7 @@ def ki_berichte(cfg, teams, reports):
                 time.sleep(1)
             except Exception as e:  # noqa: BLE001
                 fehl += 1
-                print("KI-Bericht %s: %s" % (f["id"], type(e).__name__))
+                print("KI-Bericht %s: %s %s" % (f["id"], type(e).__name__, str(e)[:200]))
     print("KI-Berichte: %d vorhanden, %d neu, %d abgelehnt oder fehlgeschlagen" % (len(texte), neu, fehl))
     return texte
 
