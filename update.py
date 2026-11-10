@@ -547,7 +547,7 @@ def ki_pruefen(text, fx):
 
 
 def ki_schreiben(fx, key):
-    body = {"model": KI_MODELL, "max_tokens": 700, "system": KI_SYSTEM,
+    body = {"model": KI_MODELL, "max_tokens": 4000, "system": KI_SYSTEM,
             "messages": [{"role": "user", "content": "Fakten (JSON):\n" + json.dumps(fx, ensure_ascii=False, indent=1) + (
                 "" if "einzel" in fx else "\n\nHinweis: Es liegen nur wenige Fakten vor (kein Spielbericht). Schreibe deshalb nur eine "
                 "Überschrift und einen kurzen Absatz mit 35 bis 60 Wörtern und füge nichts hinzu, was nicht im JSON steht.")}]}
@@ -555,7 +555,11 @@ def ki_schreiben(fx, key):
         "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json", "User-Agent": "dc-phoenix-update"})
     with urllib.request.urlopen(req, timeout=60) as r:
         j = json.load(r)
-    return "".join(b.get("text", "") for b in j.get("content", []) if b.get("type") == "text").strip()
+    txt = "".join(b.get("text", "") for b in j.get("content", []) if b.get("type") == "text").strip()
+    if not txt:
+        print("  KI-Antwort leer: stop_reason=%s, Blöcke=%s, Tokens=%s" % (
+            j.get("stop_reason"), [b.get("type") for b in j.get("content", [])], j.get("usage", {}).get("output_tokens")))
+    return txt
 
 
 def ki_berichte(cfg, teams, reports):
