@@ -584,6 +584,8 @@ def ki_berichte(cfg, teams, reports):
                 continue
             if "spielfrei" in (f["heim"] + f["gast"]).lower():
                 continue
+            if not reports.get(f["id"]):
+                continue  # nur schreiben, wenn der Spielbericht der BDL da ist
             fx = ki_fakten(f, t, reports.get(f["id"]), own_names)
             try:
                 grund = None
