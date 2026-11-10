@@ -532,7 +532,7 @@ def ki_fakten(f, team, rep, own_names):
 
 def ki_pruefen(text, fx):
     """Lehnt Texte ab, die Zahlen enthalten, die nicht in den Fakten stehen, oder das Ergebnis nicht nennen."""
-    if not (200 <= len(text) <= 2200):
+    if not ((200 if "einzel" in fx else 100) <= len(text) <= 2200):
         return False
     erlaubt = set(re.findall(r"\d+", json.dumps(fx, ensure_ascii=False)))
     erlaubt |= {str(i) for i in range(0, 13)}  # kleine Zahlen als Wörter/Zählungen
@@ -544,7 +544,9 @@ def ki_pruefen(text, fx):
 
 def ki_schreiben(fx, key):
     body = {"model": KI_MODELL, "max_tokens": 700, "system": KI_SYSTEM,
-            "messages": [{"role": "user", "content": "Fakten (JSON):\n" + json.dumps(fx, ensure_ascii=False, indent=1)}]}
+            "messages": [{"role": "user", "content": "Fakten (JSON):\n" + json.dumps(fx, ensure_ascii=False, indent=1) + (
+                "" if "einzel" in fx else "\n\nHinweis: Es liegen nur wenige Fakten vor (kein Spielbericht). Schreibe deshalb nur eine "
+                "Überschrift und einen kurzen Absatz mit 35 bis 60 Wörtern und füge nichts hinzu, was nicht im JSON steht.")}]}
     req = urllib.request.Request(KI_URL, data=json.dumps(body).encode("utf-8"), method="POST", headers={
         "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json", "User-Agent": "dc-phoenix-update"})
     with urllib.request.urlopen(req, timeout=60) as r:
