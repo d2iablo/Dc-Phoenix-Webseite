@@ -321,9 +321,142 @@ main{gap:44px;padding-block:34px 72px}
 }
 @media (min-width:1200px){.grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}}
 @media (prefers-reduced-motion:no-preference){.tc,.pc,.btn,.top a{transition:transform .2s,border-color .2s}.tc:hover,.pc:hover{transform:translateY(-3px)}}
+
+/* ===== Redesign: Phönix-Look mit Effekten ===== */
+:root{--f1:#ffb23d;--f2:#ff6a1a;--f3:#ff2e5a;--fire:linear-gradient(100deg,var(--f1),var(--f2) 48%,var(--f3));--a2:#ffa45c;--glass:rgba(255,255,255,.055);--glass-b:rgba(255,255,255,.14)}
+body{background:var(--bg)}
+body::before{content:"";position:fixed;inset:-10vmax;z-index:-1;pointer-events:none;background:radial-gradient(38vmax 38vmax at 12% 8%,rgba(255,106,26,.13),transparent 70%),radial-gradient(34vmax 34vmax at 92% 38%,rgba(255,46,90,.10),transparent 70%),radial-gradient(40vmax 40vmax at 30% 100%,rgba(255,178,61,.07),transparent 70%);animation:drift 26s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate3d(3vmax,-2vmax,0) scale(1.06)}}
+::selection{background:var(--f2);color:#150700}
+#prog{position:fixed;left:0;top:0;height:3px;width:100%;z-index:80;background:var(--fire);transform-origin:0 50%;transform:scaleX(0);box-shadow:0 0 12px rgba(255,106,26,.7);pointer-events:none}
+#totop{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:70;width:46px;height:46px;border-radius:50%;border:1px solid var(--glass-b);background:rgba(18,18,18,.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);cursor:pointer;display:grid;place-items:center;opacity:0;transform:translateY(14px) scale(.9);pointer-events:none;transition:opacity .3s,transform .3s,border-color .2s}
+#totop.on{opacity:1;transform:none;pointer-events:auto}
+#totop:hover{border-color:var(--f2)}
+#totop svg{width:20px;height:20px;stroke:var(--f1);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+
+/* Kopfleiste */
+.bar{background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border-bottom:0;box-shadow:0 1px 0 var(--line)}
+.bar::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,106,26,.55),rgba(255,46,90,.45),transparent);opacity:.7}
+.brand img{box-shadow:0 0 0 2px rgba(255,106,26,.55),0 0 18px rgba(255,106,26,.35);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.brand:hover img{transform:rotate(-14deg) scale(1.08)}
+.tabs a{position:relative;transition:color .2s,background .2s}
+.tabs a:hover{background:var(--glass)}
+.tabs a[aria-current="page"]{background:var(--fire);color:#160800;box-shadow:0 4px 18px rgba(255,106,26,.38)}
+.acct a.pri{background:var(--fire);color:#160800}
+
+/* Buttons */
+.btn{position:relative;overflow:hidden;transition:transform .2s,border-color .2s,box-shadow .2s,background .2s}
+.btn:hover{transform:translateY(-2px);border-color:var(--f2);box-shadow:0 8px 22px rgba(255,106,26,.18)}
+.btn.pri,details.menu.pri>summary{background:var(--fire);color:#160800;border-color:transparent;box-shadow:0 6px 22px rgba(255,106,26,.32)}
+.btn.pri:hover{box-shadow:0 10px 30px rgba(255,106,26,.5)}
+.btn.pri::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);transform:translateX(-120%);transition:transform .7s}
+.btn.pri:hover::after{transform:translateX(120%)}
+details.menu.pri>summary::after{color:#160800}
+.seg button[aria-pressed="true"],.chips button[aria-pressed="true"]{background:var(--fire);color:#160800}
+.pill.h,.fix .count{background:var(--fire);color:#160800}
+.pill.g{border-color:var(--f2);color:var(--f1)}
+.bar2 .tr i{background:var(--fire);box-shadow:0 0 12px rgba(255,106,26,.5)}
+.hero-next{border:2px solid var(--f2);box-shadow:0 0 30px rgba(255,106,26,.2)}
+tr.own td:first-child{box-shadow:inset 4px 0 0 var(--f2);color:var(--f1)}
+tr:not(.own):hover td{background:var(--glass)}
+.fix .tl,.nw .nd,.pc .rl,.bc .rl,.dt small{color:var(--f1)}
+
+/* Überschriften */
+h2{color:var(--fg);font-size:.8rem;letter-spacing:.24em}
+h2::before{content:"";width:9px;height:9px;border-radius:2px;background:var(--fire);transform:rotate(45deg);box-shadow:0 0 12px rgba(255,106,26,.8);flex:none}
+h2::after{background:linear-gradient(90deg,var(--line),transparent)}
+h2 a{color:var(--f1)}
+.page-h h1{background:linear-gradient(100deg,#fff 30%,var(--f1) 70%,var(--f2));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* Hero */
+.hero{min-height:min(86vh,680px);background:radial-gradient(60% 80% at 80% 20%,rgba(255,106,26,.16),transparent 70%),radial-gradient(40% 60% at 10% 90%,rgba(255,46,90,.10),transparent 70%),var(--bg)}
+.hero .spot{position:absolute;inset:0;z-index:-1;background:radial-gradient(420px 420px at var(--hx,70%) var(--hy,30%),rgba(255,140,50,.20),transparent 70%);pointer-events:none;transition:background .15s}
+.hero canvas.emb{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.hero .board-bg{position:absolute;z-index:-1;right:-14%;top:50%;width:min(130vw,780px);aspect-ratio:1;transform:translateY(-50%);opacity:.5;pointer-events:none;animation:spin 140s linear infinite;-webkit-mask-image:radial-gradient(closest-side,#000 55%,transparent 100%);mask-image:radial-gradient(closest-side,#000 55%,transparent 100%)}
+@keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
+.hero .logo{animation:float 7s ease-in-out infinite;filter:var(--logo-filter) drop-shadow(0 0 40px rgba(255,106,26,.35))}
+@keyframes float{50%{transform:translateY(-54%)}}
+@keyframes rise{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+@keyframes shine{to{background-position:200% 50%}}
+.hero .eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--f1);animation:rise .7s both}
+.hero .eyebrow::before{content:"";width:28px;height:2px;background:var(--fire);border-radius:2px}
+.hero h1 span{animation:rise .85s cubic-bezier(.2,.8,.2,1) both}
+.hero h1 span:nth-child(2){animation-delay:.1s;background:linear-gradient(100deg,var(--f1),var(--f2),var(--f3),var(--f1));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rise .85s .1s cubic-bezier(.2,.8,.2,1) both,shine 5s linear infinite;filter:drop-shadow(0 4px 28px rgba(255,106,26,.35))}
+.hero h1 span:nth-child(2){padding-top:.14em;margin-top:-.14em}
+.hero h1 span:nth-child(3){animation-delay:.2s}
+.hero .sub,.hero .row{animation:rise .8s .3s both}
+.hstats{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:26px;animation:rise .8s .45s both}
+.hstats div{display:grid;gap:2px}
+.hstats b{font-size:clamp(1.7rem,6vw,2.4rem);font-weight:900;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;background:var(--fire);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hstats i{font-style:normal;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:800}
+.cdw{display:block;text-decoration:none;margin-top:22px;max-width:480px;padding:14px 16px 16px;border-radius:22px;background:var(--glass);border:1px solid var(--glass-b);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 18px 50px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.08);animation:rise .8s .55s both;transition:transform .25s,border-color .25s}
+.cdw:hover{transform:translateY(-3px);border-color:rgba(255,106,26,.6)}
+.cdw small{display:flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--f1);font-weight:800}
+.cdw small::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--f2);box-shadow:0 0 0 0 rgba(255,106,26,.7);animation:ping 1.8s infinite;flex:none}
+@keyframes ping{70%{box-shadow:0 0 0 10px rgba(255,106,26,0)}100%{box-shadow:0 0 0 0 rgba(255,106,26,0)}}
+.cdw .vs2{margin-top:4px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.cd div{text-align:center;background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:14px;padding:8px 0 7px}
+.cd b{display:block;font-size:clamp(1.4rem,6vw,1.9rem);font-weight:900;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.cd i{display:block;font-style:normal;font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);font-weight:800;margin-top:4px}
+.cdw.live small::before{background:var(--win)}
+
+/* Ergebnis-Ticker */
+.ticker{position:relative;overflow:hidden;border-block:1px solid var(--line);background:rgba(255,255,255,.025);-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.tk{display:flex;width:max-content;animation:tick 48s linear infinite}
+.ticker:hover .tk{animation-play-state:paused}
+.tk span{display:inline-flex;align-items:center;gap:10px;padding:11px 26px;font-size:.82rem;font-weight:700;white-space:nowrap;color:var(--mute)}
+.tk span b{color:var(--fg);font-variant-numeric:tabular-nums}
+.tk span b.w{color:var(--win)}.tk span b.l{color:var(--loss)}
+.tk span::after{content:"◆";color:var(--f2);font-size:.55rem;margin-left:16px;opacity:.8}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* Karten, Glanz & Spotlight */
+.card,.tc,.pc,.tile,.top a,.bc,.sbn,.sbi,.fix>li{position:relative}
+.card::before,.tc::before,.pc::before,.tile::before,.top a::before,.bc::before,.sbn::before,.sbi::before,.fix>li::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;background:radial-gradient(340px circle at var(--mx,50%) var(--my,50%),rgba(255,140,60,.13),transparent 65%)}
+.card:hover::before,.tc:hover::before,.pc:hover::before,.tile:hover::before,.top a:hover::before,.bc:hover::before,.sbn:hover::before,.sbi:hover::before,.fix>li:hover::before{opacity:1}
+.card,.tile,.fix>li,.pc,.top a,.bc{transition:transform .25s,border-color .25s,box-shadow .25s}
+.card:hover,.fix>li:hover,.top a:hover,.bc:hover{border-color:rgba(255,140,60,.38)}
+.fix>li:hover,.tile:hover{transform:translateY(-2px)}
+.pc:hover{border-color:rgba(255,140,60,.55);box-shadow:0 14px 34px rgba(255,106,26,.14)}
+.fix>li{--edge:transparent;box-shadow:inset 3px 0 0 var(--edge)}
+.fix>li:has(.r.w){--edge:var(--win)}.fix>li:has(.r.l){--edge:var(--loss)}.fix>li:has(.count){--edge:var(--f2)}
+.fix .r.w{text-shadow:0 0 18px rgba(108,208,138,.45)}.fix .r.l{text-shadow:0 0 18px rgba(255,123,99,.4)}
+.tc{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--ty,0px));transition:transform .18s ease-out,border-color .25s,box-shadow .25s;will-change:transform}
+.tc:hover{--ty:-4px;border-color:rgba(255,140,60,.55);box-shadow:0 22px 50px rgba(255,106,26,.16)}
+.tc .ph img{transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.tc:hover .ph img{transform:scale(1.07)}
+.tc .ph.none b{background:var(--fire);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:.9}
+.tc h3{transition:color .2s}
+.tile b{background:linear-gradient(100deg,var(--fg) 40%,var(--f1));-webkit-background-clip:text;background-clip:text;color:transparent}
+.top li:nth-child(1) .nr{background:linear-gradient(135deg,#ffe58a,#ffb23d);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 8px rgba(255,190,60,.5))}
+.top li:nth-child(2) .nr{background:linear-gradient(135deg,#fff,#aeb4be);-webkit-background-clip:text;background-clip:text;color:transparent}
+.top li:nth-child(3) .nr{background:linear-gradient(135deg,#ffb27a,#c0642c);-webkit-background-clip:text;background-clip:text;color:transparent}
+.top .pt{background:var(--fire);-webkit-background-clip:text;background-clip:text;color:transparent}
+.top .pt small{-webkit-text-fill-color:var(--mute)}
+.av{box-shadow:0 0 0 2px rgba(255,106,26,.0);transition:box-shadow .3s,transform .3s}
+.pc:hover .av,.top a:hover .av{box-shadow:0 0 0 2px var(--f2),0 0 22px rgba(255,106,26,.4);transform:scale(1.05)}
+.form i.w{box-shadow:0 0 8px var(--win)}.form i.l{box-shadow:0 0 8px var(--loss)}
+.gal button{transition:transform .3s,box-shadow .3s}.gal button:hover{transform:scale(1.03);box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.spc{transition:transform .25s,box-shadow .25s}.spc:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.4)}
+footer{border-top:0;position:relative}
+footer::before{content:"";position:absolute;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,106,26,.5),transparent)}
+
+/* Auftritts-Animationen */
+@keyframes reveal{from{opacity:0;transform:translateY(26px) scale(.985)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:no-preference){
+.rv{opacity:0}
+.rv.in{opacity:1;animation:reveal .7s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i,0)*60ms)}
+#main{animation:pagein .5s both}
+@keyframes pagein{from{opacity:0}to{opacity:1}}
+}
+@media (prefers-reduced-motion:reduce){body::before,.hero .board-bg,.hero .logo,.tk,.hero h1 span:nth-child(2){animation:none}.tc{transform:none!important}}
+@media (hover:none){.tc{transform:none}}
+@media (max-width:560px){.hero{min-height:auto;padding-block:36px 30px}.cdw{max-width:none}.hstats{gap:10px 22px}.tk span{padding:10px 18px}}
 </style>
 </head>
 <body>
+<div id="prog" aria-hidden="true"></div>
 <div class="banner" id="entwurf" hidden><div class="wrap">Entwurf eines Vereinsmitglieds, noch nicht vom Verein freigegeben.</div></div>
 <header class="bar"><div class="wrap">
 <a class="brand" href="#start"><img id="blogo" alt="" hidden><span id="bname"></span></a>
@@ -333,6 +466,7 @@ main{gap:44px;padding-block:34px 72px}
 <div id="heroBox"></div>
 <main class="wrap" id="main">Lade …</main>
 <footer class="wrap"><span id="upd"></span><span class="sp"></span><span id="soc" class="social"></span><span id="links"></span></footer>
+<button id="totop" type="button" aria-label="Nach oben"><svg viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg></button>
 <script>
 (function(){
 "use strict";
@@ -563,13 +697,20 @@ function playerLink(p,cls){var a=el("a");a.href="#spieler-"+p.slug;if(cls)a.clas
 function viewStart(m){
   var v=CFG.verein,hb=$("heroBox");hb.textContent="";
   var h=el("header",null,"hero"),lg=document.createElement("img");lg.className="logo";lg.alt="";lg.onerror=function(){lg.remove()};if(v.logo)lg.src=v.logo;h.appendChild(lg);
+  h.insertBefore(boardBg(),lg);var sp0=el("div",null,"spot");h.insertBefore(sp0,lg);
+  var cv=document.createElement("canvas");cv.className="emb";h.insertBefore(cv,lg);
+  h.addEventListener("pointermove",function(e){var r=h.getBoundingClientRect();sp0.style.setProperty("--hx",(e.clientX-r.left)+"px");sp0.style.setProperty("--hy",(e.clientY-r.top)+"px")},{passive:true});
   var w=el("div",null,"wrap");w.appendChild(el("div",(v.ort?"Dart · "+v.ort:"Dart"),"eyebrow"));
   var h1=el("h1");v.name.split(" ").forEach(function(x){h1.appendChild(el("span",x))});w.appendChild(h1);
   w.appendChild(el("p","Dartverein in der Badischen Dart Liga","sub"));
   var row=el("div",null,"row"),all=nextAll();
   if(all.length){var x=all[0],p=parts(x.n.datum),a=el("a",null,"btn pri");a.href="#"+x.t.slug;a.textContent="Nächstes Spiel: "+p.w+", "+p.kurz+" · "+short(x.t.name)+" →";row.appendChild(a)}
   var tb=el("button","Probetraining","btn");tb.type="button";tb.onclick=function(){var x=$("mitmachen");if(x)x.scrollIntoView({behavior:"smooth"})};row.appendChild(tb);
-  socialButtons(row);w.appendChild(row);h.appendChild(w);hb.appendChild(h);
+  socialButtons(row);w.appendChild(row);
+  var hs=el("div",null,"hstats");clubNums().forEach(function(x){var d=el("div");d.appendChild(el("b",String(x[0])));d.appendChild(el("i",x[1]));hs.appendChild(d)});w.appendChild(hs);
+  if(all.length)w.appendChild(countdown(all[0]));
+  h.appendChild(w);hb.appendChild(h);embers(cv,h);
+  var tk=tickerBox();if(tk)hb.appendChild(tk);
   viewNews(m);
 
   /* nächste Spiele */
@@ -861,11 +1002,73 @@ function lightbox(u){var o=el("div",null,"lb"),i=document.createElement("img");i
   function close(){o.remove();document.removeEventListener("keydown",key)}function key(e){if(e.key==="Escape")close()}
   o.onclick=close;document.addEventListener("keydown",key);document.body.appendChild(o)}
 
+
+/* ---------- Effekte ---------- */
+var TMR=null,IOB=null;
+function clubNums(){var pl=0,w=0;DATA.teams.forEach(function(t){var own=norm(t.name);(t.fixtures||[]).forEach(function(f){if(!f.ergebnis||!f.heim||isFree(f))return;pl++;var home=norm(f.heim)===own,a=home?f.ergebnis[0]:f.ergebnis[1],b=home?f.ergebnis[1]:f.ergebnis[0];if(a>b)w++})});
+  return [[DATA.teams.length,"Teams"],[stats().length,"Spieler"],[pl,"Spiele"],[w,"Siege"]]}
+function boardBg(){var n="http://www.w3.org/2000/svg",s=document.createElementNS(n,"svg");s.setAttribute("viewBox","-100 -100 200 200");s.setAttribute("class","board-bg");s.setAttribute("aria-hidden","true");
+  var h="",i;for(i=0;i<20;i++){var a=(i*18-9)*Math.PI/180;h+='<line x1="'+(Math.cos(a)*17).toFixed(1)+'" y1="'+(Math.sin(a)*17).toFixed(1)+'" x2="'+(Math.cos(a)*92).toFixed(1)+'" y2="'+(Math.sin(a)*92).toFixed(1)+'"/>'}
+  [92,84,56,48,17,7].forEach(function(r,k){h+='<circle r="'+r+'"'+(k>3?' stroke-width="1.4"':"")+'/>'});
+  s.innerHTML='<g fill="none" stroke="#ff8a3d" stroke-opacity=".5" stroke-width=".5">'+h+'</g>';return s}
+function embers(cv,hero){
+  if(matchMedia("(prefers-reduced-motion:reduce)").matches||!cv.getContext)return;
+  var c=cv.getContext("2d"),W=0,H=0,P=[],vis=true,dpr=Math.min(window.devicePixelRatio||1,2),i;
+  function size(){W=hero.clientWidth;H=hero.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+"px";cv.style.height=H+"px";c.setTransform(dpr,0,0,dpr,0,0)}
+  function mk(init){return {x:Math.random()*W,y:init?Math.random()*H:H+10,r:Math.random()*2.2+.6,v:Math.random()*.55+.2,s:Math.random()*6.28,a:Math.random()*.55+.25}}
+  size();for(i=0;i<(W<600?24:46);i++)P.push(mk(true));
+  if(window.IntersectionObserver)new IntersectionObserver(function(e){vis=e[0].isIntersecting}).observe(hero);
+  window.addEventListener("resize",function(){if(cv.isConnected)size()});
+  (function tick(){if(!cv.isConnected)return;
+    if(vis&&!document.hidden){c.clearRect(0,0,W,H);
+      P.forEach(function(p){p.y-=p.v;p.s+=.02;p.x+=Math.sin(p.s)*.35;if(p.y<-10){var n=mk(false);p.x=n.x;p.y=n.y;p.r=n.r;p.v=n.v;p.a=n.a}
+        var al=p.a*Math.min(1,Math.max(0,p.y/H)*1.5);
+        c.beginPath();c.fillStyle="rgba(255,140,50,"+(al*.16).toFixed(3)+")";c.arc(p.x,p.y,p.r*4,0,6.28);c.fill();
+        c.beginPath();c.fillStyle="rgba(255,"+(150+Math.floor(p.r*28))+",70,"+al.toFixed(3)+")";c.arc(p.x,p.y,p.r,0,6.28);c.fill()})}
+    requestAnimationFrame(tick)})()}
+function countdown(x){
+  var a=el("a",null,"cdw");a.href="#"+x.t.slug;var p=parts(x.n.datum),lab=el("small","Nächstes Spiel · "+p.w+", "+p.kurz+(x.n.zeit?" · "+x.n.zeit+" Uhr":""));a.appendChild(lab);
+  a.appendChild(el("div",short(x.t.name)+": "+vsText(x.n),"vs2"));
+  var g=el("div",null,"cd"),B=[];["Tage","Std.","Min.","Sek."].forEach(function(n){var d=el("div"),b=el("b","00");d.appendChild(b);d.appendChild(el("i",n));g.appendChild(d);B.push(b)});a.appendChild(g);
+  function upd(){if(!a.isConnected){clearInterval(TMR);return}
+    var d=when(x.n).getTime()-Date.now();if(d<=0){lab.textContent="Spiel läuft oder ist gleich vorbei";a.classList.add("live");B.forEach(function(b){b.textContent="00"});return}
+    var s=Math.floor(d/1000),v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60];v.forEach(function(n,i){B[i].textContent=two(n)})}
+  upd();clearInterval(TMR);TMR=setInterval(upd,1000);return a}
+function tickerBox(){
+  var l=[];DATA.teams.forEach(function(t){var own=norm(t.name);(t.fixtures||[]).forEach(function(f){if(!f.ergebnis||!f.heim||isFree(f))return;var home=norm(f.heim)===own,a=home?f.ergebnis[0]:f.ergebnis[1],b=home?f.ergebnis[1]:f.ergebnis[0];l.push({d:f.datum,t:short(t.name),g:home?f.gast:f.heim,e:a+":"+b,c:a>b?"w":a<b?"l":""})})});
+  if(!l.length)return null;l.sort(function(a,b){return a.d<b.d?1:-1});l=l.slice(0,8);
+  var box=el("div",null,"ticker");box.setAttribute("aria-label","Letzte Ergebnisse");var tk=el("div",null,"tk");
+  [0,1].forEach(function(k){l.forEach(function(r){var s=el("span");if(k)s.setAttribute("aria-hidden","true");s.appendChild(document.createTextNode(r.t+" – "+r.g+"  "));s.appendChild(el("b",r.e,r.c));tk.appendChild(s)})});
+  box.appendChild(tk);return box}
+function countUp(n){var to=+n.dataset.cu,t0=null,d=Math.min(1400,500+to*14);
+  function st(t){if(t0===null)t0=t;var k=Math.min(1,(t-t0)/d),e=1-Math.pow(1-k,3);n.textContent=String(Math.round(to*e));if(k<1)requestAnimationFrame(st)}
+  requestAnimationFrame(st)}
+function enhance(){
+  var rm=matchMedia("(prefers-reduced-motion:reduce)").matches,can=!!window.IntersectionObserver&&!rm;
+  if(IOB){IOB.disconnect();IOB=null}
+  var cu=document.querySelectorAll("#heroBox .hstats b,#main .tile b"),rv=document.querySelectorAll("#main h2,#main .fix>li,#main .tc,#main .pc,#main .top li,#main .tile,#main .bc,#main .nw,#main .sbn,#main .sbi,#main .log li,#main .card,#main .scroll,#main .page-h,#main .prof,#main .gal button,#main .spc");
+  if(!can)return;
+  cu.forEach(function(n){var t=n.textContent.trim();if(/^\d{1,4}$/.test(t)){n.dataset.cu=t;n.textContent="0"}});
+  IOB=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;var n=e.target;IOB.unobserve(n);n.classList.add("in");if(n.dataset.cu)countUp(n)})},{threshold:.12,rootMargin:"0px 0px -6% 0px"});
+  var seen=new Map();
+  rv.forEach(function(n){var p=n.parentNode,i=seen.get(p)||0;seen.set(p,i+1);n.style.setProperty("--i",Math.min(i,8));n.classList.add("rv");IOB.observe(n)});
+  cu.forEach(function(n){if(n.dataset.cu)IOB.observe(n)})}
+function fxInit(){
+  var SPOT=".card,.tc,.pc,.tile,.fix>li,.top a,.bc,.sbn,.sbi",hov=matchMedia("(hover:hover)").matches;
+  document.addEventListener("pointermove",function(e){if(e.pointerType==="touch")return;var t=e.target.closest&&e.target.closest(SPOT);if(!t)return;
+    var r=t.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;t.style.setProperty("--mx",x+"px");t.style.setProperty("--my",y+"px");
+    if(hov&&t.classList.contains("tc")){t.style.setProperty("--ry",((x/r.width-.5)*7).toFixed(2)+"deg");t.style.setProperty("--rx",((.5-y/r.height)*6).toFixed(2)+"deg")}},{passive:true});
+  document.addEventListener("pointerout",function(e){var t=e.target.closest&&e.target.closest(".tc");if(t&&!t.contains(e.relatedTarget)){t.style.removeProperty("--rx");t.style.removeProperty("--ry")}});
+  var pg=$("prog"),tt=$("totop"),q=false;
+  function sc(){q=false;var h=document.documentElement,m=h.scrollHeight-h.clientHeight;pg.style.transform="scaleX("+(m>0?Math.min(1,window.scrollY/m):0).toFixed(4)+")";tt.classList.toggle("on",window.scrollY>700)}
+  window.addEventListener("scroll",function(){if(!q){q=true;requestAnimationFrame(sc)}},{passive:true});window.addEventListener("resize",sc);sc();
+  tt.onclick=function(){window.scrollTo({top:0,behavior:"smooth"})}}
+
 /* ---------- Routing ---------- */
 function render(){
   var h=(location.hash||"#start").slice(1),m=$("main"),t=null;
   DATA.teams.forEach(function(x){if(x.slug===h)t=x});
-  m.textContent="";$("heroBox").textContent="";
+  clearInterval(TMR);m.textContent="";$("heroBox").textContent="";
   var cur="start",ttl="";
   if(t){viewTeam(m,t);cur=t.slug;ttl=t.name+" · "}
   else if(h==="spieler"){viewPlayers(m);cur="spieler";ttl="Spieler · "}
@@ -873,7 +1076,7 @@ function render(){
   else if(h==="verein"){viewClub(m);cur="verein";ttl="Verein · "}
   else viewStart(m);
   Array.prototype.forEach.call($("tabs").children,function(a){if(a.getAttribute("href")==="#"+cur)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
-  document.title=ttl+CFG.verein.name}
+  document.title=ttl+CFG.verein.name;enhance()}
 function onHash(){render();window.scrollTo(0,0)}
 
 function init(){
@@ -894,7 +1097,7 @@ function init(){
   var u=DATA.updated?new Date(DATA.updated):null;
   $("upd").textContent=u&&!isNaN(u)?"Stand: "+u.toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"}):"";
   document.addEventListener("click",function(e){document.querySelectorAll("details.menu[open]").forEach(function(d){if(!d.contains(e.target))d.open=false})});
-  window.addEventListener("hashchange",onHash);render();liveProfiles()}
+  window.addEventListener("hashchange",onHash);fxInit();render();liveProfiles()}
 
 function liveProfiles(){
   var k=CFG&&CFG.konto;if(!k||!k.supabase_url||!k.anon_key)return;
