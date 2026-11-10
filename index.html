@@ -434,67 +434,12 @@ function extras(g){var out=[];
   return out.join("   ")}
 function reportOf(f){return f.id&&DATA.reports?DATA.reports[f.id]:null}
 function isOwnTeam(n){return CFG.teams.some(function(t){return norm(t.name)===norm(n)})}
-var WT=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"],MO=["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
-function dlong(ds){var p=String(ds||"").split("-");if(p.length<3)return "";var d=new Date(+p[0],+p[1]-1,+p[2]);return WT[d.getDay()]+", "+(+p[2])+". "+MO[+p[1]-1]}
-function pick(a,seed){var h=0,x=String(seed);for(var i=0;i<x.length;i++)h=(h*31+x.charCodeAt(i))>>>0;return a[h%a.length]}
-function nextOf(teamName,datum){var t=(DATA.teams||[]).filter(function(x){return norm(x.name)===norm(teamName)})[0];if(!t)return "";
-  if((t.fixtures||[]).some(function(f){return f.ergebnis&&datum&&f.datum>datum}))return "";
-  var today=new Date().toISOString().slice(0,10),n=(t.fixtures||[]).filter(function(f){return !f.ergebnis&&f.heim&&!isFree(f)&&f.datum>=today}).sort(function(a,b){return a.datum<b.datum?-1:1})[0];
-  if(!n)return "";var h=norm(n.heim)===norm(t.name);
-  return "Weiter geht es am "+dlong(n.datum)+" um "+(n.zeit||"20:00")+" Uhr "+(h?"zu Hause gegen ":"auswärts bei ")+(h?n.gast:n.heim)+"."}
-function artikel(o){ /* o: team,gegner,mine,theirs,home,datum,legs,ew,el,dw,dl,star,hl,next,seed */
-  var diff=Math.abs(o.mine-o.theirs),win=o.mine>o.theirs,draw=o.mine===o.theirs,sc=o.mine+":"+o.theirs,seed=o.seed+o.team,T=o.team,G=o.gegner;
-  var H;
-  if(draw)H=pick(["Punkteteilung: "+T+" und "+G+" trennen sich "+sc,T+" holt gegen "+G+" ein Unentschieden"],seed);
-  else if(win&&diff>=6)H=pick([T+" feiert klaren "+(o.home?"Heimsieg":"Auswärtssieg")+" gegen "+G,T+" lässt "+G+" keine Chance ("+sc+")",T+" dominiert gegen "+G],seed);
-  else if(win&&diff<=1)H=pick([T+" gewinnt Krimi gegen "+G+" ("+sc+")","Knapper Erfolg für "+T+" gegen "+G,T+" setzt sich im Herzschlagfinale gegen "+G+" durch"],seed);
-  else if(win)H=pick([T+" siegt "+(o.home?"zu Hause":"auswärts")+" gegen "+G+" ("+sc+")",T+" holt Punkte gegen "+G],seed);
-  else if(diff>=6)H=pick([T+" muss sich "+G+" deutlich geschlagen geben ("+sc+")","Schwarzer Abend für "+T+" gegen "+G],seed);
-  else if(diff<=1)H=pick([T+" unterliegt "+G+" nur knapp ("+sc+")","Bittere knappe Niederlage für "+T],seed);
-  else H=pick([T+" unterliegt "+G+" ("+sc+")",T+" verliert "+(o.home?"zu Hause":"auswärts")+" gegen "+G],seed);
-  var P=[];
-  var verb=draw?"trennte sich":win?"gewann":"unterlag";
-  var lead=(o.datum?"Am "+dlong(o.datum)+" ":"")+(o.datum?"hat ":"hat ")+"DC Phönix "+T+" "+(o.home?"zu Hause":"auswärts")+" gegen "+G+" gespielt. ";
-  lead+=draw?"Am Ende stand es "+sc+", die Punkte wurden geteilt.":win?"Am Ende stand ein "+(diff>=6?"klarer ":diff<=1?"knapper ":"")+"Erfolg mit "+sc+" zu Buche.":"Am Ende hieß es "+sc+" aus Sicht von "+T+".";
-  if(o.legs)lead+=" Bei den Legs lautete das Verhältnis "+o.legs[0]+":"+o.legs[1]+".";
-  P.push(lead);
-  if(o.ew!==null){
-    var einzel=o.ew>o.el?"Die Einzel gingen mit "+o.ew+":"+o.el+" an "+T:o.ew<o.el?"In den Einzeln hatte "+G+" mit "+o.el+":"+o.ew+" die Nase vorn":"Die Einzel endeten "+o.ew+":"+o.el+" unentschieden";
-    var dop=o.dw>o.dl?"in den Doppeln behielt "+T+" mit "+o.dw+":"+o.dl+" die Oberhand":o.dw<o.dl?"in den Doppeln ging es mit "+o.dw+":"+o.dl+" an die Gäste":"in den Doppeln stand es "+o.dw+":"+o.dl;
-    if(!o.home&&o.dw<o.dl)dop="in den Doppeln ging es mit "+o.dw+":"+o.dl+" an den Gastgeber";
-    P.push(einzel+", "+dop+".");}
-  if(o.star)P.push(o.star);
-  if(o.hl)P.push(o.hl);
-  if(o.next)P.push(o.next);
-  return "📰 "+H+"\n\n"+P.join("\n\n")+"\n\n#DCPhönix #Dart #BadischeDartLiga"}
-function reportText(r){
-  var ownH=isOwnTeam(r.heim),own=ownH?"heim":"gast",opp=ownH?"gast":"heim",os=ownH?0:1,ps=ownH?1:0,ok=ownH?"h":"g",sp=r.spiele||[];
-  var mine=0,theirs=0;
-  if(r.sets){mine=r.sets[os];theirs=r.sets[ps]}else{sp.forEach(function(g){if(g.ergebnis[os]>g.ergebnis[ps])mine++;else if(g.ergebnis[os]<g.ergebnis[ps])theirs++})}
-  var ew=0,el2=0,dw=0,dl=0,st={};
-  sp.forEach(function(g){var a=g.ergebnis[os],b=g.ergebnis[ps],w=a>b,l=a<b;
-    if(g.typ==="Doppel"){if(w)dw++;else if(l)dl++}else{if(w)ew++;else if(l)el2++}
-    (g[own]||[]).forEach(function(n){var o=st[n]||(st[n]={n:n,sp:0,w:0,hf:[],sl:[],mx:0});o.sp++;if(w)o.w++;
-      var v=pv(g[ok],(g[own]||[]).indexOf(n),(g[own]||[]).length);if(v.hf)o.hf.push(v.hf);if(v.sl)o.sl.push(v.sl);if(v.max)o.mx+=v.max})});
-  var pl=Object.keys(st).map(function(k){return st[k]}).filter(function(o){return o.sp>0}),best=0;pl.forEach(function(o){if(o.w>best)best=o.w});
-  var star="";
-  if(best>=2){var bn=pl.filter(function(o){return o.w===best});
-    star=bn.length===1?(bn[0].w===bn[0].sp?"Überragender Mann des Abends war "+bn[0].n+", der alle seine "+bn[0].sp+" Spiele gewann.":"Bester Spieler des Abends war "+bn[0].n+" mit "+bn[0].w+" Siegen aus "+bn[0].sp+" Spielen."):
-      "Die meisten Siege holten "+bn.map(function(o){return o.n}).join(" und ")+" mit jeweils "+best+".";}
-  var hp=[];pl.forEach(function(o){var b=[];
-    o.hf.forEach(function(x){b.push("einem High Finish von "+x)});o.sl.forEach(function(x){b.push("einem Short Leg in nur "+x+" Darts")});if(o.mx)b.push(o.mx===1?"einer 180":o.mx+" Maximums");
-    if(b.length)hp.push(o.n+" mit "+b.join(" und "))});
-  var hl=hp.length?"Für die Glanzpunkte sorgte"+(hp.length>1?"n":"")+" "+hp.join(" sowie ")+".":"";
-  return artikel({team:short(r[own]),gegner:r[opp],mine:mine,theirs:theirs,home:ownH,datum:r.datum,legs:r.legs?[r.legs[os],r.legs[ps]]:null,ew:ew,el:el2,dw:dw,dl:dl,star:star,hl:hl,next:nextOf(r[own],r.datum),seed:(r.datum||"")+r[opp]})}
-function copyText2(){}
 function copyText(txt,btn){var done=function(){var o=btn.textContent;btn.textContent="Kopiert ✓";setTimeout(function(){btn.textContent=o},1800)};
   var fb=function(){var ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done()}catch(e){}document.body.removeChild(ta)};
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,fb);else fb()}
 function textBox(tx,ki){var bx=el("div",null,"rtx"),hh=el("div",null,"rtxh");hh.appendChild(el("b",ki?"Berichtstext (mit KI erstellt)":"Berichtstext zum Teilen"));
   var cb=el("button","Text kopieren","btn sm");cb.type="button";cb.onclick=function(){copyText(tx,cb)};hh.appendChild(cb);
   bx.appendChild(hh);bx.appendChild(el("div",tx,"rtxb"));return bx}
-function fixText(f,t){var own=norm(t.name),h=norm(f.heim)===own,m=h?f.ergebnis[0]:f.ergebnis[1],g=h?f.ergebnis[1]:f.ergebnis[0];
-  return artikel({team:short(t.name),gegner:h?f.gast:f.heim,mine:m,theirs:g,home:h,datum:f.datum,legs:null,ew:null,star:"",hl:"",next:nextOf(t.name,f.datum),seed:(f.datum||"")+(h?f.gast:f.heim)})}
 function renderReport(r){
   var oh=!isOwnTeam(r.heim)&&CFG.verein.gegner_namen_zeigen!==true,og=!isOwnTeam(r.gast)&&CFG.verein.gegner_namen_zeigen!==true;
   var box=el("div",null,"report");
@@ -538,8 +483,8 @@ function fixRow(f,t,o){o=o||{};var own=norm(t.name),li=document.createElement("l
     btn.onclick=function(){if(panel){panel.remove();panel=null;btn.textContent="Spielbericht ▾"}
       else{panel=renderReport(rep);li.appendChild(panel);btn.textContent="Spielbericht ▴"}};
     acts.appendChild(btn)}
-  if(f.ergebnis&&f.heim&&!isFree(f)){var tb2=el("button","Berichtstext ▾","btn sm"),pn=null;tb2.type="button";
-    tb2.onclick=function(){if(pn){pn.remove();pn=null;tb2.textContent="Berichtstext ▾"}else{var kt=DATA.texte&&f.id?DATA.texte[f.id]:"";pn=kt?textBox("\uD83D\uDCF0 "+kt+"\n\n#DCPhönix #Dart #BadischeDartLiga",true):textBox(rep?reportText(rep):fixText(f,t));li.appendChild(pn);tb2.textContent="Berichtstext ▴"}};
+  if(f.ergebnis&&f.heim&&!isFree(f)&&DATA.texte&&f.id&&DATA.texte[f.id]){var tb2=el("button","Berichtstext ▾","btn sm"),pn=null;tb2.type="button";
+    tb2.onclick=function(){if(pn){pn.remove();pn=null;tb2.textContent="Berichtstext ▾"}else{pn=textBox("\uD83D\uDCF0 "+DATA.texte[f.id]+"\n\n#DCPhönix #Dart #BadischeDartLiga",true);li.appendChild(pn);tb2.textContent="Berichtstext ▴"}};
     acts.appendChild(tb2)}
   if(acts.children.length)li.appendChild(acts);
   return li}
