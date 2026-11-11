@@ -537,16 +537,6 @@ footer{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 .ioshint b{font-size:1.1rem}.ioshint p{color:var(--mute);font-size:.95rem}.ioshint .btn{justify-self:start;margin-top:6px}
 .offl{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 62px);transform:translate(-50%,-14px);z-index:90;max-width:min(92vw,420px);padding:9px 16px;border-radius:999px;background:#262626;border:1px solid var(--line);font-size:.82rem;font-weight:700;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s}
 .offl.on{opacity:1;transform:translate(-50%,0)}
-.join{margin-top:16px;border:1px solid var(--line);border-radius:18px;background:var(--card2)}
-.join>summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:800;display:flex;justify-content:space-between;gap:10px}
-.join>summary::-webkit-details-marker{display:none}.join>summary::after{content:"+";color:var(--a2);font-size:1.3em;line-height:1}
-.join[open]>summary::after{content:"–"}
-.join form{display:grid;gap:12px;padding:0 16px 16px}
-.join label{display:grid;gap:5px;font-size:.82rem;font-weight:700;color:var(--mute)}
-.join input:not([type=checkbox]),.join select,.join textarea{font:inherit;font-size:16px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:11px 12px;width:100%}
-.join input:focus,.join select:focus,.join textarea:focus{outline:2px solid var(--a2);outline-offset:1px}
-.join .chk{grid-template-columns:auto 1fr;align-items:start;gap:10px;font-weight:500;font-size:.8rem}.join .chk input{margin-top:3px;width:18px;height:18px;accent-color:var(--a2)}
-.join .btn{justify-self:start}.jmsg{color:var(--a2);font-weight:700;font-size:.9rem}
 .sps .sp{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:6px}
 .sps .spc{flex:0 0 clamp(140px,38vw,190px);min-height:96px;scroll-snap-align:start;border:1px solid rgba(0,0,0,.08)}
 .sps .spc img{max-height:64px;filter:none}
@@ -846,7 +836,7 @@ function viewStart(m){
   m.appendChild(sec("Verein auf einen Blick",f,["Mehr über uns →","#verein"]));
   var cta=el("div",null,"card"),pt=v.probetraining||{};cta.appendChild(el("p",pt.text||v.willkommen||("Interesse am Dartspielen? Komm einfach zum Training vorbei"+(v.training?" ("+v.training+")":"")+" oder melde dich bei uns."),"lead"));
   var br=el("div");br.style.cssText="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center";
-  var tm2=trialMenu();if(tm2)br.appendChild(tm2);if(v.spiellokal)br.appendChild(routeMenu(v.spiellokal));socialButtons(br);cta.appendChild(br);cta.appendChild(joinForm());var ms=sec("Mitmachen",cta);ms.id="mitmachen";m.appendChild(ms);
+  var tm2=trialMenu();if(tm2)br.appendChild(tm2);if(v.spiellokal)br.appendChild(routeMenu(v.spiellokal));socialButtons(br);cta.appendChild(br);var ms=sec("Mitmachen",cta);ms.id="mitmachen";m.appendChild(ms);
   var sps=sponsorSec();if(sps)m.appendChild(sps)}
 
 function viewNews(m){
@@ -867,19 +857,6 @@ function termineSec(){var l=eventList();if(!l.length)return null;var ul=el("ul",
     var a=el("div",null,"acts");a.appendChild(calMenu({datum:x.datum,zeit:x.zeit||"19:00",titel:x.titel,ort:x.ort||"",beschr:x.text||"",uid:"termin-"+x.datum+"-"+slug(x.titel),dauer:x.dauer||3,alarm:"-P1D"}));
     if(x.ort)a.appendChild(routeMenu(x.ort));li.appendChild(a);ul.appendChild(li)});
   return sec("Termine",ul)}
-function joinForm(){var to=(CFG.verein.anfrage_email||(CFG.rechtliches&&CFG.rechtliches.email)||"").trim();if(!/^[^\s@]+@[^\s@]+$/.test(to))return el("span");
-  var d=el("details",null,"join"),sm=el("summary","Mitglied werden / Probetraining anfragen");d.appendChild(sm);
-  var f=document.createElement("form"),ok=el("p","","jmsg");
-  function fld(l,t,req,tag){var w=el("label"),i=document.createElement(tag||"input");w.appendChild(el("span",l));if(!tag)i.type=t||"text";if(req)i.required=true;i.name=l;w.appendChild(i);f.appendChild(w);return i}
-  var n=fld("Name","text",1),k=fld("Telefon oder E-Mail","text",1),w=document.createElement("select");
-  var wl=el("label");wl.appendChild(el("span","Ich möchte"));["Probetraining","Mitglied werden","Eine Frage stellen"].forEach(function(o){var op=el("option",o);op.value=o;w.appendChild(op)});wl.appendChild(w);f.appendChild(wl);
-  var msg=fld("Nachricht (optional)","text",0,"textarea");msg.rows=3;
-  var cl=el("label",null,"chk"),cb=document.createElement("input");cb.type="checkbox";cb.required=true;cl.appendChild(cb);
-  var sp=el("span","Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage per E-Mail an den Verein gesendet werden. Unter 18: bitte mit Eltern.");cl.appendChild(sp);f.appendChild(cl);
-  var b=el("button","Anfrage per E-Mail senden","btn pri");b.type="submit";f.appendChild(b);f.appendChild(ok);
-  f.onsubmit=function(e){e.preventDefault();var body="Name: "+n.value+"\nKontakt: "+k.value+"\nWunsch: "+w.value+"\n\n"+msg.value;
-    location.href="mailto:"+to+"?subject="+encodeURIComponent(w.value+" – "+CFG.verein.name)+"&body="+encodeURIComponent(body);ok.textContent="Dein Mailprogramm öffnet sich. Dort noch auf Senden tippen."};
-  d.appendChild(f);return d}
 function sponsorSec(){var l=(CFG.sponsoren||[]).filter(function(x){return x&&x.name});if(!l.length)return null;var g=el("div",null,"sp");
   l.forEach(function(x){var u=photoUrl("sponsoren",x.name,x.logo),ln=safeUrl(x.link),a=el(ln?"a":"div",null,"spc");
     if(ln){a.href=ln;a.target="_blank";a.rel="noopener"}
