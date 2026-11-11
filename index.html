@@ -478,7 +478,9 @@ footer::before{content:"";position:absolute;left:max(16px,env(safe-area-inset-le
 .cvs i{font-style:normal;font-size:.7rem;font-weight:900;letter-spacing:.12em;padding:5px 9px;border-radius:999px;background:var(--fire);color:#160800}
 .cda{margin-top:8px;text-align:center;color:var(--mute);font-size:.82rem}
 .cdx{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;justify-content:center}
-.cdw details.menu .mp{top:auto;bottom:calc(100% + 6px)}
+.cdrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:14px;margin-top:6px;position:relative;z-index:3}
+.cdrow .cdw{max-width:none;margin:0}
+.cdw:has(details[open]){z-index:40}
 .cd{margin-top:12px}
 .cd b{font-size:clamp(1.6rem,7vw,2.2rem)}
 /* Ergebnis-Karten */
@@ -789,8 +791,8 @@ function viewStart(m){
   var tb=el("button","Probetraining","btn");tb.type="button";tb.onclick=function(){var x=$("mitmachen");if(x)x.scrollIntoView({behavior:"smooth"})};row.appendChild(tb);
   socialButtons(row);w.appendChild(row);
   var hs=el("div",null,"hstats");clubNums().forEach(function(x){var d=el("div");d.appendChild(el("b",String(x[0])));d.appendChild(el("i",x[1]));hs.appendChild(d)});w.appendChild(hs);
-  if(all.length)w.appendChild(countdown(all[0]));
   h.appendChild(w);hb.appendChild(h);embers(cv,h);
+  if(all.length){var cr=el("div",null,"wrap"),cg=el("div",null,"cdrow");all.forEach(function(x){cg.appendChild(countdown(x))});cr.appendChild(cg);hb.appendChild(cr)}
   var tk=tickerBox();if(tk)hb.appendChild(tk);
   viewNews(m);
 
@@ -1085,7 +1087,7 @@ function lightbox(u){var o=el("div",null,"lb"),i=document.createElement("img");i
 
 
 /* ---------- Effekte ---------- */
-var TMR=null,IOB=null;
+var TMR=null,IOB=null,UPD=[];
 var TABIC={start:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>',
  team:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg>',
  spieler:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c2.2.7 3.5 2.6 3.5 5.6"/></svg>',
@@ -1145,10 +1147,10 @@ function countdown(x){
   var g2=el("div",null,"cd"),B=[];["Tage","Std.","Min.","Sek."].forEach(function(n){var d=el("div"),b=el("b","00");d.appendChild(b);d.appendChild(el("i",n));g2.appendChild(d);B.push(b)});box.appendChild(g2);
   var acts=el("div",null,"cdx");if(f.heim){acts.appendChild(calMenu(fixEv(f,x.t)));if(ad)acts.appendChild(routeMenu(ad))}
   var tl=el("a","Zum Team →","btn sm");tl.href="#"+x.t.slug;acts.appendChild(tl);box.appendChild(acts);
-  function upd(){if(!box.isConnected){clearInterval(TMR);return}
+  function upd(){if(!box.isConnected)return
     var d=when(f).getTime()-Date.now();if(d<=0){box.classList.add("live");top.firstChild.textContent="Spiel läuft oder ist gleich vorbei";B.forEach(function(b){b.textContent="00"});return}
     var s=Math.floor(d/1000),v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60];v.forEach(function(n,i){B[i].textContent=two(n)})}
-  upd();clearInterval(TMR);TMR=setInterval(upd,1000);return box}
+  upd();UPD.push(upd);if(!TMR)TMR=setInterval(function(){UPD.forEach(function(u){u()})},1000);return box}
 function tickerBox(){
   var l=[];DATA.teams.forEach(function(t){var own=norm(t.name);(t.fixtures||[]).forEach(function(f){if(!f.ergebnis||!f.heim||isFree(f))return;var home=norm(f.heim)===own,a=home?f.ergebnis[0]:f.ergebnis[1],b=home?f.ergebnis[1]:f.ergebnis[0];l.push({d:f.datum,t:short(t.name),g:home?f.gast:f.heim,e:a+":"+b,c:a>b?"w":a<b?"l":""})})});
   if(!l.length)return null;l.sort(function(a,b){return a.d<b.d?1:-1});l=l.slice(0,8);
@@ -1183,7 +1185,7 @@ function fxInit(){
 function render(){
   var h=(location.hash||"#start").slice(1),m=$("main"),t=null;
   DATA.teams.forEach(function(x){if(x.slug===h)t=x});
-  clearInterval(TMR);m.textContent="";$("heroBox").textContent="";
+  clearInterval(TMR);TMR=null;UPD=[];m.textContent="";$("heroBox").textContent="";
   var cur="start",ttl="";
   if(t){viewTeam(m,t);cur=t.slug;ttl=t.name+" · "}
   else if(h==="spieler"){viewPlayers(m);cur="spieler";ttl="Spieler · "}
