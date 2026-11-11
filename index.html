@@ -15,9 +15,9 @@
 <meta name="twitter:image" content="https://dcphoenix.de/logo-share.png">
 <meta name="theme-color" content="#070707">
 <meta name="color-scheme" content="dark">
-<link rel="icon" type="image/png" sizes="48x48" href="logo-favicon-48.png">
-<link rel="icon" type="image/png" sizes="192x192" href="logo-favicon.png">
-<link rel="apple-touch-icon" href="logo-apple.png">
+<link rel="icon" type="image/png" sizes="48x48" href="logo-favicon-48.png?v=2">
+<link rel="icon" type="image/png" sizes="192x192" href="logo-favicon.png?v=2">
+<link rel="apple-touch-icon" href="logo-apple.png?v=2">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1163,7 +1163,7 @@ function accountBtn(){
     box.appendChild(b);
   }else{var a=el("a","Anmelden","pri");a.href="profil.html";box.appendChild(a)}
 }
-Promise.all([getJSON("config.json"),getJSON("data.json"),getJSON("fotos/index.json").catch(function(){return {}}),getJSON("profile.json").catch(function(){return {}})]).then(function(r){CFG=r[0];DATA=r[1];PH=r[2]||{};PROF=r[3]||{};
+Promise.all([getJSON("config.json"),getJSON("data.json"),getJSON("fotos/index.json").catch(function(){return {}}),getJSON("profile.json").catch(function(){return {}})]).then(function(r){CFG=r[0];DATA=r[1];if(CFG.verein&&CFG.verein.logo)CFG.verein.logo="logo-offiziell.png?v=2";PH=r[2]||{};PROF=r[3]||{};
   if(!DATA.teams||!DATA.teams.length)throw new Error("keine Teams");init()})
 .catch(function(e){$("main").textContent="Daten konnten nicht geladen werden.";$("main").className="wrap err";console.error(e)});
 })();
