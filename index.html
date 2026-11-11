@@ -530,6 +530,13 @@ footer{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 .hero .eyebrow{justify-content:flex-start}
 }
 @media (max-width:560px){.cvs b{font-size:.98rem}.sbs b{font-size:1.7rem}}
+
+/* App installieren */
+#inst svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ioshint{max-width:360px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;display:grid;gap:10px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.ioshint b{font-size:1.1rem}.ioshint p{color:var(--mute);font-size:.95rem}.ioshint .btn{justify-self:start;margin-top:6px}
+.offl{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 62px);transform:translate(-50%,-14px);z-index:90;max-width:min(92vw,420px);padding:9px 16px;border-radius:999px;background:#262626;border:1px solid var(--line);font-size:.82rem;font-weight:700;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s}
+.offl.on{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
@@ -789,7 +796,7 @@ function viewStart(m){
   var row=el("div",null,"row"),all=nextAll();
   if(all.length){var x=all[0],p=parts(x.n.datum),a=el("a",null,"btn pri");a.href="#"+x.t.slug;a.textContent="Nächstes Spiel: "+p.w+", "+p.kurz+" · "+short(x.t.name)+" →";row.appendChild(a)}
   var tb=el("button","Probetraining","btn");tb.type="button";tb.onclick=function(){var x=$("mitmachen");if(x)x.scrollIntoView({behavior:"smooth"})};row.appendChild(tb);
-  socialButtons(row);w.appendChild(row);
+  socialButtons(row);var ib=installBtn();if(ib)row.appendChild(ib);w.appendChild(row);
   var hs=el("div",null,"hstats");clubNums().forEach(function(x){var d=el("div");d.appendChild(el("b",String(x[0])));d.appendChild(el("i",x[1]));hs.appendChild(d)});w.appendChild(hs);
   h.appendChild(w);hb.appendChild(h);embers(cv,h);
   if(all.length){var cr=el("div",null,"wrap"),cg=el("div",null,"cdrow");all.forEach(function(x){cg.appendChild(countdown(x))});cr.appendChild(cg);hb.appendChild(cr)}
@@ -1181,6 +1188,38 @@ function fxInit(){
   window.addEventListener("scroll",function(){if(!q){q=true;requestAnimationFrame(sc)}},{passive:true});window.addEventListener("resize",sc);sc();
   tt.onclick=function(){window.scrollTo({top:0,behavior:"smooth"})}}
 
+
+/* ---------- App installieren & Offline ---------- */
+var DEFER=null;
+function standalone(){return window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}
+function installBtn(){
+  if(standalone())return null;
+  var ios=isIOS(),ok=!!DEFER;
+  if(!ok&&!ios)return null;
+  var b=el("button","App installieren","btn");b.type="button";b.id="inst";
+  b.insertAdjacentHTML("afterbegin",'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>');
+  b.onclick=function(){
+    if(DEFER){DEFER.prompt();DEFER.userChoice.then(function(){DEFER=null;var x=$("inst");if(x)x.remove()}).catch(function(){})}
+    else iosHint()};
+  return b}
+function iosHint(){
+  var o=el("div",null,"lb"),c=el("div",null,"ioshint");
+  c.appendChild(el("b","Auf dem iPhone installieren"));
+  c.appendChild(el("p","1. Unten auf „Teilen“ tippen (Quadrat mit Pfeil nach oben)."));
+  c.appendChild(el("p","2. „Zum Home-Bildschirm“ wählen."));
+  c.appendChild(el("p","3. Mit „Hinzufügen“ bestätigen. Fertig – die Seite öffnet sich dann wie eine App."));
+  var k=el("button","Verstanden","btn pri");k.type="button";c.appendChild(k);
+  o.appendChild(c);o.style.cursor="default";
+  function close(){o.remove()}k.onclick=close;o.onclick=function(e){if(e.target===o)close()};document.body.appendChild(o)}
+function netBanner(){
+  var b=$("offl");if(!b){b=el("div",null,"offl");b.id="offl";b.setAttribute("role","status");document.body.appendChild(b)}
+  b.textContent=navigator.onLine?"":"Du bist offline – es werden die zuletzt gespeicherten Daten gezeigt.";b.classList.toggle("on",!navigator.onLine)}
+function pwaInit(){
+  window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();DEFER=e;if(DATA){var h=$("heroBox");if(h&&h.querySelector(".hero .row")&&!$("inst")){var b=installBtn();if(b)h.querySelector(".hero .row").appendChild(b)}}});
+  window.addEventListener("appinstalled",function(){DEFER=null;var x=$("inst");if(x)x.remove()});
+  window.addEventListener("online",netBanner);window.addEventListener("offline",netBanner);netBanner();
+  if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("sw.js").catch(function(){})}
+
 /* ---------- Routing ---------- */
 function render(){
   var h=(location.hash||"#start").slice(1),m=$("main"),t=null;
@@ -1214,7 +1253,7 @@ function init(){
   var u=DATA.updated?new Date(DATA.updated):null;
   $("upd").textContent=u&&!isNaN(u)?"Stand: "+u.toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"}):"";
   document.addEventListener("click",function(e){document.querySelectorAll("details.menu[open]").forEach(function(d){if(!d.contains(e.target))d.open=false})});
-  window.addEventListener("hashchange",onHash);fxInit();render();liveProfiles()}
+  window.addEventListener("hashchange",onHash);fxInit();pwaInit();render();liveProfiles()}
 
 function liveProfiles(){
   var k=CFG&&CFG.konto;if(!k||!k.supabase_url||!k.anon_key)return;

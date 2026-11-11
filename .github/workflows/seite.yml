@@ -42,7 +42,7 @@ jobs:
       - name: Seite zusammenstellen
         run: |
           mkdir _site
-          cp *.html profil.js config.json data.json manifest.webmanifest _site/
+          cp *.html profil.js sw.js config.json data.json manifest.webmanifest _site/
           cp profile.json _site/ 2>/dev/null || true
           cp logo.* _site/ 2>/dev/null || true
           cp logo-*.png _site/ 2>/dev/null || true
