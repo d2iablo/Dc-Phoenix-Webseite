@@ -540,6 +540,12 @@ footer{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 .sps .sp{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:6px}
 .sps .spc{flex:0 0 clamp(140px,38vw,190px);min-height:96px;scroll-snap-align:start;border:1px solid rgba(0,0,0,.08)}
 .sps .spc img{max-height:64px;filter:none}
+.lvl{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;font-size:.62rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;vertical-align:middle;color:var(--lc);border:1px solid var(--lc);background:color-mix(in srgb,var(--lc) 14%,transparent)}
+.lvc{display:grid;gap:10px;border-color:color-mix(in srgb,var(--lc) 55%,var(--line));box-shadow:0 0 40px -14px var(--lc)}
+.lvh{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}.lvh b{font-size:1.15rem;color:var(--lc)}
+.lvbar{height:10px;border-radius:99px;background:var(--card2);overflow:hidden}.lvbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#ffb347,var(--lc));box-shadow:0 0 14px var(--lc)}
+.lvp{display:flex;flex-wrap:wrap;gap:6px}.lvl-list{display:grid;gap:10px;margin-bottom:12px}.lvr{display:flex;align-items:center;gap:12px}.lvr .lvl{margin:0;min-width:96px;text-align:center}
+.mute{color:var(--mute)}
 </style>
 </head>
 <body>
@@ -780,6 +786,20 @@ function buildStats(){
     p.log.sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:0});return p});
   out.pairs=Object.keys(PAIRS).map(function(k){return PAIRS[k]});
   return out}
+/* ---------- Phönix-Stufen ---------- */
+var LV=[["Ei",0,"#8a7f78"],["Küken",20,"#ffc247"],["Jungvogel",50,"#ff9a2e"],["Feuervogel",100,"#ff6a1a"],["Phönix",180,"#ff3d2e"]];
+function levelOf(p){var g=(p.ge||0)+(p.gd||0),parts=[["Spiele",g],["Siege",3*(p.w||0)],["Maximums",5*(p.maxc||0)],["High Finishes",4*(p.hfc||0)],["Short Legs",3*(p.slc||0)]],xp=0;parts.forEach(function(x){xp+=x[1]});
+  var i=0;LV.forEach(function(l,k){if(xp>=l[1])i=k});var nx=LV[i+1]||null;
+  return {i:i,name:LV[i][0],col:LV[i][2],xp:xp,from:LV[i][1],next:nx,pct:nx?Math.round((xp-LV[i][1])/(nx[1]-LV[i][1])*100):100,parts:parts}}
+function lvlBadge(p){var l=levelOf(p),b=el("span",l.name,"lvl");b.style.setProperty("--lc",l.col);b.title="Stufe "+(l.i+1)+" · "+l.xp+" Punkte";return b}
+function lvlCard(p){var l=levelOf(p),c=el("div",null,"card lvc");c.style.setProperty("--lc",l.col);
+  var h=el("div",null,"lvh");h.appendChild(el("b","Stufe "+(l.i+1)+" · "+l.name));h.appendChild(el("span",l.xp+" Phönix-Punkte","mute"));c.appendChild(h);
+  var bar=el("div",null,"lvbar"),f=el("i");f.style.width=l.pct+"%";bar.appendChild(f);c.appendChild(bar);
+  c.appendChild(el("small",l.next?"Noch "+(l.next[1]-l.xp)+" Punkte bis „"+l.next[0]+"“":"Höchste Stufe erreicht. Willkommen im Feuer!","mute"));
+  var d=el("div",null,"lvp");l.parts.forEach(function(x){if(x[1]>0){var s=el("span",null,"pill");s.appendChild(document.createTextNode(x[0]+" "));s.appendChild(el("b","+"+x[1]));d.appendChild(s)}});c.appendChild(d);return c}
+function lvlInfo(){var c=el("div",null,"card"),ul=el("div",null,"lvl-list");
+  LV.forEach(function(l,k){var r=el("div",null,"lvr"),b=el("span",l.name,"lvl");b.style.setProperty("--lc",l[2]);r.appendChild(b);r.appendChild(el("span",k?"ab "+l[1]+" Punkten":"Start","mute"));ul.appendChild(r)});c.appendChild(ul);
+  c.appendChild(el("p","Punkte: 1 pro Spiel, 3 pro Sieg, 3 pro Short Leg, 4 pro High Finish, 5 pro Maximum. Alles kommt automatisch aus den Spielberichten und der BDL-Statistik.","mute"));return c}
 function stats(){if(!ALL)ALL=buildStats();return ALL}
 function pct(a,b){return b?Math.round(a/b*100)+" %":"–"}
 
@@ -973,14 +993,14 @@ function viewPlayers(m){
     var th=document.createElement("thead"),hr=document.createElement("tr");cols.forEach(function(c){hr.appendChild(el("th",c[0],c[1]))});th.appendChild(hr);tb.appendChild(th);
     var tbd=document.createElement("tbody");
     list.forEach(function(p,i){var tr=document.createElement("tr"),nm=el("td",null,"pn"),a=playerLink(p);
-      a.appendChild(avatar(p.name,playerPhoto(p.name)));var tx=el("span",null,"tx");tx.appendChild(el("b",p.name));
+      a.appendChild(avatar(p.name,playerPhoto(p.name)));var tx=el("span",null,"tx"),bn=el("b",p.name);bn.appendChild(lvlBadge(p));tx.appendChild(bn);
       var tn=Object.keys(p.teams).map(short).join(" · ");var ni=playerInfo(p.name);if(ni.spitzname)tn="„"+ni.spitzname+"“ · "+tn;tx.appendChild(el("small",V==="all"?tn+" · E "+p.ew+(p.ke?"/"+p.ge:"")+" · D "+p.dw+(p.kd?"/"+p.gd:""):tn));a.appendChild(tx);nm.appendChild(a);
       var cells=[[i+1,""],null,[p.vk?p.vg:"–",""],[p.vw,""],[p.vq==null?"–":Math.round(p.vq*100)+" %",""]];
       if(V==="all")cells.push([p.pts,"hide-s"]);if(V!=="d")cells=cells.concat([[p.maxc||"–",""],[p.hfc||"–",""],[p.slc||"–",""]]);
       cells.forEach(function(c){tr.appendChild(c?el("td",c[0],c[1]):nm)});tbd.appendChild(tr)});tb.appendChild(tbd)}
   var rs=el("div");rs.appendChild(ctl);var sc=el("div",null,"scroll");sc.style.marginTop="12px";sc.appendChild(tb);rs.appendChild(sc);
   rs.appendChild(el("p","S = Siege, Sp = gespielte Spiele, Quote = Siege geteilt durch Spiele. Siege, High Finishes (HF), Short Legs (SL) und Maximums kommen aus der offiziellen BDL-Statistik (HF, SL und Max zählen dort nicht getrennt nach Einzel und Doppel), die gespielten Spiele aus den Spielberichten. Punkte wie in der BDL: Einzelsieg 2, Doppelsieg 1. Die Quote erscheint erst, wenn zu allen gespielten Spielen des Teams ein Spielbericht eingelesen ist.","pnote"));
-  m.appendChild(sec("Ranking",rs));
+  m.appendChild(sec("Ranking",rs));m.appendChild(sec("Phönix-Stufen",lvlInfo()));
   /* Beste Doppel */
   var pr=(all.pairs||[]).slice().sort(function(a,b){return b.w-a.w||(b.w/b.g)-(a.w/a.g)||b.g-a.g}).slice(0,6);
   if(pr.length&&V!=="e"){var pl=el("ul",null,"top");pr.forEach(function(x,i){var li=el("li"),d=el("div");d.style.cssText="display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 16px";
@@ -1003,7 +1023,7 @@ function viewProfile(m,key){
   var tx=el("div");tx.appendChild(el("h1",p.name));if(info.spitzname)tx.appendChild(el("div","„"+info.spitzname+"“","nick"));
   var sb=el("div",null,"sub");Object.keys(p.teams).forEach(function(t){var a=el("a",short(t),"pill h"),tm=DATA.teams.filter(function(x){return x.name===t})[0];if(tm)a.href="#"+tm.slug;a.style.textDecoration="none";sb.appendChild(a)});
   if(info.rolle)sb.insertBefore(el("span",info.rolle,"pill g"),sb.firstChild);if(info.seit)sb.appendChild(el("span","Dabei seit "+info.seit));tx.appendChild(sb);pr.appendChild(tx);m.appendChild(pr);
-  if(info.text)m.appendChild(el("div",info.text,"card lead"));
+  if(info.text)m.appendChild(el("div",info.text,"card lead"));m.appendChild(lvlCard(p));
   function has(v){return v!==""&&v!=null&&v!==undefined}
   var IC={
     target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/>',
