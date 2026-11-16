@@ -546,6 +546,10 @@ footer{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 .lvbar{height:10px;border-radius:99px;background:var(--card2);overflow:hidden}.lvbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#ffb347,var(--lc));box-shadow:0 0 14px var(--lc)}
 .lvp{display:flex;flex-wrap:wrap;gap:6px}.lvl-list{display:grid;gap:10px;margin-bottom:12px}.lvr{display:flex;align-items:center;gap:12px}.lvr .lvl{margin:0;min-width:96px;text-align:center}
 .mute{color:var(--mute)}
+.scout{display:grid;gap:12px}.sch{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.scg{display:grid;gap:6px}.scr{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;padding:8px 12px;border-radius:12px;background:var(--card2)}
+.scr b{font-size:1rem}.scr b:last-child{text-align:right}.scr span{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);text-align:center}
+.scn{background:transparent;padding-block:0}.scn b{font-size:.85rem;color:var(--a2)}
 </style>
 </head>
 <body>
@@ -913,6 +917,18 @@ function socialList(){var v=CFG.verein,o=[];
 function socialButtons(host,withText){socialList().forEach(function(s){var a=el("a",null,"btn "+(withText?"":"ico"));a.href=s.u;a.target="_blank";a.rel="noopener";a.setAttribute("aria-label",s.n);a.title=s.n;a.innerHTML=s.i;
   if(withText)a.appendChild(document.createTextNode(s.n));host.appendChild(a)})}
 
+function scoutCard(t){var f=(t.fixtures||[]).filter(function(x){return x.heim&&x.gast&&isUpcoming(x)}).sort(function(a,b){return a.datum<b.datum?-1:1})[0];if(!f)return null;var own=norm(t.name),home=norm(f.heim)===own,opp=home?f.gast:f.heim;
+  var ro=(t.table||[]).filter(function(x){return norm(x.team)===norm(opp)})[0],rm=rank(t);if(!ro)return null;
+  var c=el("div",null,"card scout"),h=el("div",null,"sch");h.appendChild(el("b","Gegner-Check: "+opp));h.appendChild(el("span",home?"Heimspiel":"Auswärts","pill g"));c.appendChild(h);
+  var g=el("div",null,"scg");
+  function row(l,a,b){var r=el("div",null,"scr");r.appendChild(el("b",String(a)));r.appendChild(el("span",l));r.appendChild(el("b",String(b)));g.appendChild(r)}
+  var hh=el("div",null,"scr scn");hh.appendChild(el("b",short(t.name)));hh.appendChild(el("span",""));hh.appendChild(el("b",short(opp)));g.appendChild(hh);
+  if(rm){row("Platz",rm.platz+".",ro.platz+".");row("Punkte",rm.punkte,ro.punkte);row("Bilanz (S-U-N)",rm.g+"-"+rm.u+"-"+rm.v,ro.g+"-"+ro.u+"-"+ro.v);row("Legs",rm.legs,ro.legs)}
+  c.appendChild(g);
+  var hist=(t.fixtures||[]).filter(function(x){return x.ergebnis&&x.heim&&x.gast&&(norm(x.heim)===norm(opp)||norm(x.gast)===norm(opp))});
+  if(hist.length){var x=hist[hist.length-1],hm=norm(x.heim)===own,a=hm?x.ergebnis[0]:x.ergebnis[1],b=hm?x.ergebnis[1]:x.ergebnis[0];
+    c.appendChild(el("p","Letztes Duell"+(x.runde?" ("+x.runde+")":"")+": "+a+" : "+b+(a>b?" für uns":a<b?" für den Gegner":" Unentschieden"),"mute"))}
+  var d=rm&&ro?ro.platz-rm.platz:0;c.appendChild(el("p",!rm?"":d>0?"Wir stehen in der Tabelle vor dem Gegner.":d<0?"Der Gegner steht in der Tabelle vor uns.":"Gleiche Tabellenposition.","mute"));return c}
 function viewTeam(m,t){
   var own=norm(t.name),r=rank(t);
   var pu=photoUrl("team",t.slug);
@@ -923,6 +939,7 @@ function viewTeam(m,t){
   var fd=formDots(t);if(fd){var d=el("div",null,"tile");d.appendChild(el("small","Form"));var b=el("b");b.appendChild(fd);d.appendChild(b);tl.appendChild(d)}
   stats().filter(function(p){return p.teams[t.name]&&/kapit/i.test(playerInfo(p.name).rolle||"")}).forEach(function(p){tl.appendChild(tile(playerInfo(p.name).rolle,p.name))});
   if(tl.children.length)m.appendChild(tl);
+  var scv=scoutCard(t);if(scv)m.appendChild(sec("Nächster Gegner",scv));
   var fx=(t.fixtures||[]).slice().sort(function(a,b){return a.datum<b.datum?-1:1});
   var upc=fx.filter(isUpcoming),pas=fx.filter(function(f){return !isUpcoming(f)}).reverse();
   var box=el("div"),ul=el("ul",null,"fix"),mode=upc.length||!pas.length?"u":"p",open={u:false,p:false},CAP=3;
