@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /profil.html
+
+Sitemap: https://dcphoenix.de/sitemap.xml

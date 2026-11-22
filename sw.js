@@ -1,6 +1,6 @@
 /* DC Phönix – Service Worker: Seite und Spielplan auch ohne Netz */
-var V = "dcp-v2";
-var SHELL = ["./", "index.html", "config.json", "data.json", "manifest.webmanifest", "logo-offiziell.png", "logo-favicon.png", "logo-apple.png"];
+var V = "dcp-v3";
+var SHELL = ["./", "index.html", "config.json", "data.json", "manifest.webmanifest", "logo-web.webp", "logo-favicon.png", "logo-apple.png"];
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(V).then(function (c) {
